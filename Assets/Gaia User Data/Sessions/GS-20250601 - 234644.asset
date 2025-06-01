@@ -29,7 +29,56 @@ MonoBehaviour:
   m_previewImageBytes: 
   m_previewImageWidth: 0
   m_previewImageHeight: 0
-  m_operations: []
-  m_terrainMinMaxCache: []
+  m_operations:
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/1/2025 11:47:23 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: 'Creating World: 2 x 2 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250601 - 234723
+    - Terrain_0_1-20250601 - 234723
+    - Terrain_1_0-20250601 - 234723
+    - Terrain_1_1-20250601 - 234723
+    m_operationDateTime: 6/1/2025 11:47:24 PM
+    scriptableObjectAssetGUID: 39930b24c47a5f24db5783e8d3c584e1
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  m_terrainMinMaxCache:
+  - guid: Worldmap
+    isWorldmap: 1
+    recalculate: 0
+    min: 0
+    max: 0
+  - guid: ab5d4662b4e47fc4fb320f84ab615f74
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 52.750805
+  - guid: c5ba0c57c46217540b116624ab0d6313
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 53.62582
+  - guid: c2de4e674c19af64d83981705b3e7f58
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 53.250813
+  - guid: 7fc09dc6b8b7e104a95d89214aadf9f6
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 56.25086
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
