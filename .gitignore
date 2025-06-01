@@ -6041,3 +6041,187 @@ Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtabsBorderp_c5.pn
 Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwundo_c5.png.meta
 Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/unity_16_c5.png.meta
 ProjectSettings/ProjectSettings.asset
+Assets/Gaia User Data.meta
+Assets/Gaia User Data/Settings.meta
+Assets/Gaia User Data/Settings/AddressableConfig.asset
+Assets/Gaia User Data/Settings/AddressableConfig.asset.meta
+Assets/Gaia User Data/Settings/BuildConfig.asset
+Assets/Gaia User Data/Settings/BuildConfig.asset.meta
+Assets/Gaia User Data/Settings/UserFiles.asset
+Assets/Gaia User Data/Settings/UserFiles.asset.meta
+Assets/Procedural Worlds.meta
+Assets/Procedural Worlds/Frameworks.meta
+Assets/Procedural Worlds/Frameworks/CleanUp4.meta
+Assets/Procedural Worlds/Frameworks/CleanUp4/Editor.meta
+Assets/Procedural Worlds/Frameworks/CleanUp4/Editor/PWCleanUp4EditorDLL.dll
+Assets/Procedural Worlds/Frameworks/CleanUp4/Editor/PWCleanUp4EditorDLL.dll.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Localization.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Localization/English/PWWelcomeScreen_c5.English.pwlpk
+Assets/Procedural Worlds/Frameworks/Common5/Editor/PWCommon5EditorDLL.dll
+Assets/Procedural Worlds/Frameworks/Common5/Editor/PWCommon5EditorDLL.dll.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/PWCommonMenuAG.cs
+Assets/Procedural Worlds/Frameworks/Common5/Editor/PWCommonMenuAG.cs.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/AmbientSkies_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/AmbientSkies_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/AmbientSounds_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/AmbientSounds_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/CommonMenu_c5.txt
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/CTS_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/CTS_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/Gaia_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/Gaia_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/GeNa_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/GeNa_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/helpBtnOff_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/helpBtnOffp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/helpBtnOn_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/helpBtnOnp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/onlineHelp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/onlineKnowledgeBase_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/onlineVideo_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/PathPainter_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/PathPainter_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/Pegasus_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/Pegasus_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwdarkBox_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwdarkBoxp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwresav16_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwsav16_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwsavas16_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtab_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtaba_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtabap_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtabp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtabsBorder_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwtabsBorderp_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_10_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_10_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_11_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_11_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_12_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_12_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_13_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_13_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_14_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_14_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_15_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_15_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_16_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_16_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_17_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_17_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_18_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_18_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_19_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_19_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_1_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_1_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_20_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_20_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_2_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_2_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_3_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_3_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_4_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_4_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_5_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_5_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_6_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_6_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_7_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_7_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_8_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_8_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_9_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwub_builtin_9_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/pwundo_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/SECTR_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/SECTR_c5.png.meta
+Assets/Procedural Worlds/Frameworks/Common5/Editor/Resources/unity_16_c5.png
+Assets/Procedural Worlds/Frameworks/Common5/PW_c5.pwcfg
+Assets/Procedural Worlds/Frameworks/Common5/PW_c5.pwcfg.meta
+Assets/Procedural Worlds/Frameworks/Common5/PWCommon5DLL.dll
+Assets/Procedural Worlds/Frameworks/Common5/PWCommon5DLL.dll.meta
+Assets/Procedural Worlds/Scene Optimizer.meta
+Assets/Procedural Worlds/Scene Optimizer/Documentation.meta
+Assets/Procedural Worlds/Scene Optimizer/Documentation/Scene Optimizer Documentation.pdf
+Assets/Procedural Worlds/Scene Optimizer/Documentation/Scene Optimizer Documentation.pdf.meta
+Assets/Procedural Worlds/Scene Optimizer/Localization.meta
+Assets/Procedural Worlds/Scene Optimizer/Localization/English.meta
+Assets/Procedural Worlds/Scene Optimizer/Localization/English/CullingSystemEditor.English.pwlpk
+Assets/Procedural Worlds/Scene Optimizer/Localization/English/CullingSystemEditor.English.pwlpk.meta
+Assets/Procedural Worlds/Scene Optimizer/Localization/English/SceneOptimizerEditor.English.pwlpk
+Assets/Procedural Worlds/Scene Optimizer/Localization/English/SceneOptimizerEditor.English.pwlpk.meta
+Assets/Procedural Worlds/Scene Optimizer/Resources.meta
+Assets/Procedural Worlds/Scene Optimizer/Resources/Prefabs.meta
+Assets/Procedural Worlds/Scene Optimizer/Resources/Prefabs/FPS Tester.prefab
+Assets/Procedural Worlds/Scene Optimizer/Resources/Prefabs/FPS Tester.prefab.meta
+Assets/Procedural Worlds/Scene Optimizer/Resources/Scene Optimizer.asset
+Assets/Procedural Worlds/Scene Optimizer/Resources/Scene Optimizer.asset.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Core.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Core/ProceduralWorlds.SceneOptimizer.Core.dll
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Core/ProceduralWorlds.SceneOptimizer.Core.dll.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Base.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Base/SceneOptimizerBaseEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Base/SceneOptimizerBaseEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Components.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Components/CullingSystemEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Components/CullingSystemEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Components/SceneDataEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Components/SceneDataEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/PWApp.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/PWApp.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/PWEditorInitialization.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/PWEditorInitialization.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/MaterialList.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/MaterialList.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/OptimizeCommandList.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/OptimizeCommandList.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/RootObjectList.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/ReorderableLists/RootObjectList.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Styles.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Styles/PWStyles.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Styles/PWStyles.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Tools.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Tools/SceneOptimizerEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Tools/SceneOptimizerEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorEvents.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorEvents.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorExtensionMethods.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorExtensionMethods.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorTime.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorTime.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorUtility.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/EditorUtility.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/MenuItemEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/MenuItemEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/PWEditorUtility.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/PWEditorUtility.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/ReorderableListEditor.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Utilities/ReorderableListEditor.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Windows.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Windows/SceneOptimizerEditorWindow.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Editor/Windows/SceneOptimizerEditorWindow.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/CullingSystem.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/CullingSystem.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/Optimized.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/Optimized.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/Original.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/Components/Original.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/SceneOptimizer.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/SceneOptimizer.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/UI.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/UI/FPSCounter.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/UI/FPSCounter.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/UI/FPSTester.cs
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Runtime/UI/FPSTester.cs.meta
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Scene Optimizer.pwcfg
+Assets/Procedural Worlds/Scene Optimizer/Scripts/Scene Optimizer.pwcfg.meta
