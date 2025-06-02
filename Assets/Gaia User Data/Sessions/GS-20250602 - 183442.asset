@@ -10,42 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e251860fcd970734c9f14ebd98a146c3, type: 3}
-  m_Name: GS-20250602 - 181239
+  m_Name: GS-20250602 - 183442
   m_EditorClassIdentifier: 
-  m_name: Session 20250602-181239
+  m_name: Session 20250602-183442
   m_description: 'Rocking out at Creativity Central!
 
 
     If you like Gaia please
     consider rating it :)'
   m_previewImage: {fileID: 0}
-  m_dateCreated: 6/2/2025 6:12:39 PM
+  m_dateCreated: 6/2/2025 6:34:42 PM
   m_terrainWidth: 1024
   m_terrainDepth: 1024
   m_terrainHeight: 1024
-  m_seaLevel: 0
+  m_seaLevel: 25
   m_spawnDensity: 0.8
   m_isLocked: 0
   m_previewImageBytes: 
   m_previewImageWidth: 0
   m_previewImageHeight: 0
-  m_operations:
-  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
-    m_operationType: 0
-    m_isActive: 1
-    m_affectedTerrainNames:
-    - Terrain_0_0-20250602 - 181752
-    m_operationDateTime: 6/2/2025 6:17:52 PM
-    scriptableObjectAssetGUID: 842e84c7c2c12cb43997fa1e7818dcce
-    m_isFoldedOut: 0
-    sessionPlaybackState: 1
-    m_terrainsFoldedOut: 0
-    m_serializedExternalAction: 
-  m_terrainMinMaxCache:
-  - guid: d06be3821e5f92e4cacb0dbc36235f8d
-    isWorldmap: 0
-    recalculate: 0
-    min: 0
-    max: 0
+  m_operations: []
+  m_terrainMinMaxCache: []
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
