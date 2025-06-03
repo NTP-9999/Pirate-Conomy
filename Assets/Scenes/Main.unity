@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 103146852}
   - component: {fileID: 103146853}
+  - component: {fileID: 103146854}
   m_Layer: 0
   m_Name: FirstPersonCam
   m_TagString: Untagged
@@ -145,7 +146,7 @@ Transform:
   m_GameObject: {fileID: 103146851}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5489998, z: 0.7409973}
+  m_LocalPosition: {x: 0, y: 1.645, z: 0.7409973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -166,6 +167,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: 524.4
   verticalLookLimit: 80
+--- !u!114 &103146854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 103146851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4e2efefe7a0d34091bcd9536aeede6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothYPosition: 22.5
+  smoothXZPosition: 23.88
 --- !u!1 &962616606
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +494,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: f13a8a08a5dfef048816141ae4cc912d, type: 2}
     - target: {fileID: 5866666021909216657, guid: eed4a4d0610be9047b86355e76e318f8, type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

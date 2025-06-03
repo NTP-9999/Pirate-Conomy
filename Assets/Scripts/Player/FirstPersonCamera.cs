@@ -12,65 +12,65 @@ public class FirstPersonCamera : MonoBehaviour
     // เก็บตำแหน่งเริ่มต้นของกล้องเทียบกับ FPS_CameraHolder
     private Vector3 initialLocalCameraPosition; 
 
-    // <--- เพิ่มตัวแปรสำหรับอ้างอิง CharacterStats
+    // อ้างอิง CharacterStats (สำหรับฟังก์ชันการตาย)
     private CharacterStats characterStats; 
+    
+    // *** สำคัญ: ไม่มีตัวแปรหรือ Headers สำหรับ Camera Shake ในส่วนนี้แล้ว ***
+    // เช่น ไม่มี public float runShakeIntensity;
+    // ไม่มี private Vector3 currentShakeOffset;
+    // ไม่มี public bool IsRunning;
 
     void Start()
     {
+        // ตรวจสอบว่าสคริปต์นี้อยู่บน Main Camera หรือ FPS_CameraHolder ที่มี Parent เป็น Player
         initialLocalCameraPosition = transform.localPosition; 
         playerBody = transform.parent; 
         if (playerBody == null)
         {
-            Debug.LogError("Player Body (parent GameObject) not found for FirstPersonCamera script.");
+            Debug.LogError("Player Body (parent GameObject) not found for FirstPersonCamera script. Please ensure this script is on a GameObject that is a child of your Player.");
         }
 
+        // ล็อคเคอร์เซอร์เมาส์และซ่อนมัน
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; // ทำให้เมาส์หายไปตอนเริ่มเกม
+        Cursor.visible = false; 
 
-        // Set initial rotation
-        xRotation = transform.localEulerAngles.x;
-
-        // *** เก็บตำแหน่ง localPosition เริ่มต้นของ Main Camera (0,0,0) ***
-        // บรรทัดนี้ซ้ำกับบรรทัดแรกใน Start() สามารถลบบรรทัดแรกทิ้งได้
-        // initialLocalCameraPosition = transform.localPosition; 
-
-        // <--- ดึง CharacterStats มาจาก Parent ของกล้อง (ซึ่งน่าจะเป็นตัวละคร)
+        // ดึง CharacterStats มาจาก Parent ของกล้อง (ซึ่งน่าจะเป็นตัวละครหลัก)
         characterStats = GetComponentInParent<CharacterStats>(); 
         if (characterStats == null)
         {
-            Debug.LogError("CharacterStats component not found on parent of camera. Camera control might not stop on death. Please ensure CharacterStats is on the Player GameObject.");
+            Debug.LogWarning("CharacterStats component not found on parent of camera. Camera control might not stop on death.");
         }
+
+        // กำหนดการหมุนเริ่มต้นของกล้องตามค่าปัจจุบัน
+        xRotation = transform.localEulerAngles.x;
     }
 
     void Update()
     {
-        // <--- สำคัญ: ตรวจสอบสถานะการตายก่อนประมวลผล Input
+        // ตรวจสอบสถานะการตาย
         if (characterStats != null && characterStats.isDead)
         {
-            // ถ้าตัวละครตายแล้ว ให้ปิดสคริปต์นี้
-            this.enabled = false; 
-            // ปลดล็อคเมาส์และทำให้มองเห็น
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            this.enabled = false; // ปิดสคริปต์ FirstPersonCamera
+            Cursor.lockState = CursorLockMode.None; // ปลดล็อคเมาส์
+            Cursor.visible = true; // ทำให้เมาส์มองเห็นได้
             Debug.Log("FirstPersonCamera: Player is dead, disabling camera control.");
             return; // หยุดการทำงานของ Update ทันที
         }
 
-        // Mouse input
+        // Input เมาส์
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        // X axis rotation (up-down)
+        // การหมุนแกน X (ขึ้น-ลง) สำหรับกล้อง
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -verticalLookLimit, verticalLookLimit);
 
-        // Y axis rotation (left-right) for player body
+        // การหมุนแกน Y (ซ้าย-ขวา) สำหรับตัวละคร (playerBody)
         playerBody.Rotate(Vector3.up * mouseX);
 
-        // ESC to unlock cursor (ยังคงมีประโยชน์สำหรับการหยุดเกมชั่วคราว)
+        // ESC เพื่อปลดล็อค/ล็อคเคอร์เซอร์
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // สลับสถานะล็อคเคอร์เซอร์
             if (Cursor.lockState == CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.None;
@@ -84,18 +84,19 @@ public class FirstPersonCamera : MonoBehaviour
         }
     }
 
-    // *** ใช้ LateUpdate เพื่อปรับตำแหน่งกล้องหลังแอนิเมชันทำงานแล้ว ***
+    // ใช้ LateUpdate เพื่อให้แน่ใจว่าการเคลื่อนไหวและการหมุนของกล้องเสร็จสิ้นหลังการอัปเดตของตัวละคร
     void LateUpdate()
     {
-        // <--- สำคัญ: ตรวจสอบสถานะการตายก่อนประมวลผล Input (อีกครั้งสำหรับ LateUpdate)
-        // เพื่อป้องกันการเคลื่อนไหวที่ไม่ต้องการหากสคริปต์ถูกปิดใน Update แต่ LateUpdate ยังทำงานในเฟรมเดียวกัน
+        // ตรวจสอบสถานะการตายอีกครั้ง (เพื่อความปลอดภัย)
         if (characterStats != null && characterStats.isDead)
         {
-            return; // หยุดการทำงานของ LateUpdate ทันที
+            return; 
         }
 
-        // กำหนดการหมุนของกล้อง (X-axis)
+        // กำหนดการหมุนของกล้อง (เฉพาะแกน X)
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        // กำหนดตำแหน่งกล้องให้เป็นตำแหน่งเริ่มต้นเสมอ (ไม่มีการสั่นใดๆ เพิ่มเติม)
         transform.localPosition = initialLocalCameraPosition; 
     }
 }
