@@ -4,7 +4,7 @@ public class DayNightCycle : MonoBehaviour
 {
     [Header("Time Settings")]
     [Tooltip("ระยะเวลา 1 วันใน Unity Unit (วินาทีในเกม = 1 วัน)")]
-    public float secondsInFullDay = 20.0f; // 24 นาที = 1 วันในเกม
+    public float secondsInFullDay = 1440.0f; // 24 นาที = 1 วันในเกม
     [Range(0, 1)]
     [Tooltip("เวลาเริ่มต้นของวัน (0 = เที่ยงคืน, 0.25 = 6 โมงเช้า, 0.5 = เที่ยงวัน, 0.75 = 6 โมงเย็น)")]
     public float currentTimeOfDay = 0.25f; // เริ่มที่ 6 โมงเช้า
