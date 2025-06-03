@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
-#if GAIA_PRO_PRESENT
-using Gaia;
-#endif
+// #if GAIA_PRO_PRESENT
+// using Gaia;
+// #endif
 namespace GeNa.Core
 {
     public enum RiverWeatherType
@@ -21,9 +21,9 @@ namespace GeNa.Core
         public float SeaLevel;
         #endregion
         #region Private
-#if GAIA_PRO_PRESENT
-        private ProceduralWorldsGlobalWeather m_gaiaWeather;
-#endif
+// #if GAIA_PRO_PRESENT
+//         private ProceduralWorldsGlobalWeather m_gaiaWeather;
+// #endif
         private GeNaRiverParameters m_currentProfileValues = new GeNaRiverParameters();
         private RiverWeatherType m_currentWeatherType = RiverWeatherType.None;
         private MeshRenderer m_meshRenderer;
@@ -48,7 +48,7 @@ namespace GeNa.Core
             {
                 m_meshRendererPresent = false;
             }
-#if GAIA_PRO_PRESENT
+#if !GAIA_PRO_PRESENT
             m_gaiaWeather = ProceduralWorldsGlobalWeather.Instance;
             if (m_gaiaWeather != null)
             {
@@ -68,7 +68,7 @@ namespace GeNa.Core
             {
                 if (!m_isProcessing)
                 {
-#if GAIA_PRO_PRESENT
+#if !GAIA_PRO_PRESENT
                     if (m_gaiaWeather.IsRaining)
                     {
                         m_activeWeatherType = RiverWeatherType.Raining;

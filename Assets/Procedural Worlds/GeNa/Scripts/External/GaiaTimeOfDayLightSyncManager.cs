@@ -123,7 +123,7 @@ namespace GeNa.Core
         /// <returns></returns>
         public bool IsNightTime()
         {
-#if GAIA_PRO_PRESENT && !HDRPTIMEOFDAY
+#if !GAIA_PRO_PRESENT && !HDRPTIMEOFDAY
             if (Gaia.ProceduralWorldsGlobalWeather.Instance != null)
             {
                 return Gaia.ProceduralWorldsGlobalWeather.Instance.CheckIsNight();

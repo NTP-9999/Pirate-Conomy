@@ -1,7 +1,7 @@
-﻿#if GAIA_2_PRESENT
+﻿#if GeNa
 using System;
 using System.Collections.Generic;
-using Gaia;
+using GeNa;
 using UnityEngine;
 namespace GeNa.Core
 {
@@ -43,11 +43,11 @@ namespace GeNa.Core
             }
             m_undoRecord.Clear();
         }
-        public void Init(Gaia.Spawner spawner)
+        public void Init(GeNa.Spawner spawner)
         {
             ///Not required
         }
-        public void Spawn(Gaia.Spawner spawner, Transform target, int ruleIndex, int instanceIndex, SpawnExtensionInfo spawnInfo)
+        public void Spawn(GeNa.Spawner spawner, Transform target, int ruleIndex, int instanceIndex, SpawnExtensionInfo spawnInfo)
         {
             if (m_genaSpawner != null)
             {

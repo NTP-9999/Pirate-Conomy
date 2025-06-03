@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-#if GAIA_2_PRESENT
+#if !GAIA_2_PRESENT
 using Gaia;
 using ProceduralWorlds.WaterSystem;
 #endif
@@ -13,12 +13,12 @@ namespace GeNa.Core
         static GeNaGaiaUtility()
         {
             // If GeNa Present && Gaia Present
-#if GAIA_2_PRESENT
+#if !GAIA_2_PRESENT
             GeNaUtility.Gaia2Present = true;
             GeNaEvents.SetSeaLevel = SetSeaLevel;
             GeNaUtility.GaiaSeaLevelValue = GetRuntimeSeaLevel();
             GeNaEvents.GetSeaLevel = GetRuntimeSeaLevel;
-#if GAIA_PRO_PRESENT
+#if !GAIA_PRO_PRESENT
             GeNaEvents.HasTerrainsAsScenes = GetRuntimeHasTerrainsAsScenes;
 #endif
 #else
@@ -37,7 +37,7 @@ namespace GeNa.Core
                 return 0f;
             }
             float seaLevel = 0f;
-#if GAIA_2_PRESENT
+#if !GAIA_2_PRESENT
             seaLevel = GetGaiaSeaLevel();
             spawner.SpawnCriteria.SeaLevel = seaLevel;
 #endif
@@ -50,7 +50,7 @@ namespace GeNa.Core
         private static float GetGaiaSeaLevel()
         {
             float seaLevel = 0f;
-#if GAIA_2_PRESENT
+#if !GAIA_2_PRESENT
             GaiaSessionManager manager = Object.FindObjectOfType<GaiaSessionManager>();
             if (manager != null)
             {
@@ -74,7 +74,7 @@ namespace GeNa.Core
         public static float GetRuntimeSeaLevel(float defaultValue = 0f)
         {
             float seaLevel = defaultValue;
-#if GAIA_2_PRESENT
+#if !GAIA_2_PRESENT
             PWS_WaterSystem waterSystem = PWS_WaterSystem.Instance;
             if (waterSystem != null)
             {
@@ -86,7 +86,7 @@ namespace GeNa.Core
         public static bool GetRuntimeHasTerrainsAsScenes()
         {
             bool hasTerrainScenes = false;
-#if GAIA_PRO_PRESENT
+#if !GAIA_PRO_PRESENT
             hasTerrainScenes = GaiaUtils.HasDynamicLoadedTerrains();
 #endif
             return hasTerrainScenes;
