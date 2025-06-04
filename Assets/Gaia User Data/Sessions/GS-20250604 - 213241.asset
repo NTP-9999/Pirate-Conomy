@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e251860fcd970734c9f14ebd98a146c3, type: 3}
+  m_Name: GS-20250604 - 213241
+  m_EditorClassIdentifier: 
+  m_name: Session 20250604-213241
+  m_description: 'Rocking out at Creativity Central!
+
+
+    If you like Gaia please
+    consider rating it :)'
+  m_previewImage: {fileID: 0}
+  m_dateCreated: 6/4/2025 9:32:41 PM
+  m_terrainWidth: 1024
+  m_terrainDepth: 1024
+  m_terrainHeight: 1024
+  m_seaLevel: 25
+  m_spawnDensity: 0.8
+  m_isLocked: 0
+  m_previewImageBytes: 
+  m_previewImageWidth: 0
+  m_previewImageHeight: 0
+  m_operations:
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 213241
+    m_operationDateTime: 6/4/2025 9:32:41 PM
+    scriptableObjectAssetGUID: c7c1ea7bebf1ea542aea276a72638636
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: 'Updating World To: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 14
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/4/2025 9:33:31 PM
+    scriptableObjectAssetGUID: 892a5dd026a9a324c918124a61f42bff
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/4/2025 9:35:59 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 213600
+    m_operationDateTime: 6/4/2025 9:36:00 PM
+    scriptableObjectAssetGUID: 9eb009c3c119f944ea1d74b2471fd25d
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Spawning - Multiple Spawners (10)
+    m_operationType: 7
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 213600
+    m_operationDateTime: 6/4/2025 9:37:23 PM
+    scriptableObjectAssetGUID: f6524a4edc9cd2040be3dc0a334073b4
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  m_terrainMinMaxCache:
+  - guid: Worldmap
+    isWorldmap: 1
+    recalculate: 0
+    min: 0
+    max: 56.111115
+  - guid: 62f9482f8f6ceca4db137f93cd3a589e
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 113.87674
+  m_bakedMaskCacheEntries: []
+  m_worldBiomeMaskSettings: {fileID: 0}
