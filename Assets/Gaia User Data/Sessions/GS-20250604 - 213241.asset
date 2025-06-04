@@ -158,15 +158,15 @@ MonoBehaviour:
     recalculate: 0
     min: 0
     max: 140.03339
-  - guid: Worldmap
-    isWorldmap: 1
-    recalculate: 0
-    min: 0
-    max: 56.111115
   - guid: 348218dd0e4814e4db35f9c5835268b3
     isWorldmap: 0
     recalculate: 0
     min: 0
     max: 106.06412
+  - guid: Worldmap
+    isWorldmap: 1
+    recalculate: 0
+    min: 0
+    max: 56.111115
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
