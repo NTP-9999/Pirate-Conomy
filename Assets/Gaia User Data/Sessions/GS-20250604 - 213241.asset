@@ -83,16 +83,90 @@ MonoBehaviour:
     sessionPlaybackState: 1
     m_terrainsFoldedOut: 0
     m_serializedExternalAction: 
+  - m_description: Spawning - Unknown
+    m_operationType: 7
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 213600
+    m_operationDateTime: 6/4/2025 9:40:43 PM
+    scriptableObjectAssetGUID: f5261737fa4a7c4499df1bc2833c6c97
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/4/2025 9:42:05 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 214206
+    m_operationDateTime: 6/4/2025 9:42:06 PM
+    scriptableObjectAssetGUID: cea525f2273e54848b0c42cadffa6e0b
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Spawning - Alpine Meadow-Trees(Clone)
+    m_operationType: 7
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 214206
+    m_operationDateTime: 6/4/2025 9:42:27 PM
+    scriptableObjectAssetGUID: dbf2a4ebd89142a409692fb32af60ddc
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/4/2025 9:51:45 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250604 - 215147
+    m_operationDateTime: 6/4/2025 9:51:49 PM
+    scriptableObjectAssetGUID: 276b9244595d79f4691de63b10dde247
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
   m_terrainMinMaxCache:
-  - guid: Worldmap
-    isWorldmap: 1
-    recalculate: 0
-    min: 0
-    max: 56.111115
   - guid: 62f9482f8f6ceca4db137f93cd3a589e
     isWorldmap: 0
     recalculate: 0
     min: 0
     max: 113.87674
+  - guid: f0283870066cabc468533b92844649ee
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 140.03339
+  - guid: Worldmap
+    isWorldmap: 1
+    recalculate: 0
+    min: 0
+    max: 56.111115
+  - guid: 348218dd0e4814e4db35f9c5835268b3
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 106.06412
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
