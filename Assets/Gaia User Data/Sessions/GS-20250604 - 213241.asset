@@ -23,7 +23,7 @@ MonoBehaviour:
   m_terrainWidth: 1024
   m_terrainDepth: 1024
   m_terrainHeight: 1024
-  m_seaLevel: 25
+  m_seaLevel: 18
   m_spawnDensity: 0.8
   m_isLocked: 0
   m_previewImageBytes: 
@@ -147,6 +147,39 @@ MonoBehaviour:
     sessionPlaybackState: 1
     m_terrainsFoldedOut: 0
     m_serializedExternalAction: 
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250606 - 205045
+    m_operationDateTime: 6/6/2025 8:50:46 PM
+    scriptableObjectAssetGUID: 73f6f0867c77f014692966862bdbe676
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: RaiseHeight - 2k Island 1
+    m_operationType: 4
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250606 - 205045
+    m_operationDateTime: 6/6/2025 8:54:12 PM
+    scriptableObjectAssetGUID: 3864a4d783e23de4fb445517749ff405
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Spawning - Alpine Meadow-Textures(Clone)
+    m_operationType: 7
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250606 - 205045
+    m_operationDateTime: 6/6/2025 8:54:13 PM
+    scriptableObjectAssetGUID: f445324a717215f4a95a5f9136513b54
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
   m_terrainMinMaxCache:
   - guid: 62f9482f8f6ceca4db137f93cd3a589e
     isWorldmap: 0
@@ -167,6 +200,11 @@ MonoBehaviour:
     isWorldmap: 1
     recalculate: 0
     min: 0
-    max: 56.111115
+    max: 0
+  - guid: 506e6a7b3df61f349b3382f343f1ce0a
+    isWorldmap: 0
+    recalculate: 0
+    min: 0
+    max: 59.0009
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
