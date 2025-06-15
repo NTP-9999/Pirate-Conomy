@@ -180,31 +180,66 @@ MonoBehaviour:
     sessionPlaybackState: 1
     m_terrainsFoldedOut: 0
     m_serializedExternalAction: 
+  - m_description: 'Updating World To: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 14
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/15/2025 3:20:52 PM
+    scriptableObjectAssetGUID: b9641693931c0cc4e8efeef3a376df5d
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/15/2025 3:55:04 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/15/2025 3:56:14 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/15/2025 3:58:13 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Clear World
+    m_operationType: 10
+    m_isActive: 1
+    m_affectedTerrainNames: []
+    m_operationDateTime: 6/15/2025 3:58:44 PM
+    scriptableObjectAssetGUID: 
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
   m_terrainMinMaxCache:
-  - guid: 62f9482f8f6ceca4db137f93cd3a589e
-    isWorldmap: 0
-    recalculate: 0
-    min: 0
-    max: 113.87674
-  - guid: f0283870066cabc468533b92844649ee
-    isWorldmap: 0
-    recalculate: 0
-    min: 0
-    max: 140.03339
-  - guid: 348218dd0e4814e4db35f9c5835268b3
-    isWorldmap: 0
-    recalculate: 0
-    min: 0
-    max: 106.06412
-  - guid: Worldmap
-    isWorldmap: 1
-    recalculate: 0
-    min: 0
-    max: 0
   - guid: 506e6a7b3df61f349b3382f343f1ce0a
     isWorldmap: 0
     recalculate: 0
     min: 0
     max: 59.0009
+  - guid: Worldmap
+    isWorldmap: 1
+    recalculate: 0
+    min: 0
+    max: 57.07152
   m_bakedMaskCacheEntries: []
   m_worldBiomeMaskSettings: {fileID: 0}
