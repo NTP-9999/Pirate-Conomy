@@ -46,28 +46,11 @@ public class CharacterMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         combat = GetComponent<BasicCombat>();
         stats = GetComponent<CharacterStats>();
-
-        // *******************************************************************
-        // ลบโค้ดตรวจสอบ ThirdPersonCamera ออก
-        // if (thirdPersonCamera == null)
-        // {
-        //     thirdPersonCamera = FindObjectOfType<ThirdPersonCamera>();
-        //     if (thirdPersonCamera == null)
-        //     {
-        //         Debug.LogError("ThirdPersonCamera not found or assigned! Player rotation might not work correctly.");
-        //     }
-        // }
-        // *******************************************************************
     }
 
     void Update()
     {
         if (stats.isDead) return;
-
-        // *******************************************************************
-        // เพิ่มเงื่อนไข canMove ตรงนี้
-        // หากตัวละครไม่สามารถเคลื่อนที่ได้ (เช่น กำลัง Parry)
-        // เราจะไม่ประมวลผล Input การเคลื่อนที่ และจะหยุดแอนิเมชันการเคลื่อนที่
         if (!canMove)
         {
             StopMovementAnimation(); // หยุดแอนิเมชันการเคลื่อนที่ทันที
@@ -92,9 +75,6 @@ public class CharacterMovement : MonoBehaviour
             StopMovementAnimation(); // หยุดแอนิเมชันการเคลื่อนที่
             return; // ออกจาก Update() ทันที
         }
-        // **********************************************************
-
-        // หากไม่กำลังโจมตี ไม่กำลังกลิ้ง ไม่กำลัง Parry -> จัดการการเคลื่อนที่ปกติ
         HandleMovement();
         // ส่ง input ดิบไปให้ HandleDodgeRollInput เพื่อกำหนดทิศทางการกลิ้ง
         HandleDodgeRollInput(new Vector3(hRaw, 0, vRaw)); 
@@ -111,7 +91,7 @@ public class CharacterMovement : MonoBehaviour
         bool isGrounded = controller.isGrounded;
         bool isMoving = input.magnitude > 0.1f;
         bool isForward = v > 0.1f;
-        bool shift = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightShift);
+        bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         isRunning = isMoving && isForward && shift && stats.currentStamina > 0;
         float currentSpeed = isRunning ? walkSpeed * runMultiplier : walkSpeed;
@@ -125,33 +105,8 @@ public class CharacterMovement : MonoBehaviour
             stats.StopStaminaDrain();
         }
 
-        // *******************************************************************
-        // ลบส่วนการหมุนตัวละครตามทิศทางของกล้องออกไปทั้งหมด
-        // การหมุนจะถูกจัดการใน ThirdPersonCamera.cs แทน
-        // if (thirdPersonCamera != null && !thirdPersonCamera.IsLockedOn)
-        // {
-        //     float mouseX = Input.GetAxis("Mouse X");
-        //     transform.Rotate(Vector3.up * mouseX * rotationSpeed * Time.deltaTime);
-        //
-        //     if (isMoving)
-        //     {
-        //         Vector3 camForward = thirdPersonCamera.GetCameraForward();
-        //         Vector3 camRight = thirdPersonCamera.GetCameraRight();
-        //         Vector3 relativeInput = camForward * input.z + camRight * input.x;
-        //         
-        //         if (relativeInput.magnitude > 0.1f)
-        //         {
-        //             Quaternion targetRotation = Quaternion.LookRotation(relativeInput.normalized);
-        //             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        //         }
-        //     }
-        // }
-        // *******************************************************************
-
         if (isGrounded)
         {
-            // คำนวณ moveDirection ใหม่ทุกเฟรมหากอยู่บนพื้น
-            // สำคัญ: ต้องใช้ transform.forward/right ของ Player เอง หลังจาก Player หมุนแล้ว
             Vector3 desiredMove = transform.forward * input.z + transform.right * input.x;
             moveDirection.x = desiredMove.x * currentSpeed;
             moveDirection.z = desiredMove.z * currentSpeed;
@@ -175,7 +130,7 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleDodgeRollInput(Vector3 currentInputMovement)
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= nextRollTime && !isRolling && !combat.isAttacking && !stats.isDead)
+        if (Input.GetKeyDown(KeyCode.Q) && Time.time >= nextRollTime && !isRolling && !combat.isAttacking && !stats.isDead)
         {
             if (stats.currentStamina >= rollStaminaCost)
             {
