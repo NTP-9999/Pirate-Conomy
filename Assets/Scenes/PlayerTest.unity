@@ -221,32 +221,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &123160012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 123160010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7ab008828e81b044a2695bd1a4fbb2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parryKey: 102
-  parryWindowDuration: 0.3
-  parryCooldown: 2
-  parryDamageToBoss: 50
-  bossStunDurationOnParry: 2
-  characterStats: {fileID: 123160015}
-  characterMovement: {fileID: 123160013}
-  animator: {fileID: 123160017}
-  bossAI: {fileID: 0}
-  parrySuccessIcon: {fileID: 0}
-  iconDisplayDuration: 0.5
-  playerAudioSource: {fileID: 0}
-  parryAttemptSFX: {fileID: 0}
-  parrySuccessSFX: {fileID: 0}
 --- !u!114 &123160013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,17 +254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869d7ac40d0c4c64c863f78fd2b152c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAudioSource: {fileID: 0}
-  attackSwingSFX: {fileID: 0}
-  bossHitSFX: {fileID: 0}
-  attackRate: 1
-  staminaCost: 20
-  attackDamage: 30
-  attackRange: 2
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  isAttacking: 0
+  playerAnimator: {fileID: 123160017}
+  attackCooldown: 1
 --- !u!114 &123160015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,7 +278,6 @@ MonoBehaviour:
   staminaDrainRate: 10
   staminaRegenRate: 15
   staminaRegenDelay: 1
-  playerParry: {fileID: 123160012}
   currentHunger: 100
   maxHunger: 100
   hungerDecreaseIntervalMinutes: 3
@@ -559,9 +523,6 @@ PrefabInstance:
       addedObject: {fileID: 123160013}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eed4a4d0610be9047b86355e76e318f8, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 123160012}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eed4a4d0610be9047b86355e76e318f8, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 123160011}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eed4a4d0610be9047b86355e76e318f8, type: 3}
       insertIndex: -1
@@ -616,35 +577,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.626861
+      value: 10.627
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.146095
+      value: 13.2
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.359178
+      value: -10.345
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: -0.013626899
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 1
+      value: 0.9999072
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000059604638
+      value: -0.0000000023283055
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000059604638
+      value: 0.00000018253915
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -178.438
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a79a4b1e85d48274ba1c146f69249f19, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -819,9 +780,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f5a0fa1ca732ab43a49967807c74a4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 10
-  playerWeaponCollider: {fileID: 0}
-  hasDealtDamageThisAttackInstance: 0
 --- !u!1 &1033295714
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,14 +882,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1177123824}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.011849779, y: 0.010458209, z: 0.672397, w: 0.740022}
-  m_LocalPosition: {x: 23.882854, y: 2.5631561, z: -1.3371277}
+  m_LocalRotation: {x: 0.07702084, y: 0.069675, z: 0.6688592, w: 0.73609835}
+  m_LocalPosition: {x: 25.492, y: 2.409, z: -3.829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 655473872}
   m_Father: {fileID: 1119556551}
-  m_LocalEulerAnglesHint: {x: 0.199, y: 1.8, z: 84.521}
+  m_LocalEulerAnglesHint: {x: 1.157, y: 11.868, z: 84.64}
 --- !u!114 &1177123826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1000,7 +958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 200
-  maxLookAngle: 80
+  maxLookAngle: 60
   minLookAngle: -80
   playerBody: {fileID: 123160018}
 --- !u!114 &1893540269

@@ -20,14 +20,8 @@ public class CharacterMovement : MonoBehaviour
     public float walkSpeed = 6f;
     public float runMultiplier = 1.5f;
     public float gravity = 20f;
-    // public float rotationSpeed = 500f; // ลบตัวแปร rotationSpeed ออก
-
-    // *******************************************************************
-    // เพิ่มตัวแปรสำหรับควบคุมการเคลื่อนที่ (สำหรับระบบ Parry)
     [Header("General Movement Control")]
-    public bool canMove = true; // ควบคุมว่าผู้เล่นสามารถรับ Input การเคลื่อนที่ได้หรือไม่
-    // *******************************************************************
-
+    public bool canMove = true;
     [Header("Dodge Roll Settings")]
     public float rollSpeed = 10f;
     public float rollDuration = 0.5f;
@@ -70,11 +64,7 @@ public class CharacterMovement : MonoBehaviour
 
         // ************** ลำดับการเช็คสถานะที่ถูกต้อง **************
         // หากตัวละครกำลังโจมตี หรือ กำลังกลิ้ง ให้หยุดการเคลื่อนที่ปกติ
-        if (combat.isAttacking || isRolling)
-        {
-            StopMovementAnimation(); // หยุดแอนิเมชันการเคลื่อนที่
-            return; // ออกจาก Update() ทันที
-        }
+        
         HandleMovement();
         // ส่ง input ดิบไปให้ HandleDodgeRollInput เพื่อกำหนดทิศทางการกลิ้ง
         HandleDodgeRollInput(new Vector3(hRaw, 0, vRaw)); 
@@ -130,7 +120,7 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleDodgeRollInput(Vector3 currentInputMovement)
     {
-        if (Input.GetKeyDown(KeyCode.Q) && Time.time >= nextRollTime && !isRolling && !combat.isAttacking && !stats.isDead)
+        if (Input.GetKeyDown(KeyCode.Q) && Time.time >= nextRollTime && !isRolling  && !stats.isDead)
         {
             if (stats.currentStamina >= rollStaminaCost)
             {

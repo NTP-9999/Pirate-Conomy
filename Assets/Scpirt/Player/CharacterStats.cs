@@ -58,9 +58,6 @@ public class CharacterStats : MonoBehaviour
     private Coroutine staminaRegenCoroutine;
     public bool isRunningStaminaDrain { get; set; } = false;
     private float lastStaminaUseTime;
-    [Header("Parry Interaction")]
-    public PlayerParry playerParry;
-
     [Header("Hunger")]
     public float currentHunger = 100f;
     public float maxHunger = 100f;
@@ -102,15 +99,7 @@ public class CharacterStats : MonoBehaviour
         isDead = false;
 
         currentHealCharges = maxHealCharges; 
-        if (playerParry == null)
-        {
-            playerParry = GetComponent<PlayerParry>();
-            if (playerParry == null)
-            {
-                Debug.LogWarning("CharacterStats: PlayerParry component not found on this GameObject.", this);
-            }
-        }
-
+        
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -197,12 +186,6 @@ public class CharacterStats : MonoBehaviour
         {
             Debug.Log("Player was invincible and avoided damage!");
             return;
-        }
-        if (playerParry != null && playerParry.IsCurrentlyParrying)
-        {
-            Debug.Log("Attack parried! No damage taken.");
-            playerParry.OnParrySuccessful(); // เรียกเมธอดแจ้ง Parry สำเร็จ
-            return; // หยุดการรับดาเมจและ Logic ที่เกี่ยวข้อง
         }
 
         currentHealth -= amount;

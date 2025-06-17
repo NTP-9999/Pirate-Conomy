@@ -31,7 +31,7 @@ public class MeleeWeapon : Weapon
         // ในเกมของคุณ Hitbox ถูกควบคุมโดย PlayerAttackStateBehaviour
         // ดังนั้นตรงนี้อาจจะไม่ต้องทำอะไรมาก นอกจาก Debug.Log เพื่อยืนยันว่าเรียกถูก
         // หรืออาจจะใช้เพื่อ Play Sound effect เฉพาะของดาบ
-        Debug.Log($"{WeaponName} is performing a melee attack!");
+        Debug.Log($"{WeaponName} is performing a melee attack (Animation Event triggered this)!");
         // ถ้าต้องการเปิด/ปิด hitbox จากตรงนี้โดยตรง (แทนที่จะเป็น StateMachineBehaviour)
         // playerAttackCollider.EnableHitbox();
         // (แต่ปัจจุบันใช้ PlayerAttackStateBehaviour ซึ่งดีแล้ว)

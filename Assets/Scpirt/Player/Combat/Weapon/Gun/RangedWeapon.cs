@@ -49,20 +49,12 @@ public class RangedWeapon : Weapon
     // เมธอดสำหรับสั่งยิง
     public void PerformRangedAttack()
     {
-        if (Time.time >= nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
-            Fire();
-        }
-        else
-        {
-            Debug.Log($"{WeaponName}: Cannot fire yet. Cooldown remaining: {nextFireTime - Time.time:F2}s");
-        }
+        Fire();
     }
 
     void Fire()
     {
-        Debug.Log($"{WeaponName} is firing!");
+        Debug.Log($"{WeaponName} is firing (Animation Event triggered this)!");
 
         // 1. เล่นเสียง
         if (audioSource != null && shootSound != null)
@@ -78,31 +70,32 @@ public class RangedWeapon : Weapon
         }
 
         // 3. ยิง Raycast เพื่อตรวจจับการชน
-        // เราจะยิง Raycast ออกจากตำแหน่งกล้องของผู้เล่น เพื่อให้การยิงตรงกับการมองเห็น
-        // คุณจะต้องหา Reference ของกล้องผู้เล่นเอง (เช่น FirstPersonCamera.main.transform)
-        // สำหรับตอนนี้เราจะใช้ transform.forward จาก muzzlePoint เป็นทิศทางชั่วคราว
-        // แต่ในเกมจริง ควรยิงจากตำแหน่ง/ทิศทางของกล้องผู้เล่น
         Transform cameraTransform = Camera.main.transform; // สมมติว่ากล้องผู้เล่นคือ Camera.main
 
         RaycastHit hit;
-        // Raycast จากกล้องไปยังทิศทางที่กล้องมองอยู่
         if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, Mathf.Infinity, hitMask))
         {
             Debug.Log($"Raycast hit: {hit.collider.name}");
 
-            // ตรวจสอบว่าชนกับ LivingEntityStats หรือไม่
-            LivingEntityStats entityStats = hit.collider.GetComponent<LivingEntityStats>();
-            if (entityStats != null && !entityStats.IsDead)
+            // ตรวจสอบ Tag เพื่อทำดาเมจกับ Boss หรือ Enemy (มอนสเตอร์เล็ก)
+            if (hit.collider.CompareTag("Boss"))
             {
-                entityStats.TakeDamage(damage);
-                Debug.Log($"{WeaponName} hit {hit.collider.name} for {damage} damage. Remaining health: {entityStats.currentHealth}");
+                BossStats bossStats = hit.collider.GetComponent<BossStats>();
+                if (bossStats != null && !bossStats.IsDead)
+                {
+                    bossStats.TakeDamage(damage);
+                    Debug.Log($"{WeaponName} hit Boss for {damage} damage. Remaining health: {bossStats.currentHealth}");
+                }
             }
-
-            // เพิ่ม Effect การชน (เช่น Particle ของรอยกระสุน)
-            // if (hitEffectPrefab != null)
-            // {
-            //     Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-            // }
+            else if (hit.collider.CompareTag("Enemy")) // มอนสเตอร์เล็ก
+            {
+                LivingEntityStats enemyStats = hit.collider.GetComponent<LivingEntityStats>();
+                if (enemyStats != null && !enemyStats.IsDead)
+                {
+                    enemyStats.TakeDamage(damage);
+                    Debug.Log($"{WeaponName} hit Enemy {hit.collider.name} for {damage} damage. Remaining health: {enemyStats.currentHealth}");
+                }
+            }
         }
         else
         {
