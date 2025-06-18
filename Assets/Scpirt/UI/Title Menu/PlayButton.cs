@@ -7,6 +7,6 @@ public class PlayButton : MonoBehaviour
 {
     public void Playgame()
     {
-        SceneManager.LoadSceneAsync("Main");
+        SceneManager.LoadSceneAsync("pirate");
     }
 }

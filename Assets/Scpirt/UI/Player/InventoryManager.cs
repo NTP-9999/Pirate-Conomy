@@ -45,12 +45,16 @@ public class InventoryManager : MonoBehaviour
         // ควบคุมการหยุดเวลาหรือเคอร์เซอร์ของเมาส์
         if (isInventoryOpen)
         {
+            // Inventory เปิด: หยุดเวลา, แสดงเคอร์เซอร์เมาส์
+            Time.timeScale = 0f; // หยุดเวลาในเกม (Freeze game)
             Cursor.lockState = CursorLockMode.None; // ปลดล็อกเมาส์
             Cursor.visible = true; // ทำให้เมาส์มองเห็นได้
             Debug.Log("Inventory Opened!");
         }
         else
         {
+            // Inventory ปิด: กลับมาเล่นเกม, ซ่อนเคอร์เซอร์เมาส์
+            Time.timeScale = 1f; // กลับมาเล่นเกมตามปกติ
             Cursor.lockState = CursorLockMode.Locked; // ล็อกเมาส์ไว้ที่กึ่งกลางจอ
             Cursor.visible = false; // ซ่อนเมาส์
             Debug.Log("Inventory Closed!");
