@@ -33,9 +33,11 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     private bool isRunning = false;
     private float nextRollTime = 0f;
+    public static CharacterMovement Instance;
 
     void Start()
     {
+        Instance = this;
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         combat = GetComponent<BasicCombat>();
