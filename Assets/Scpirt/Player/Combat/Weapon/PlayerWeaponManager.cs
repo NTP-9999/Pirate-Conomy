@@ -1,99 +1,126 @@
 using UnityEngine;
+using System.Collections.Generic; // เพื่อใช้ Dictionary
 
 public class PlayerWeaponManager : MonoBehaviour
 {
-    [Header("Weapon References")]
-    [Tooltip("Drag the GameObject of your Melee Weapon here (the one with MeleeWeapon.cs attached).")]
-    public MeleeWeapon meleeWeapon;
-    [Tooltip("Drag the GameObject of your Ranged Weapon here (the one with RangedWeapon.cs attached).")]
-    public RangedWeapon rangedWeapon;
+    [Header("Weapon Holder")]
+    [Tooltip("The Transform where equipped weapons will be parented. This should be a child of your player character, usually near their hand.")]
+    public Transform weaponHolder; // ตำแหน่งที่อาวุธจะถูกวางเมื่อสวมใส่
 
     [Header("Current Weapon State")]
     [SerializeField]
-    private WeaponType _currentWeaponType = WeaponType.Melee; // กำหนดค่าเริ่มต้นเป็นดาบ
-    public Weapon CurrentWeapon { get; private set; } // Property สำหรับเข้าถึงอาวุธที่ถืออยู่ปัจจุบัน
+    private WeaponType _currentWeaponType = WeaponType.Melee; // กำหนดค่าเริ่มต้น
+    public Weapon CurrentWeapon { get; private set; } // อ้างอิงถึง Instance ของอาวุธที่อยู่ใน Scene ตอนนี้
 
-    void Start()
+    // ใช้ Dictionary เพื่อเก็บอ้างอิงของ Component อาวุธแต่ละชนิด
+    private Dictionary<WeaponType, Weapon> _weaponInstances = new Dictionary<WeaponType, Weapon>();
+
+    void Awake()
     {
-        // ตรวจสอบว่ามี Reference อาวุธครบถ้วนหรือไม่
-        if (meleeWeapon == null)
+        if (weaponHolder == null)
         {
-            Debug.LogError("PlayerWeaponManager: MeleeWeapon reference is missing! Please assign it in the Inspector.", this);
-            enabled = false; // ปิด Script ถ้าไม่มีอาวุธ (ป้องกัน Null Reference Errors)
-            return;
-        }
-        if (rangedWeapon == null)
-        {
-            Debug.LogError("PlayerWeaponManager: RangedWeapon reference is missing! Please assign it in the Inspector.", this);
-            enabled = false; // ปิด Script ถ้าไม่มีอาวุธ
+            Debug.LogError("PlayerWeaponManager: Weapon Holder Transform not assigned! Please assign it in the Inspector.", this);
+            enabled = false;
             return;
         }
 
-        // เริ่มต้นให้ผู้เล่นถืออาวุธตามที่ _currentWeaponType กำหนด (ซึ่งตอนนี้คือ Melee/ดาบ)
-        EquipWeapon(_currentWeaponType);
+        // ค้นหา Component อาวุธจาก Child ของ WeaponHolder
+        FindWeaponsInHolder();
+
+        // ตรวจสอบว่ามีอาวุธเริ่มต้นที่เราต้องการ Equip หรือไม่
+        if (_weaponInstances.ContainsKey(_currentWeaponType))
+        {
+            EquipWeapon(_currentWeaponType);
+        }
+        else
+        {
+            Debug.LogError($"PlayerWeaponManager: Initial weapon type ({_currentWeaponType}) not found in Weapon Holder. Please ensure the corresponding weapon Prefab is a child of Weapon Holder.", this);
+            enabled = false; // ปิดสคริปต์ถ้าหาอาวุธเริ่มต้นไม่เจอ
+        }
+    }
+
+    private void FindWeaponsInHolder()
+    {
+        _weaponInstances.Clear(); // เคลียร์ Dictionary ก่อนทุกครั้งที่ค้นหา
+
+        // วนลูปผ่าน Child ทุกตัวของ weaponHolder
+        foreach (Transform child in weaponHolder)
+        {
+            Weapon weapon = child.GetComponent<Weapon>(); // พยายามดึง Base Weapon Component
+
+            if (weapon != null)
+            {
+                // ตรวจสอบว่าเป็น MeleeWeapon หรือ RangedWeapon
+                if (weapon is MeleeWeapon meleeWeapon)
+                {
+                    _weaponInstances.Add(WeaponType.Melee, meleeWeapon);
+                    meleeWeapon.Unequip(); // ตั้งค่าเริ่มต้นให้ซ่อนอาวุธไว้ก่อน
+                }
+                else if (weapon is RangedWeapon rangedWeapon)
+                {
+                    _weaponInstances.Add(WeaponType.Ranged, rangedWeapon);
+                    rangedWeapon.Unequip(); // ตั้งค่าเริ่มต้นให้ซ่อนอาวุธไว้ก่อน
+                }
+                else
+                {
+                    Debug.LogWarning($"PlayerWeaponManager: Found a Weapon component '{weapon.name}' on child '{child.name}' but it's neither MeleeWeapon nor RangedWeapon. It will be ignored.", child);
+                }
+            }
+        }
+
+        if (!_weaponInstances.ContainsKey(WeaponType.Melee))
+        {
+            Debug.LogWarning("PlayerWeaponManager: No Melee Weapon found as child of Weapon Holder!", weaponHolder);
+        }
+        if (!_weaponInstances.ContainsKey(WeaponType.Ranged))
+        {
+            Debug.LogWarning("PlayerWeaponManager: No Ranged Weapon found as child of Weapon Holder!", weaponHolder);
+        }
     }
 
     void Update()
     {
-        // ตรวจจับ Input สำหรับสลับอาวุธ
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // ถ้าผู้เล่นกดปุ่ม '1' (เหนือตัว QWERTY)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            // ตรวจสอบว่าไม่ได้ถือดาบอยู่แล้ว เพื่อไม่ให้เรียก EquipWeapon ซ้ำซ้อน
-            if (_currentWeaponType != WeaponType.Melee)
+            if (_currentWeaponType != WeaponType.Melee && _weaponInstances.ContainsKey(WeaponType.Melee))
             {
-                EquipWeapon(WeaponType.Melee); // สลับไปถือดาบ
+                EquipWeapon(WeaponType.Melee);
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) // ถ้าผู้เล่นกดปุ่ม '2'
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            // ตรวจสอบว่าไม่ได้ถือปืนอยู่แล้ว
-            if (_currentWeaponType != WeaponType.Ranged)
+            if (_currentWeaponType != WeaponType.Ranged && _weaponInstances.ContainsKey(WeaponType.Ranged))
             {
-                EquipWeapon(WeaponType.Ranged); // สลับไปถือปืน
+                EquipWeapon(WeaponType.Ranged);
             }
         }
     }
 
-    /// <summary>
-    /// สลับไปถืออาวุธตามประเภทที่กำหนด และจัดการการเปิด/ปิด GameObject ของอาวุธ
-    /// </summary>
-    /// <param name="typeToEquip">ประเภทอาวุธที่ต้องการจะถือ (WeaponType.Melee หรือ WeaponType.Ranged)</param>
     public void EquipWeapon(WeaponType typeToEquip)
     {
         // 1. ถ้ามีอาวุธที่ถืออยู่ปัจจุบัน ให้สั่ง Unequip ก่อน
         if (CurrentWeapon != null)
         {
-            CurrentWeapon.Unequip();
+            CurrentWeapon.Unequip(); // สั่งให้ GameObject ของอาวุธเก่า SetActive(false)
         }
 
-        // 2. กำหนดอาวุธใหม่ตามประเภทที่ต้องการ
-        switch (typeToEquip)
+        // 2. กำหนดอาวุธใหม่จาก Dictionary
+        if (_weaponInstances.TryGetValue(typeToEquip, out Weapon newWeapon))
         {
-            case WeaponType.Melee:
-                CurrentWeapon = meleeWeapon; // กำหนดอาวุธที่ถืออยู่เป็นดาบ
-                _currentWeaponType = WeaponType.Melee; // อัปเดตประเภทอาวุธปัจจุบัน
-                break;
-            case WeaponType.Ranged:
-                CurrentWeapon = rangedWeapon; // กำหนดอาวุธที่ถืออยู่เป็นปืน
-                _currentWeaponType = WeaponType.Ranged; // อัปเดตประเภทอาวุธปัจจุบัน
-                break;
-            default:
-                Debug.LogWarning($"PlayerWeaponManager: Attempted to equip unknown weapon type: {typeToEquip}");
-                CurrentWeapon = null; // ถ้าประเภทไม่ถูกต้อง ไม่ถืออะไรเลย (ป้องกัน Null Reference)
-                break;
-        }
+            CurrentWeapon = newWeapon; // กำหนดอาวุธที่ถืออยู่เป็นอาวุธใหม่
+            _currentWeaponType = typeToEquip; // อัปเดตประเภทอาวุธปัจจุบัน
 
-        // 3. ถ้ามีอาวุธใหม่ถูกกำหนด (ไม่ใช่ null) ให้สั่ง Equip
-        if (CurrentWeapon != null)
-        {
             CurrentWeapon.Equip(); // เรียก Equip() ของอาวุธใหม่ (จะเปิด GameObject ของอาวุธ)
-            Debug.Log($"Player equipped: {CurrentWeapon.WeaponName}");
+            Debug.Log($"Player equipped: {CurrentWeapon.WeaponName} ({CurrentWeapon.Type})");
+        }
+        else
+        {
+            Debug.LogWarning($"PlayerWeaponManager: Attempted to equip weapon type '{typeToEquip}' but it was not found in Weapon Holder's children.");
+            CurrentWeapon = null; // ถ้าหาไม่เจอ ก็ไม่ถืออะไร
         }
     }
 
-    /// <summary>
-    /// เมธอดนี้จะถูกเรียกจาก BasicCombat เพื่อสั่งให้ "อาวุธที่ถืออยู่ปัจจุบัน" ทำการโจมตี
-    /// </summary>
+    // เมธอดนี้จะถูกเรียกจาก BasicCombat เพื่อสั่งให้ "อาวุธที่ถืออยู่ปัจจุบัน" ทำการโจมตี
     public void PerformAttack()
     {
         if (CurrentWeapon == null)
@@ -102,31 +129,35 @@ public class PlayerWeaponManager : MonoBehaviour
             return;
         }
 
-        // ตรวจสอบประเภทของอาวุธที่ถืออยู่ปัจจุบัน และเรียกเมธอดโจมตีที่เหมาะสม
+        // CurrentWeapon จะเป็น instance ที่ถูกต้องอยู่แล้ว เราเรียกเมธอดโจมตีได้เลย
+        // แต่ถ้า PerformMeleeAttackEvent และ PerformRangedAttackEvent ไม่ได้อยู่ใน Weapon base class
+        // คุณยังคงต้อง Cast เหมือนเดิม (ตามโค้ดที่คุณเคยให้มา)
         if (_currentWeaponType == WeaponType.Melee)
         {
-            // ทำการ Cast CurrentWeapon ไปเป็น MeleeWeapon เพื่อเรียกเมธอดเฉพาะของดาบ
             MeleeWeapon mw = CurrentWeapon as MeleeWeapon;
-            if (mw != null) // ตรวจสอบอีกครั้งเพื่อความปลอดภัย
+            if (mw != null)
             {
-                mw.PerformMeleeAttack();
+                mw.PerformMeleeAttackEvent();
+            }
+            else
+            {
+                Debug.LogError($"Current weapon is Melee type but not a MeleeWeapon component! {CurrentWeapon.name}", CurrentWeapon);
             }
         }
         else if (_currentWeaponType == WeaponType.Ranged)
         {
-            // ทำการ Cast CurrentWeapon ไปเป็น RangedWeapon เพื่อเรียกเมธอดเฉพาะของปืน
             RangedWeapon rw = CurrentWeapon as RangedWeapon;
-            if (rw != null) // ตรวจสอบอีกครั้งเพื่อความปลอดภัย
+            if (rw != null)
             {
-                rw.PerformRangedAttack();
+                rw.PerformRangedAttackEvent();
+            }
+            else
+            {
+                Debug.LogError($"Current weapon is Ranged type but not a RangedWeapon component! {CurrentWeapon.name}", CurrentWeapon);
             }
         }
     }
 
-    /// <summary>
-    /// Property สำหรับให้ Script อื่นๆ ตรวจสอบว่าผู้เล่นกำลังถืออาวุธประเภทใดอยู่
-    /// </summary>
-    /// <returns>WeaponType ของอาวุธที่ถืออยู่ปัจจุบัน</returns>
     public WeaponType GetCurrentWeaponType()
     {
         return _currentWeaponType;

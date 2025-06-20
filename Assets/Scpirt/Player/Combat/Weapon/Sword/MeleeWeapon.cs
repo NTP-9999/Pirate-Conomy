@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class MeleeWeapon : Weapon
+public class MeleeWeapon : Weapon // ตรวจสอบว่าสืบทอดจาก Weapon
 {
     [Header("Melee Weapon Settings")]
     [Tooltip("Reference to the PlayerAttackCollider component on this weapon's GameObject.")]
     [SerializeField] private PlayerAttackCollider playerAttackCollider;
 
-    void Awake()
+    void Awake() // เปลี่ยนเป็น protected override void Awake() ถ้า Weapon มี Awake() ด้วย
     {
         // ตรวจสอบให้แน่ใจว่าได้ตั้งค่า WeaponType เป็น Melee
         if (Type != WeaponType.Melee)
@@ -25,34 +25,49 @@ public class MeleeWeapon : Weapon
         }
     }
 
-    // อาจจะมีเมธอดสำหรับสั่งโจมตี (เรียกจาก BasicCombat)
-    public void PerformMeleeAttack()
+    // เพิ่ม override Attack() เพื่อให้ PlayerWeaponManager เรียกใช้ได้
+    public override void Attack()
     {
-        // ในเกมของคุณ Hitbox ถูกควบคุมโดย PlayerAttackStateBehaviour
-        // ดังนั้นตรงนี้อาจจะไม่ต้องทำอะไรมาก นอกจาก Debug.Log เพื่อยืนยันว่าเรียกถูก
-        // หรืออาจจะใช้เพื่อ Play Sound effect เฉพาะของดาบ
-        Debug.Log($"{WeaponName} is performing a melee attack (Animation Event triggered this)!");
-        // ถ้าต้องการเปิด/ปิด hitbox จากตรงนี้โดยตรง (แทนที่จะเป็น StateMachineBehaviour)
-        // playerAttackCollider.EnableHitbox();
-        // (แต่ปัจจุบันใช้ PlayerAttackStateBehaviour ซึ่งดีแล้ว)
+        // ในโครงสร้างนี้ PlayerCombatController จะสั่ง Animator โดยตรง
+        // ดังนั้น MeleeWeapon.Attack() ไม่จำเป็นต้องสั่ง Animator อีก
+        // แต่คุณสามารถใช้ตรงนี้เพื่อเล่น Sound effect เฉพาะของดาบ หรืออื่นๆ ได้
+        Debug.Log($"{WeaponName} Attack() called. Ready for animation events.");
     }
 
-    // เราจะ Override Equip และ Unequip เพื่อควบคุม hitbox ของดาบโดยตรง
-    public override void Equip()
+    // เมธอดสำหรับสั่งโจมตี (จะถูกเรียกจาก Animation Event)
+    public void PerformMeleeAttackEvent()
     {
-        base.Equip(); // เรียก Equip ของคลาสแม่ (เปิด GameObject)
-        // เมื่อถือดาบ ให้แน่ใจว่า hitbox ปิดอยู่ก่อนเริ่ม attack state
+        Debug.Log($"[MeleeWeapon] Enable Hitbox: {WeaponName}");
+        if (playerAttackCollider != null)
+        {
+            playerAttackCollider.EnableHitbox();
+        }
+    }
+
+    public void StopMeleeAttackEvent()
+    {
+        Debug.Log($"[MeleeWeapon] Disable Hitbox: {WeaponName}");
         if (playerAttackCollider != null)
         {
             playerAttackCollider.DisableHitbox();
-            playerAttackCollider.ResetDamageDealt(); // รีเซ็ตสถานะดาเมจเสมอเมื่อ equip
+            playerAttackCollider.ResetDamageDealt();
+        }
+    }
+
+
+    public override void Equip()
+    {
+        base.Equip();
+        if (playerAttackCollider != null)
+        {
+            playerAttackCollider.DisableHitbox();
+            playerAttackCollider.ResetDamageDealt();
         }
     }
 
     public override void Unequip()
     {
-        base.Unequip(); // เรียก Unequip ของคลาสแม่ (ปิด GameObject)
-        // เมื่อเก็บดาบ ให้แน่ใจว่า hitbox ปิดอยู่
+        base.Unequip();
         if (playerAttackCollider != null)
         {
             playerAttackCollider.DisableHitbox();

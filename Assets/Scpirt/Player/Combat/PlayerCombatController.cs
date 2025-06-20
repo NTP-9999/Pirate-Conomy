@@ -6,7 +6,7 @@ public class PlayerCombatController : MonoBehaviour
     [Tooltip("Reference to the Animator component on this GameObject.")]
     [SerializeField] private Animator playerAnimator;
     [Tooltip("Reference to the PlayerWeaponManager script on this GameObject.")]
-    [SerializeField] private PlayerWeaponManager playerWeaponManager;
+    [SerializeField] private PlayerWeaponManager playerWeaponManager; // ต้องมี PlayerWeaponManager ใน Hierarchy
     [Tooltip("Reference to the BasicCombat script on this GameObject.")]
     [SerializeField] private BasicCombat basicCombat; // เพื่อใช้ Cooldown และ Input
 
@@ -18,48 +18,36 @@ public class PlayerCombatController : MonoBehaviour
 
     // Events ที่ Animation จะเรียก (เราจะกำหนดใน Animation Clip)
     // การใช้ Event แบบนี้จะแม่นยำกว่าการใช้ StateMachineBehaviour มาก
+
+    // **เมธอดสำหรับ Melee Weapon Events (จาก Animation Event)**
     public void EnableMeleeHitboxEvent()
     {
-        if (playerWeaponManager.CurrentWeapon != null && playerWeaponManager.GetCurrentWeaponType() == WeaponType.Melee)
+        Debug.Log(">> Animation Event: EnableMeleeHitboxEvent Called!");
+        if (playerWeaponManager.CurrentWeapon is MeleeWeapon melee)
         {
-            MeleeWeapon meleeWeapon = playerWeaponManager.CurrentWeapon as MeleeWeapon;
-            if (meleeWeapon != null)
-            {
-                PlayerAttackCollider attackCollider = meleeWeapon.GetComponent<PlayerAttackCollider>();
-                if (attackCollider != null)
-                {
-                    attackCollider.EnableHitbox();
-                    Debug.Log("Animation Event: Melee Hitbox Enabled!");
-                }
-            }
+            melee.PerformMeleeAttackEvent();
         }
     }
 
     public void DisableMeleeHitboxEvent()
     {
-        if (playerWeaponManager.CurrentWeapon != null && playerWeaponManager.GetCurrentWeaponType() == WeaponType.Melee)
+        Debug.Log(">> Animation Event: DisableMeleeHitboxEvent Called!");
+        if (playerWeaponManager.CurrentWeapon is MeleeWeapon melee)
         {
-            MeleeWeapon meleeWeapon = playerWeaponManager.CurrentWeapon as MeleeWeapon;
-            if (meleeWeapon != null)
-            {
-                PlayerAttackCollider attackCollider = meleeWeapon.GetComponent<PlayerAttackCollider>();
-                if (attackCollider != null)
-                {
-                    attackCollider.DisableHitbox();
-                    Debug.Log("Animation Event: Melee Hitbox Disabled!");
-                }
-            }
+            melee.StopMeleeAttackEvent();
         }
     }
 
-    public void PerformRangedShotEvent()
+
+    // **เมธอดสำหรับ Ranged Weapon Events (จาก Animation Event)**
+    public void PerformRangedShotEvent() // นี่คือเมธอดที่ Animation Event จะเรียก
     {
         if (playerWeaponManager.CurrentWeapon != null && playerWeaponManager.GetCurrentWeaponType() == WeaponType.Ranged)
         {
             RangedWeapon rangedWeapon = playerWeaponManager.CurrentWeapon as RangedWeapon;
             if (rangedWeapon != null)
             {
-                rangedWeapon.PerformRangedAttack(); // เรียกเมธอดการยิงของปืน
+                rangedWeapon.PerformRangedAttackEvent(); // **แก้ไขตรงนี้: เรียก PerformRangedAttackEvent**
                 Debug.Log("Animation Event: Ranged Shot Fired!");
             }
         }
@@ -83,22 +71,30 @@ public class PlayerCombatController : MonoBehaviour
     void Update()
     {
         // Logic การโจมตี: ใช้ BasicCombat เพื่อจัดการ Input และ Cooldown
-        if (Input.GetMouseButtonDown(1) && basicCombat.CanAttack) // BasicCombat จะจัดการ CanAttack()
+        // **เราควรใช้ GetMouseButtonDown(0) สำหรับการโจมตีหลัก (คลิกซ้าย) ตามที่คุณต้องการ**
+        if (Input.GetMouseButtonDown(0) && basicCombat.CanAttack) // คลิกซ้าย และไม่ติด Cooldown
         {
             // Trigger Cooldown ใน BasicCombat
             basicCombat.TriggerAttackCooldown();
 
             // สั่งแอนิเมชันตามอาวุธที่ถืออยู่
-            WeaponType currentWeapon = playerWeaponManager.GetCurrentWeaponType();
-            if (currentWeapon == WeaponType.Melee)
+            WeaponType currentWeaponType = playerWeaponManager.GetCurrentWeaponType(); // เปลี่ยนชื่อตัวแปรเพื่อไม่ให้ซ้ำกับ currentWeapon
+
+            // ตรงนี้คือจุดที่ PlayerCombatController นี้มีหน้าที่สั่ง Animator โดยตรง
+            // และให้ BasicCombat ทำหน้าที่จัดการ Cooldown เท่านั้น
+            if (currentWeaponType == WeaponType.Melee)
             {
                 playerAnimator.SetTrigger("AttackMelee");
                 Debug.Log("Player triggered Melee Attack Animation.");
             }
-            else if (currentWeapon == WeaponType.Ranged)
+            else if (currentWeaponType == WeaponType.Ranged)
             {
                 playerAnimator.SetTrigger("AttackRanged");
                 Debug.Log("Player triggered Ranged Attack Animation.");
+            }
+            else
+            {
+                Debug.LogWarning("PlayerCombatController: No known weapon type equipped for attack.");
             }
         }
     }

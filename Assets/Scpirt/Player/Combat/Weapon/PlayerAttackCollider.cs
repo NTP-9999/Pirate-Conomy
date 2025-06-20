@@ -40,8 +40,8 @@ public class PlayerAttackCollider : MonoBehaviour
         if (playerWeaponCollider != null)
         {
             playerWeaponCollider.enabled = true;
-            hasDealtDamageThisAttackInstance = false; // รีเซ็ตเมื่อ hitbox ถูกเปิด
-            // Debug.Log(gameObject.name + " Player Hitbox Enabled.");
+            hasDealtDamageThisAttackInstance = false;
+            Debug.Log($"[Hitbox] {gameObject.name} Enabled");
         }
     }
 
@@ -50,9 +50,10 @@ public class PlayerAttackCollider : MonoBehaviour
         if (playerWeaponCollider != null)
         {
             playerWeaponCollider.enabled = false;
-            // Debug.Log(gameObject.name + " Player Hitbox Disabled.");
+            Debug.Log($"[Hitbox] {gameObject.name} Disabled");
         }
     }
+
     public void ResetDamageDealt()
     {
         hasDealtDamageThisAttackInstance = false;
@@ -63,16 +64,32 @@ public class PlayerAttackCollider : MonoBehaviour
     {
         if (playerWeaponCollider.enabled && !hasDealtDamageThisAttackInstance)
         {
+            // 1. ตรวจสอบ Boss (ใช้ BossStats)
             if (other.CompareTag("Boss"))
             {
                 BossStats bossStats = other.GetComponent<BossStats>();
-                if (bossStats != null)
+                if (bossStats != null && !bossStats.IsDead)
                 {
                     bossStats.TakeDamage(attackDamage);
-                    hasDealtDamageThisAttackInstance = true; 
-                    Debug.Log("Player dealt " + attackDamage + " damage to boss!");
+                    hasDealtDamageThisAttackInstance = true;
+                    Debug.Log("Player dealt " + attackDamage + " damage to Boss: " + other.name);
+                    return;
+                }
+            }
+
+            // 2. ตรวจสอบ Enemy (ใช้ LivingEntityStats)
+            if (other.CompareTag("Enemy"))
+            {
+                LivingEntityStats enemyStats = other.GetComponent<LivingEntityStats>();
+                if (enemyStats != null && !enemyStats.IsDead)
+                {
+                    enemyStats.TakeDamage(attackDamage);
+                    hasDealtDamageThisAttackInstance = true;
+                    Debug.Log("Player dealt " + attackDamage + " damage to Enemy: " + other.name);
+                    return;
                 }
             }
         }
     }
+
 }

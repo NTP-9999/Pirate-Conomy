@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RangedWeapon : Weapon
+public class RangedWeapon : Weapon // ตรวจสอบว่าสืบทอดจาก Weapon
 {
     [Header("Ranged Weapon Settings")]
     [SerializeField] private float damage = 20f;
@@ -15,44 +15,58 @@ public class RangedWeapon : Weapon
 
     private float nextFireTime = 0f;
 
-    void Awake()
+    void Awake() // เปลี่ยนเป็น protected override void Awake() ถ้า Weapon มี Awake() ด้วย
     {
-        // ตรวจสอบให้แน่ใจว่าได้ตั้งค่า WeaponType เป็น Ranged
         if (Type != WeaponType.Ranged)
         {
             Debug.LogWarning($"RangedWeapon script on {gameObject.name} has WeaponType set to {Type}. It should be WeaponType.Ranged.", this);
         }
 
-        // พยายามหา AudioSource หากยังไม่ได้ลากใส่ใน Inspector
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
-                // ถ้าไม่มี AudioSource ให้เพิ่มเข้าไป
                 audioSource = gameObject.AddComponent<AudioSource>();
                 audioSource.playOnAwake = false;
-                audioSource.spatialBlend = 1f; // ทำให้เป็น 3D sound
+                audioSource.spatialBlend = 1f;
                 audioSource.volume = 0.5f;
             }
         }
 
-        // ตรวจสอบ muzzlePoint
         if (muzzlePoint == null)
         {
-            // ถ้าไม่มี muzzlePoint ให้ใช้ตำแหน่งของ GameObject ตัวเอง
             muzzlePoint = transform;
             Debug.LogWarning($"RangedWeapon: Muzzle Point not assigned on {gameObject.name}. Using weapon's transform as muzzle point.", this);
         }
     }
 
-    // เมธอดสำหรับสั่งยิง
-    public void PerformRangedAttack()
+    // เพิ่ม override Attack() เพื่อให้ BasicCombat เรียกใช้ได้
+    public override void Attack()
     {
-        Fire();
+        // ตรวจสอบ Fire Rate ก่อน
+        if (Time.time < nextFireTime)
+        {
+            Debug.Log($"{WeaponName}: Cannot fire yet. Cooldown remaining.");
+            return; // ยังยิงไม่ได้
+        }
+
+        // ตรงนี้จะสั่งให้ playerAnimator เล่น Animation การยิงปืน
+        if (basicCombat != null && basicCombat.playerAnimator != null)
+        {
+            basicCombat.playerAnimator.SetTrigger("Shoot"); // หรือใช้ SetInteger("WeaponType", (int)WeaponType.Ranged);
+        }
+        else
+        {
+            Debug.LogWarning("RangedWeapon: BasicCombat or playerAnimator not found. Cannot play shoot animation.", this);
+        }
+        
+        nextFireTime = Time.time + fireRate; // ตั้งเวลา Cooldown ใหม่
+        // Fire() จะถูกเรียกผ่าน Animation Event ในเวลาที่เหมาะสม
     }
 
-    void Fire()
+    // เมธอดสำหรับสั่งยิงจริง (จะถูกเรียกจาก Animation Event)
+    public void PerformRangedAttackEvent() // เปลี่ยนชื่อเป็น PerformRangedAttackEvent
     {
         Debug.Log($"{WeaponName} is firing (Animation Event triggered this)!");
 
@@ -66,14 +80,21 @@ public class RangedWeapon : Weapon
         if (muzzleFlashPrefab != null && muzzlePoint != null)
         {
             GameObject muzzleFlash = Instantiate(muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
-            Destroy(muzzleFlash, 0.5f); // ทำลาย effect หลังจาก 0.5 วินาที
+            Destroy(muzzleFlash, 0.5f);
         }
 
         // 3. ยิง Raycast เพื่อตรวจจับการชน
-        Transform cameraTransform = Camera.main.transform; // สมมติว่ากล้องผู้เล่นคือ Camera.main
+        // ควรใช้ Transform ของ Player Camera เพื่อกำหนดทิศทางของ Raycast
+        Transform playerCamera = Camera.main.transform; // สมมติว่ากล้องผู้เล่นคือ Camera.main
+        if (playerCamera == null)
+        {
+            Debug.LogError("RangedWeapon: Main Camera not found. Cannot perform raycast.", this);
+            return;
+        }
 
         RaycastHit hit;
-        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, Mathf.Infinity, hitMask))
+        // ยิง Raycast จากตำแหน่งกล้อง ไปในทิศทางที่กล้องมอง
+        if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, Mathf.Infinity, hitMask))
         {
             Debug.Log($"Raycast hit: {hit.collider.name}");
 
@@ -87,7 +108,7 @@ public class RangedWeapon : Weapon
                     Debug.Log($"{WeaponName} hit Boss for {damage} damage. Remaining health: {bossStats.currentHealth}");
                 }
             }
-            else if (hit.collider.CompareTag("Enemy")) // มอนสเตอร์เล็ก
+            else if (hit.collider.CompareTag("Monster"))
             {
                 LivingEntityStats enemyStats = hit.collider.GetComponent<LivingEntityStats>();
                 if (enemyStats != null && !enemyStats.IsDead)
@@ -102,15 +123,14 @@ public class RangedWeapon : Weapon
             Debug.Log("Raycast hit nothing.");
         }
     }
-    
-    // Override Equip และ Unequip เหมือน MeleeWeapon
+
     public override void Equip()
     {
-        base.Equip(); // เรียก Equip ของคลาสแม่ (เปิด GameObject)
+        base.Equip();
     }
 
     public override void Unequip()
     {
-        base.Unequip(); // เรียก Unequip ของคลาสแม่ (ปิด GameObject)
+        base.Unequip();
     }
 }

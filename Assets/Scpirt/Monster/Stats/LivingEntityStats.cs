@@ -43,7 +43,6 @@ public class LivingEntityStats : MonoBehaviour
         if (IsDead) return; // ถ้าตายแล้ว ไม่ต้องทำซ้ำ
         IsDead = true; // ตั้งสถานะว่าตายแล้ว
         Debug.Log($"{gameObject.name} has been defeated!");
-        // สามารถเพิ่ม Logic การทำลาย GameObject, เล่น Animation ตาย, หรือ Effect อื่นๆ ที่นี่ได้
-        // ตัวอย่าง: Destroy(gameObject, 3f); // ทำลาย GameObject หลังจาก 3 วินาที
+        Destroy(gameObject);
     }
 }
