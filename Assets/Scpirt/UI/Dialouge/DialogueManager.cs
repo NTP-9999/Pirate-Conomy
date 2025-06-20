@@ -37,6 +37,26 @@ public class DialogueManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         CharacterMovement.Instance.SetCanMove(false); // ต้องมี script คุม movement
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        HideAllChildrenExceptCamera(player);
+    }
+    void HideAllChildrenExceptCamera(GameObject player)
+    {
+        foreach (Transform child in player.transform)
+        {
+            if (child.GetComponentInChildren<Camera>() != null)
+                continue;
+
+            child.gameObject.SetActive(false);
+        }
+    }
+
+    void ShowAllChildren(GameObject player)
+    {
+        foreach (Transform child in player.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
     }
 
     void ShowLine()
@@ -77,6 +97,8 @@ public class DialogueManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CharacterMovement.Instance.SetCanMove(true);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        ShowAllChildren(player);
     }
 
     private void Update()
