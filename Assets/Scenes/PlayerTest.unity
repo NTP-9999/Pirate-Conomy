@@ -373,6 +373,7 @@ MonoBehaviour:
   runMultiplier: 1.5
   gravity: 20
   canMove: 1
+  isYLocked: 0
   rollSpeed: 5.4
   rollDuration: 0.5
   rollStaminaCost: 20
@@ -723,8 +724,8 @@ Transform:
   m_Children:
   - {fileID: 1009698568}
   - {fileID: 1436607824}
+  - {fileID: 1523951125}
   - {fileID: 573706780}
-  - {fileID: 1550680528}
   - {fileID: 534693668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1621,6 +1622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 025e89108d113924cab3f643d928cae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialQuestGiverTarget: {fileID: 573706780}
 --- !u!1 &538547924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1655,7 +1657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -281.6, y: 0}
+  m_AnchoredPosition: {x: -281.6, y: 8}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &538547926
@@ -1743,7 +1745,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -541.36523, w: 0}
+  m_margin: {x: 0, y: 0, z: -564.2349, w: -30.247328}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1790,7 +1792,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1523951125}
+  - {fileID: 1550680528}
   m_Father: {fileID: 258877937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &573706781
@@ -1806,13 +1808,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueLines:
-  - Hello Nya!!!
+  - Hello!!!
+  - I'm Your Partner Merchant
   - This is Your Island Name "Necronexus"
-  - To Get Money You Can Harvest Resource Around This Island
-  questName: Tutorial
-  description: Go Around This Island
-  target: {fileID: 1550680528}
+  - You Can Sell Every Resource To Me
+  - So You Can Gathering Resource From Island Around The world
+  - Then Sell Them To Me I Will Give You A Money Which Call "Nova"
+  quest2Name: Tutorial
+  quest2Description: Go Get Resource Around The Island
+  quest2Target: {fileID: 1550680528}
   pressEUI: {fileID: 2096821378}
+  playerMovement: {fileID: 123160013}
+  playerCameraController: {fileID: 1893540268}
+  cameraElevateOffset: 83.7
+  cameraElevateSpeed: 11.48
 --- !u!136 &573706782
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2964,11 +2973,11 @@ Transform:
   m_GameObject: {fileID: 1523951124}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.015, y: 1.39, z: -0.027}
+  m_LocalPosition: {x: 347.28497, y: -9.74, z: 166.813}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 573706780}
+  m_Father: {fileID: 258877937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1550680527
 GameObject:
@@ -2995,11 +3004,11 @@ Transform:
   m_GameObject: {fileID: 1550680527}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 349, y: -19.7, z: 880}
+  m_LocalPosition: {x: 3.230011, y: -0.59000015, z: 32.910004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 258877937}
+  m_Father: {fileID: 573706780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1759931509
 PrefabInstance:
@@ -3221,6 +3230,7 @@ MonoBehaviour:
   maxLookAngle: 60
   minLookAngle: -80
   playerBody: {fileID: 123160018}
+  elevationSpeed: 1
 --- !u!114 &1893540269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3341,7 +3351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1924731086
 RectTransform:
   m_ObjectHideFlags: 0
