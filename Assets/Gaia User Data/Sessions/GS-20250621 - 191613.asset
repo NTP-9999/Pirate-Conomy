@@ -183,6 +183,39 @@ MonoBehaviour:
     sessionPlaybackState: 1
     m_terrainsFoldedOut: 0
     m_serializedExternalAction: 
+  - m_description: 'Creating World: 1 x 1 tiles, tile size: 1024'
+    m_operationType: 0
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250621 - 193402
+    m_operationDateTime: 6/21/2025 7:34:03 PM
+    scriptableObjectAssetGUID: e7515a6a207d78b4a91d3c40754c8147
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: RaiseHeight - 2k Mountain 1
+    m_operationType: 4
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250621 - 193402
+    m_operationDateTime: 6/21/2025 7:35:13 PM
+    scriptableObjectAssetGUID: 1012900edd1357c489af3964f6d399e3
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
+  - m_description: Spawning - Alpine Meadow-Textures(Clone)
+    m_operationType: 7
+    m_isActive: 1
+    m_affectedTerrainNames:
+    - Terrain_0_0-20250621 - 193402
+    m_operationDateTime: 6/21/2025 7:35:14 PM
+    scriptableObjectAssetGUID: 66c34507e18a6404eb3548d94dfeb0c8
+    m_isFoldedOut: 0
+    sessionPlaybackState: 1
+    m_terrainsFoldedOut: 0
+    m_serializedExternalAction: 
   m_terrainMinMaxCache:
   - guid: c1b7756b462edc843b573e10e441407d
     isWorldmap: 0
@@ -191,74 +224,19 @@ MonoBehaviour:
     max: 0
   - guid: 0ec4b762e7aa3ae4997fbd69621fee92
     isWorldmap: 0
+    recalculate: 1
+    min: 0
+    max: 41.93814
+  - guid: 4a61b80c4e02a2840afb9c1083d8107e
+    isWorldmap: 0
     recalculate: 0
     min: 0
     max: 41.93814
   m_bakedMaskCacheEntries:
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_12
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_12
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_12
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerTree_3584_5
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_3584_5
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_3584_5
-    texture: {fileID: 0}
   - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2.5
     assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
       - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2.5
     fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
       - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2.5
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_2560_-0.5
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_2560_-0.5
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_2560_-0.5
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_512_2
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_512_2
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_512_2
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerTree_3584_-0.2
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_3584_-0.2
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_3584_-0.2
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_1.5
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_1.5
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_1.5
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_0.5
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_0.5
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerGameObject_3584_0.5
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerTree_1024_0
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_1024_0
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_1024_0
-    texture: {fileID: 0}
-  - fileName: Terrain_0_0-20250621 - 192411_LayerTree_2048_0
-    assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_2048_0
-    fullPath: C:/Users/OS/Documents/GitHub/Pirate-Conomy/Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
-      - 192411/Terrain_0_0-20250621 - 192411_LayerTree_2048_0
     texture: {fileID: 0}
   m_worldBiomeMaskSettings: {fileID: 0}
