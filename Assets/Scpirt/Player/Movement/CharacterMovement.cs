@@ -15,6 +15,7 @@ public class CharacterMovement : MonoBehaviour
     public float walkSpeed = 6f;
     public float runMultiplier = 1.5f;
     public float gravity = 20f;
+    public float jumpHeight = 2f; // <<< เพิ่ม: ความสูงในการกระโดด
 
     [Header("General Movement Control")]
     public bool canMove = true; // ควบคุมการเคลื่อนที่ XZ (เดิน/วิ่ง)
@@ -70,6 +71,13 @@ public class CharacterMovement : MonoBehaviour
             controller.Move(moveDirection * Time.deltaTime);
             return;
         }
+        
+        // ถ้ากำลังกลิ้งอยู่ ให้หยุดการทำงานที่เหลือเพื่อไม่ให้เคลื่อนที่หรือกระโดด
+        if (isRolling)
+        {
+            controller.Move(moveDirection * Time.deltaTime); // ยังคงให้กลิ้งต่อไป
+            return;
+        }
 
         // ดึง Input ดิบสำหรับ Animator ก่อน
         float hRaw = Input.GetAxisRaw("Horizontal");
@@ -111,12 +119,20 @@ public class CharacterMovement : MonoBehaviour
         {
             moveDirection.y = -0.5f; // ค่าเล็กน้อยเพื่อให้ CharacterController ติดพื้น
             // อัปเดต animator parameter "IsGrounded" เมื่ออยู่บนพื้น
-            animator.SetBool("IsGrounded", true); // <<< แก้ไข: ตั้งเป็น true เมื่ออยู่บนพื้น
+            animator.SetBool("IsGrounded", true);
+
+            // *** เพิ่ม: การกระโดด ***
+            if (Input.GetButtonDown("Jump") && canMove) // "Jump" คือ Spacebar โดย default
+            {
+                moveDirection.y = Mathf.Sqrt(jumpHeight * 2f * gravity);
+                animator.SetTrigger("JumpTrigger"); // เรียก Animator Trigger
+                animator.SetBool("IsGrounded", false); // ตั้งเป็น false ทันทีเมื่อเริ่มกระโดด
+            }
         }
         else
         {
             moveDirection.y -= gravity * Time.deltaTime;
-            animator.SetBool("IsGrounded", false); // <<< แก้ไข: ตั้งเป็น false เมื่อไม่อยู่บนพื้น
+            animator.SetBool("IsGrounded", false);
         }
 
         Vector3 desiredMove = transform.forward * input.z + transform.right * input.x;
@@ -129,7 +145,6 @@ public class CharacterMovement : MonoBehaviour
         animator.SetFloat("InputX", input.x);
         animator.SetFloat("InputZ", input.z);
         animator.SetFloat("Speed", isRunning ? 2f : isMoving ? 1f : 0f);
-        // animator.SetBool("IsGrounded", isGrounded); // ย้ายไปอยู่ใน block isGrounded/else
     }
 
     void StopMovementAnimation()
@@ -141,7 +156,8 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleDodgeRollInput(Vector3 currentInputMovement)
     {
-        if (Input.GetKeyDown(KeyCode.Q) && Time.time >= nextRollTime && !isRolling  && !stats.isDead && canMove) // เพิ่ม && canMove
+        // เพิ่มเงื่อนไข !isYLocked เพื่อไม่ให้กลิ้งเมื่อ Y ถูกล็อค
+        if (Input.GetKeyDown(KeyCode.Q) && Time.time >= nextRollTime && !isRolling && !stats.isDead && canMove && !isYLocked)
         {
             if (stats.currentStamina >= rollStaminaCost)
             {
@@ -160,6 +176,10 @@ public class CharacterMovement : MonoBehaviour
     {
         isRolling = true;
         animator.SetTrigger("Roll");
+        canMove = false; // ป้องกันการเคลื่อนที่ปกติระหว่าง Roll
+
+        // ตั้งค่า moveDirection.y ให้เป็น 0 เพื่อไม่ให้ได้รับผลจากแรงโน้มถ่วงขณะกลิ้ง
+        moveDirection.y = 0; 
 
         if (rollInput.magnitude > 0.1f)
         {
@@ -174,7 +194,19 @@ public class CharacterMovement : MonoBehaviour
             moveDirection.z = transform.forward.z * rollSpeed;
             Debug.Log("Rolling forward.");
         }
-        moveDirection.y = 0; // ในระหว่าง Roll ไม่ควรได้รับผลจากแรงโน้มถ่วงหรือกระโดด
+        // เรียกใช้ Coroutine เพื่อจบสถานะการกลิ้งหลังจากระยะเวลาที่กำหนด
+        StartCoroutine(StopDodgeRollAfterDuration());
+    }
+
+    System.Collections.IEnumerator StopDodgeRollAfterDuration()
+    {
+        yield return new WaitForSeconds(rollDuration);
+        isRolling = false;
+        canMove = true; // เปิดให้เคลื่อนที่ปกติได้
+        // รีเซ็ต moveDirection ในแกน XZ เพื่อป้องกันการเคลื่อนที่ต่อเนื่องจากการกลิ้ง
+        moveDirection.x = 0;
+        moveDirection.z = 0;
+        Debug.Log("Dodge roll finished.");
     }
 
     public void ResetMovementDirection()
@@ -185,9 +217,6 @@ public class CharacterMovement : MonoBehaviour
 
     public void ForceStopCharacterController()
     {
-        // เมื่อ canMove เป็น false เราจะหยุดการเคลื่อนที่ XZ ผ่านการ return ใน Update
-        // moveDirection.x และ moveDirection.z จะไม่ถูกอัปเดตถ้า !canMove
-        // แต่เพื่อความมั่นใจว่าความเร็วจะถูกเซ็ตเป็น 0 ทันที
         moveDirection.x = 0;
         moveDirection.z = 0;
         Debug.Log("CharacterController forced to stop horizontal movement.");
@@ -198,35 +227,27 @@ public class CharacterMovement : MonoBehaviour
         canMove = state;
         if (!state)
         {
-            // เมื่อไม่สามารถเคลื่อนที่ได้ (canMove = false) เรายังคงต้องให้แรงโน้มถ่วงทำงาน
-            // ยกเว้นตอนที่ isYLocked เป็น true
-            ForceStopCharacterController(); // หยุดการเคลื่อนที่ XZ
+            ForceStopCharacterController();
         }
     }
 
-    // <<< เพิ่ม: เมธอดสำหรับล็อคและปลดล็อค Y-axis
     public void LockYPosition()
     {
         isYLocked = true;
-        lockedYPosition = transform.position.y; // บันทึกตำแหน่ง Y ปัจจุบัน
-        // เมื่อ Y ถูกล็อค ไม่ว่าผู้เล่นจะอยู่บนพื้นหรือไม่ จะถูกตรึงที่ lockedYPosition
+        lockedYPosition = transform.position.y;
         Debug.Log($"Player Y position Locked at: {lockedYPosition}");
     }
 
     public void UnlockYPosition()
     {
         isYLocked = false;
-        // เมื่อปลดล็อค Y, ให้แรงโน้มถ่วงกลับมาทำงาน
-        // ตรวจสอบว่าอยู่บนพื้นหรือไม่เพื่อกำหนด verticalVelocity เริ่มต้น
         if (controller.isGrounded)
         {
             moveDirection.y = -0.5f;
         }
         else
         {
-            // ถ้าอยู่ในอากาศ ให้เริ่มคำนวณแรงโน้มถ่วงต่อ
-            // (หรือจะ set เป็น 0 แล้วให้แรงโน้มถ่วงดึงลงมาก็ได้)
-            moveDirection.y = 0f; // หรือค่าที่เหมาะสม
+            moveDirection.y = 0f;
         }
         Debug.Log("Player Y position Unlocked!");
     }
