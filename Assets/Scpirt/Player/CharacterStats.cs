@@ -353,7 +353,7 @@ public class CharacterStats : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
-        Debug.Log("Character has died!");
+        Debug.Log("Player has died!");
 
         if (invincibilityCoroutine != null)
         {
@@ -399,6 +399,7 @@ public class CharacterStats : MonoBehaviour
         }
 
         StopAllCoroutines();
+        Destroy(gameObject , 3f);
     }
 
     void OnDeathAnimationEnd()
