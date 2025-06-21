@@ -2,25 +2,33 @@ using UnityEngine;
 
 public class ShipEnterExit : MonoBehaviour
 {
-    public Transform helmPoint;  // จุดพวงมาลัย
-    public GameObject helmUI;    // UI ปุ่ม "กด E เพื่อควบคุมเรือ"
+    public Transform helmPoint;
+    public GameObject helmUI;
     public float interactRange = 3f;
 
     private Transform player;
+    private Camera playerCamera;
     private bool nearHelm = false;
     private bool isControlling = false;
     public bool IsControlling => isControlling;
-    GameObject shipCamObj = GameObject.Find("ShipCamera");
+
+    private GameObject shipCamObj;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        // ✅ ค้นหาและเก็บกล้องของผู้เล่น
+        playerCamera = player.GetComponentInChildren<Camera>(true); // true = รวมที่ถูกปิดอยู่ด้วย
+        shipCamObj = GameObject.Find("ShipCamera");
+
         helmUI.SetActive(false);
     }
 
     void Update()
     {
         float distToHelm = Vector3.Distance(player.position, helmPoint.position);
+
         if (distToHelm <= interactRange && !isControlling)
         {
             helmUI.SetActive(true);
@@ -31,42 +39,50 @@ public class ShipEnterExit : MonoBehaviour
                 StartControlShip();
             }
         }
-        else
+        else if (!isControlling)
         {
             helmUI.SetActive(false);
             nearHelm = false;
+        }
+
+        if (isControlling && Input.GetKeyDown(KeyCode.V))
+        {
+            ExitControlShip();
         }
     }
 
     void StartControlShip()
     {
-        isControlling = true;
-        player.gameObject.SetActive(false); // ปิดตัวผู้เล่น
+        if (playerCamera != null)
+            playerCamera.gameObject.SetActive(false); // ❌ ปิดกล้องผู้เล่น
 
-        // ปิด Main Camera
-        if (Camera.main != null)
-            Camera.main.gameObject.SetActive(false);
-
-        // เปิด Ship Camera
         if (shipCamObj != null)
         {
-            shipCamObj.SetActive(true);
+            shipCamObj.SetActive(true); // ✅ เปิดกล้องเรือ
         }
         else
         {
             Debug.LogWarning("ShipCamera not found in scene!");
         }
 
-        // เปิดระบบควบคุมเรือ
+        isControlling = true;
+        player.gameObject.SetActive(false);
         GetComponent<ShipController>().enabled = true;
     }
 
     public void ExitControlShip()
     {
         isControlling = false;
+
         player.gameObject.SetActive(true);
-        shipCamObj.gameObject.SetActive(false);
         GetComponent<ShipController>().enabled = false;
+
+        if (shipCamObj != null)
+            shipCamObj.SetActive(false); // ❌ ปิดกล้องเรือ
+
+        if (playerCamera != null)
+            playerCamera.gameObject.SetActive(true); // ✅ เปิดกล้องผู้เล่นกลับ
+
         Debug.Log("Player exited ship control");
     }
 }
