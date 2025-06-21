@@ -10,6 +10,7 @@ public class ShipEnterExit : MonoBehaviour
     private bool nearHelm = false;
     private bool isControlling = false;
     public bool IsControlling => isControlling;
+    GameObject shipCamObj = GameObject.Find("ShipCamera");
 
     void Start()
     {
@@ -41,10 +42,22 @@ public class ShipEnterExit : MonoBehaviour
     {
         isControlling = true;
         player.gameObject.SetActive(false); // ปิดตัวผู้เล่น
-        Camera.main.transform.SetParent(transform); // ย้ายกล้องตามเรือ
-        Camera.main.transform.localPosition = new Vector3(0, 5, -10);
-        Camera.main.transform.localEulerAngles = new Vector3(10, 0, 0);
 
+        // ปิด Main Camera
+        if (Camera.main != null)
+            Camera.main.gameObject.SetActive(false);
+
+        // เปิด Ship Camera
+        if (shipCamObj != null)
+        {
+            shipCamObj.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("ShipCamera not found in scene!");
+        }
+
+        // เปิดระบบควบคุมเรือ
         GetComponent<ShipController>().enabled = true;
     }
 
@@ -52,6 +65,7 @@ public class ShipEnterExit : MonoBehaviour
     {
         isControlling = false;
         player.gameObject.SetActive(true);
+        shipCamObj.gameObject.SetActive(false);
         GetComponent<ShipController>().enabled = false;
         Debug.Log("Player exited ship control");
     }

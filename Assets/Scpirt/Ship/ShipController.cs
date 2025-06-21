@@ -12,7 +12,7 @@ public class ShipController : MonoBehaviour
     private Rigidbody rb;
     private float currentForwardInput = 0f;
     private float currentTurnInput = 0f;
-    private ShipEnterExit enterExit;
+    private ShipEnterExit enterExit; // ยังไม่ได้ใช้งานในเวอร์ชันทดสอบ
 
     void Start()
     {
@@ -27,7 +27,9 @@ public class ShipController : MonoBehaviour
 
     void HandleMovement()
     {
+        // ลบเงื่อนไขการควบคุมชั่วคราวเพื่อให้เรือทดสอบเคลื่อนได้
         if (enterExit == null || !enterExit.IsControlling) return;
+
         currentForwardInput = Input.GetAxis("Vertical");   // W/S
         currentTurnInput = Input.GetAxis("Horizontal");    // A/D
 
@@ -49,10 +51,8 @@ public class ShipController : MonoBehaviour
 
     void ApplyDrag()
     {
-        // ทำให้เรือช้าลงเมื่อไม่ได้เร่ง
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         Vector3 dragForce = -horizontalVelocity * waterDrag;
         rb.AddForce(dragForce, ForceMode.Acceleration);
     }
 }
-
