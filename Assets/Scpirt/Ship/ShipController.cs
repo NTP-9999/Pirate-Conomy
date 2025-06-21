@@ -16,6 +16,7 @@ public class ShipController : MonoBehaviour
 
     void Start()
     {
+        enterExit = GetComponent<ShipEnterExit>();
         rb = GetComponent<Rigidbody>();
     }
 
