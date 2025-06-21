@@ -23,7 +23,7 @@ MonoBehaviour:
   m_terrainWidth: 1024
   m_terrainDepth: 1024
   m_terrainHeight: 1024
-  m_seaLevel: 25
+  m_seaLevel: 25.000029
   m_spawnDensity: 0.8
   m_isLocked: 0
   m_previewImageBytes: 
@@ -229,9 +229,9 @@ MonoBehaviour:
     max: 41.93814
   - guid: 4a61b80c4e02a2840afb9c1083d8107e
     isWorldmap: 0
-    recalculate: 0
+    recalculate: 1
     min: 0
-    max: 41.93814
+    max: 54.032074
   m_bakedMaskCacheEntries:
   - fileName: Terrain_0_0-20250621 - 192411_LayerGameObject_3584_2.5
     assetPath: Assets/Procedural Worlds/Gaia/TerrainCollisionData/Terrain_0_0-20250621
