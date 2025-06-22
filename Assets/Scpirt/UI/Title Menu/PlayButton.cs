@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
-using System.Collections;
 
 public class PlayButton : MonoBehaviour
 {
+    public static string nextScene = "pirate"; // ชื่อซีนที่ต้องการไปหลัง loading
+
     public void Playgame()
     {
-        SceneManager.LoadSceneAsync("pirate");
+        SceneManager.LoadScene("Loading_screen");
     }
 }

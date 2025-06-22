@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 5f017701681485448b72b4dc6927ca24
+  - enabled: 1
+    path: Assets/Scenes/Loading_screen.unity
+    guid: c891e6ed32705d9409562912e7c8c093
+  - enabled: 1
+    path: Assets/Scenes/pirate.unity
+    guid: 6b6dd2ddceeea0c4487f5a4f63faee0c
+  - enabled: 1
     path: "Assets/Scenes/Leviathan\u2019s Grave.unity"
     guid: 3bade5a8f27f7de4d8d392d65bda6fc2
   - enabled: 1
@@ -13,13 +22,7 @@ EditorBuildSettings:
     guid: 22d1b4649fb043e4282b4ae8ceb279bb
   - enabled: 1
     path: Assets/Scenes/Verdant Timberhold.unity
-    guid: 9ca62b1839ce25541a4f3c8b11e66a9f
-  - enabled: 1
-    path: Assets/Scenes/pirate.unity
-    guid: 6b6dd2ddceeea0c4487f5a4f63faee0c
-  - enabled: 1
-    path: Assets/Scenes/Main Menu.unity
-    guid: 5f017701681485448b72b4dc6927ca24
+    guid: 567815490d3c37840a9d070cc560f338
   - enabled: 1
     path: Assets/Scenes/PlayerTest.unity
     guid: 99c9720ab356a0642a771bea13969a05
