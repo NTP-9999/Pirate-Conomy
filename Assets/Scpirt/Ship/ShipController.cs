@@ -1,9 +1,6 @@
 using UnityEngine;
-
-[RequireComponent(typeof(Rigidbody))]
 public class ShipController : MonoBehaviour
 {
-    [Header("Movement Settings")]
     public float acceleration = 5f;
     public float maxSpeed = 10f;
     public float turnSpeed = 30f;
@@ -12,41 +9,50 @@ public class ShipController : MonoBehaviour
     private Rigidbody rb;
     private float currentForwardInput = 0f;
     private float currentTurnInput = 0f;
-    private ShipEnterExit enterExit; // ยังไม่ได้ใช้งานในเวอร์ชันทดสอบ
+    private ShipEnterExit enterExit;
+
+    private float yRotation; // ✅ ต้องย้ายมาที่นี่
+    private float fixedYValue;
 
     void Start()
     {
+        Vector3 currentEuler = transform.eulerAngles;
+        yRotation = currentEuler.y; // เก็บ rotation Y ตอนเริ่ม
+        fixedYValue = transform.position.y;
+
         enterExit = GetComponent<ShipEnterExit>();
         rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
     {
+        // 🔒 ล็อค Rotation X/Z แต่รักษา Y
+        transform.rotation = Quaternion.Euler(-4.696f, yRotation, 0f);
+
+        // 🔒 ล็อคตำแหน่ง Y
+        Vector3 position = transform.position;
+        position.y = fixedYValue;
+        transform.position = position;
+
         ApplyDrag();
         HandleMovement();
     }
 
     void HandleMovement()
     {
-        // ลบเงื่อนไขการควบคุมชั่วคราวเพื่อให้เรือทดสอบเคลื่อนได้
         if (enterExit == null || !enterExit.IsControlling) return;
 
-        currentForwardInput = Input.GetAxis("Vertical");   // W/S
-        currentTurnInput = Input.GetAxis("Horizontal");    // A/D
+        currentForwardInput = Input.GetAxis("Vertical");
+        currentTurnInput = Input.GetAxis("Horizontal");
 
-        // เดินหน้า/ถอยหลัง
+        // คำนวณ Rotation Y ใหม่ แล้วอัปเดต yRotation
+        yRotation += currentTurnInput * turnSpeed * Time.fixedDeltaTime;
+
+        // เคลื่อนที่
         Vector3 force = transform.forward * currentForwardInput * acceleration;
         if (rb.linearVelocity.magnitude < maxSpeed)
         {
             rb.AddForce(force, ForceMode.Acceleration);
-        }
-
-        // หมุนเรือ
-        if (Mathf.Abs(currentTurnInput) > 0.1f)
-        {
-            float turn = currentTurnInput * turnSpeed * Time.fixedDeltaTime;
-            Quaternion rotation = Quaternion.Euler(0f, turn, 0f);
-            rb.MoveRotation(rb.rotation * rotation);
         }
     }
 
