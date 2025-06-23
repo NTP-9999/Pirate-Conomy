@@ -67,7 +67,6 @@ public class ShipEnterExit : MonoBehaviour
 
         isControlling = true;
         player.gameObject.SetActive(false);
-        GetComponent<ShipController>().enabled = true;
     }
 
     public void ExitControlShip()

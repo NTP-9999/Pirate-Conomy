@@ -52,7 +52,7 @@ public class ShipController : MonoBehaviour
         Vector3 force = transform.forward * currentForwardInput * acceleration;
         if (rb.linearVelocity.magnitude < maxSpeed)
         {
-            rb.AddForce(force, ForceMode.Acceleration);
+            rb.AddForce(force, ForceMode.Force);
         }
     }
 
@@ -60,6 +60,6 @@ public class ShipController : MonoBehaviour
     {
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         Vector3 dragForce = -horizontalVelocity * waterDrag;
-        rb.AddForce(dragForce, ForceMode.Acceleration);
+        rb.AddForce(dragForce, ForceMode.Force);
     }
 }
