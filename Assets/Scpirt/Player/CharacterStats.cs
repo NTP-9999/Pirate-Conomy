@@ -21,21 +21,6 @@ public class CharacterStats : MonoBehaviour
         }
     }
 
-    [Header("Healing")]
-    public float healAmount = 25f;
-    public int maxHealCharges = 3;
-    [SerializeField] private int _currentHealCharges;
-
-    public int currentHealCharges
-    {
-        get { return _currentHealCharges; }
-        private set
-        {
-            _currentHealCharges = value;
-            if (_currentHealCharges < 0) _currentHealCharges = 0;
-            if (_currentHealCharges > maxHealCharges) _currentHealCharges = maxHealCharges;
-        }
-    }
 
     [Header("Stamina")]
     [SerializeField] private float _currentStamina;
@@ -86,7 +71,6 @@ public class CharacterStats : MonoBehaviour
     [Header("Audio")]
     public AudioSource playerAudioSource;
     public AudioClip damageSFX;
-    public AudioClip healSFX;
 
     public event Action<float> OnPlayerDamaged;
 
@@ -98,7 +82,6 @@ public class CharacterStats : MonoBehaviour
         currentStress = 0f;
         isDead = false;
 
-        currentHealCharges = maxHealCharges; 
         
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -129,34 +112,6 @@ public class CharacterStats : MonoBehaviour
     private void Update()
     {
         if (isDead) return;
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (currentHealCharges > 0 && currentHealth < maxHealth)
-            {
-                Heal(healAmount);
-                currentHealCharges--;
-                Debug.Log($"Healed for {healAmount} health. Current Health: {currentHealth}. Remaining Heal Charges: {currentHealCharges}");
-                
-                if (playerAudioSource != null && healSFX != null)
-                {
-                    playerAudioSource.PlayOneShot(healSFX);
-                }
-                else
-                {
-                    if (playerAudioSource == null) Debug.LogWarning("Heal SFX: playerAudioSource is null.");
-                    if (healSFX == null) Debug.LogWarning("Heal SFX: healSFX AudioClip is null.");
-                }
-            }
-            else if (currentHealCharges <= 0)
-            {
-                Debug.Log("No heal charges left!");
-            }
-            else if (currentHealth >= maxHealth)
-            {
-                Debug.Log("Health is already full, cannot heal!");
-            }
-        }
 
         if (isRunningStaminaDrain && currentStamina > 0)
         {
@@ -221,13 +176,6 @@ public class CharacterStats : MonoBehaviour
             Die();
         }
     }
-
-    public void Heal(float amount)
-    {
-        if (isDead) return;
-        currentHealth += amount;
-    }
-
     public void StartStaminaDrain()
     {
         if (isDead) return;
