@@ -5,6 +5,7 @@ public class ShipEnterExit : MonoBehaviour
     public Transform helmPoint;
     public GameObject helmUI;
     public float interactRange = 3f;
+    public Transform exitPoint;
 
     private Transform player;
     private Camera playerCamera;
@@ -52,7 +53,8 @@ public class ShipEnterExit : MonoBehaviour
     }
 
     void StartControlShip()
-    {
+    { 
+        GetComponent<ShipController>().enabled = true;
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false); // ❌ ปิดกล้องผู้เล่น
 
@@ -73,6 +75,8 @@ public class ShipEnterExit : MonoBehaviour
     {
         isControlling = false;
 
+        player.position = exitPoint.position;
+        player.rotation = exitPoint.rotation;
         player.gameObject.SetActive(true);
         GetComponent<ShipController>().enabled = false;
 
