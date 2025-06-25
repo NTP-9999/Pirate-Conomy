@@ -58,16 +58,6 @@ public class CharacterStats : MonoBehaviour
     private CharacterController characterController;
     private Animator animator;
 
-    [Header("Player Damage Animations")]
-    public float invincibilityDurationAfterHit = 0.5f;
-    private bool _isInvincible = false;
-    public bool isInvincible
-    {
-        get { return _isInvincible; }
-        private set { _isInvincible = value; }
-    }
-    private Coroutine invincibilityCoroutine;
-
     [Header("Audio")]
     public AudioSource playerAudioSource;
     public AudioClip damageSFX;
@@ -137,11 +127,6 @@ public class CharacterStats : MonoBehaviour
     public void TakeDamage(float amount)
     {
         if (isDead) return;
-        if (isInvincible)
-        {
-            Debug.Log("Player was invincible and avoided damage!");
-            return;
-        }
 
         currentHealth -= amount;
         Debug.Log("Player took " + amount + " damage. Current Health: " + currentHealth);
@@ -164,12 +149,6 @@ public class CharacterStats : MonoBehaviour
         }
 
         OnPlayerDamaged?.Invoke(amount);
-
-        if (invincibilityCoroutine != null)
-        {
-            StopCoroutine(invincibilityCoroutine);
-        }
-        invincibilityCoroutine = StartCoroutine(InvincibilityRoutine());
 
         if (currentHealth <= 0)
         {
@@ -217,22 +196,7 @@ public class CharacterStats : MonoBehaviour
         }
         staminaRegenCoroutine = null;
     }
-
-    private IEnumerator InvincibilityRoutine()
-    {
-        isInvincible = true;
-        Debug.Log($"Player is now invincible for {invincibilityDurationAfterHit} seconds.");
-        yield return new WaitForSeconds(invincibilityDurationAfterHit);
-        isInvincible = false;
-        Debug.Log("Player is no longer invincible.");
-    }
-
-    public void SetInvincibility(bool value)
-    {
-        isInvincible = value;
-    }
-
-    private IEnumerator HungerDecreaseRoutine()
+        private IEnumerator HungerDecreaseRoutine()
     {
         float intervalSeconds = hungerDecreaseIntervalMinutes * 60f;
         while (!isDead)
@@ -302,13 +266,6 @@ public class CharacterStats : MonoBehaviour
 
         isDead = true;
         Debug.Log("Player has died!");
-
-        if (invincibilityCoroutine != null)
-        {
-            StopCoroutine(invincibilityCoroutine);
-            invincibilityCoroutine = null;
-        }
-        SetInvincibility(false);
 
         if (audioSource != null && audioSource.clip != null)
         {

@@ -38,14 +38,7 @@ public class PlayerRollStateBehaviour : StateMachineBehaviour
 
         // ตั้งค่าสถานะการกลิ้ง
         playerMovement.isRolling = true;
-        iFramesActive = false; // Reset i-frame state
-        
-        // Only start i-frames immediately if iFrameStartTime is 0
-        if (iFrameStartTime <= 0f)
-        {
-            playerStats.SetInvincibility(true);
-            iFramesActive = true;
-        }
+        iFramesActive = false;
 
         // หยุด CharacterController ทันทีเมื่อเริ่มกลิ้ง
         playerMovement.ForceStopCharacterController();
@@ -75,29 +68,10 @@ public class PlayerRollStateBehaviour : StateMachineBehaviour
         float normalizedTime = stateInfo.normalizedTime;
         
         // Handle I-Frame timing
-        HandleIFrames(normalizedTime);
+       
         
         // Handle roll movement
         HandleRollMovement(normalizedTime);
-    }
-    
-    private void HandleIFrames(float normalizedTime)
-    {
-        // Start i-frames
-        if (!iFramesActive && normalizedTime >= iFrameStartTime)
-        {
-            playerStats.SetInvincibility(true);
-            iFramesActive = true;
-            Debug.Log($"I-Frames activated at {normalizedTime:F2}");
-        }
-        
-        // End i-frames
-        if (iFramesActive && normalizedTime >= iFrameEndTime)
-        {
-            playerStats.SetInvincibility(false);
-            iFramesActive = false;
-            Debug.Log($"I-Frames deactivated at {normalizedTime:F2}");
-        }
     }
     
     private void HandleRollMovement(float normalizedTime)
@@ -124,12 +98,7 @@ public class PlayerRollStateBehaviour : StateMachineBehaviour
         // รีเซ็ตสถานะการกลิ้งและ Iframes
         playerMovement.isRolling = false;
         
-        // Make sure i-frames are turned off
-        if (iFramesActive)
-        {
-            playerStats.SetInvincibility(false);
-            iFramesActive = false;
-        }
+        
         
         // หยุด CharacterController ทันทีเมื่อออกจากกลิ้ง
         playerMovement.ForceStopCharacterController();
