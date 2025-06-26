@@ -6,6 +6,9 @@ public class TreeChopper : MonoBehaviour
     public KeyCode chopKey = KeyCode.E;
     public float chopDistance = 2f;
     public LayerMask treeLayer;
+    [Header("Item Data")]
+    public Sprite woodIcon;
+
 
     [Header("References")]
     public Animator animator;
@@ -37,6 +40,14 @@ public class TreeChopper : MonoBehaviour
             }
         }
     }
+    public void PerformChop(TreeTarget tree)
+    {
+        // เรียก Chop ที่ต้นไม้
+        tree.Chop();
+
+        // เพิ่มเข้า Inventory และแสดง Toast + Notification
+        InventoryManager.Instance.AddItem("Wood", woodIcon, 1);
+    }
     public System.Collections.IEnumerator StartChopFromExternal(TreeTarget tree)
     {
         isChopping = true;
@@ -54,7 +65,7 @@ public class TreeChopper : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // เรียกฟังก์ชันบนต้นไม้
-        tree.Chop();
+        PerformChop(tree);
 
         // ปิดขวานและเปิดการเดิน
         axeObject.SetActive(false);
@@ -80,7 +91,7 @@ public class TreeChopper : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // เรียกฟังก์ชันบนต้นไม้
-        tree.Chop();
+        PerformChop(tree);
 
         // ปิดขวานและเปิดการเดิน
         axeObject.SetActive(false);
