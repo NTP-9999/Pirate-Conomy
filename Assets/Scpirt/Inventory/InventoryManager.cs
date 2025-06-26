@@ -88,10 +88,6 @@ public class InventoryManager : MonoBehaviour
         }
 
         ShowPickupToast(itemName, item.quantity);
-        if (notificationUI != null)
-        {
-            notificationUI.ShowNotification(itemName, amount); // ไม่ใช่ totalAmount นะ!
-        }
     }
     void ShowPickupToast(string itemName, int totalAmount)
     {

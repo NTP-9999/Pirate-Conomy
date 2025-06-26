@@ -9,40 +9,42 @@ public class InventoryNotificationUI : MonoBehaviour
     [Header("UI Settings")]
     public GameObject notificationPrefab;         // Prefab ของ UI ที่ใช้แสดงข้อความ (ต้องมี TMP + CanvasGroup)
     public Transform notificationParent;          // พ่อของ Notification ทั้งหมด (ใช้ VerticalLayoutGroup)
-    public float fadeOutTime = 2f;                // เวลารอก่อนค่อยๆ หายไป
-    public float fadeDuration = 1f;               // ระยะเวลาที่ใช้จางหาย
+    public float fadeOutTime = 1f;                // เวลารอก่อนค่อยๆ หายไป
+    public float fadeDuration = 0.5f;               // ระยะเวลาที่ใช้จางหาย
 
     private Dictionary<string, NotificationEntry> activeNotifications = new Dictionary<string, NotificationEntry>();
 
     public void ShowNotification(string itemName, int amount)
     {
-        if (activeNotifications.ContainsKey(itemName))
-        {
-            // ของซ้ำ: อัปเดตจำนวนและรีเซ็ตเวลา
-            NotificationEntry entry = activeNotifications[itemName];
-            entry.amount += amount;
-            entry.text.text = $"{itemName} x{entry.amount}";
-            entry.ResetTimer();
-        }
-        else
-        {
-            // ของใหม่: สร้าง UI ใหม่
-            GameObject go = Instantiate(notificationPrefab, notificationParent);
-            TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
-            CanvasGroup canvasGroup = go.GetComponent<CanvasGroup>();
+        int totalAmount = amount;
 
-            text.text = $"{itemName} x{amount}";
-            NotificationEntry entry = new NotificationEntry
-            {
-                gameObject = go,
-                text = text,
-                canvasGroup = canvasGroup,
-                amount = amount,
-                coroutine = StartCoroutine(FadeOut(go, canvasGroup, itemName))
-            };
+            if (activeNotifications.ContainsKey(itemName))
+        {
+            NotificationEntry oldEntry = activeNotifications[itemName];
 
-            activeNotifications[itemName] = entry;
+            if (oldEntry.coroutine != null)
+                StopCoroutine(oldEntry.coroutine);
+
+            Destroy(oldEntry.gameObject);
+            activeNotifications.Remove(itemName);
         }
+
+        // ✅ สร้างใหม่ จากจำนวนรวมล่าสุด
+        GameObject go = Instantiate(notificationPrefab, notificationParent);
+        TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
+        CanvasGroup canvasGroup = go.GetComponent<CanvasGroup>();
+
+        text.text = $"{itemName} x{totalAmount}";
+        NotificationEntry newEntry = new NotificationEntry
+        {
+            gameObject = go,
+            text = text,
+            canvasGroup = canvasGroup,
+            amount = totalAmount,
+            coroutine = StartCoroutine(FadeOut(go, canvasGroup, itemName))
+        };
+
+        activeNotifications[itemName] = newEntry;
     }
 
     private IEnumerator FadeOut(GameObject go, CanvasGroup group, string itemName)

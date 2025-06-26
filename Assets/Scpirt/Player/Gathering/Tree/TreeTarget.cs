@@ -38,6 +38,7 @@ public class TreeTarget : MonoBehaviour
 
         if (currentChops >= maxChops)
         {
+            interactUI.SetActive(false);
             Debug.Log("Tree fell!");
             Destroy(gameObject);
         }
