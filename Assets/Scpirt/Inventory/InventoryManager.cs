@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 public class InventoryManager : MonoBehaviour
 {
     [Header("UI References")]
@@ -11,14 +11,17 @@ public class InventoryManager : MonoBehaviour
 
     private bool isInventoryOpen = false; // สถานะปัจจุบันของ Inventory (เปิด/ปิด)
     public static InventoryManager Instance;
+    private InventoryNotificationUI notificationUI;
 
     public List<InventoryItem> items = new List<InventoryItem>();
 
-    public GameObject pickupToastPrefab; // UI Prefab แสดง "Wood x1"
-    public Transform toastParent;
-
     void Awake()
     {
+        notificationUI = FindObjectOfType<InventoryNotificationUI>();
+        if (notificationUI == null)
+        {
+            Debug.LogWarning("InventoryNotificationUI not found in scene.");
+        }
         if (Instance == null)
             Instance = this;
         else
@@ -85,11 +88,14 @@ public class InventoryManager : MonoBehaviour
         }
 
         ShowPickupToast(itemName, item.quantity);
+        if (notificationUI != null)
+        {
+            notificationUI.ShowNotification(itemName, amount); // ไม่ใช่ totalAmount นะ!
+        }
     }
     void ShowPickupToast(string itemName, int totalAmount)
     {
-        GameObject toast = Instantiate(pickupToastPrefab, toastParent);
-        toast.GetComponent<PickupToastUI>().Setup(itemName, totalAmount);
+        notificationUI.ShowNotification(itemName, totalAmount);
     }
 
     /// <summary>
