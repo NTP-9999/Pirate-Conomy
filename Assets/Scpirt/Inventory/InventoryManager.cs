@@ -12,8 +12,22 @@ public class InventoryManager : MonoBehaviour
     private bool isInventoryOpen = false; // สถานะปัจจุบันของ Inventory (เปิด/ปิด)
     public static InventoryManager Instance;
     private InventoryNotificationUI notificationUI;
+    [Header("Slot References")]
+    public InventorySlotUI[] slots; 
 
     public List<InventoryItem> items = new List<InventoryItem>();
+    [System.Serializable]
+    public class ItemData
+    {
+        public string itemName;
+        public Sprite icon;
+    }
+
+    public List<ItemData> itemDatabase;
+    public Sprite GetItemIcon(string itemName)
+    {
+        return itemDatabase.Find(i => i.itemName == itemName)?.icon;
+    }
 
     void Awake()
     {
@@ -86,9 +100,23 @@ public class InventoryManager : MonoBehaviour
             item = new InventoryItem(itemName, icon, amount);
             items.Add(item);
         }
-
+        UpdateSlots();
         ShowPickupToast(itemName, item.quantity);
     }
+    void UpdateSlots()
+    {
+        // ล้างทุกช่องก่อน
+        foreach (var slot in slots)
+            slot.ClearSlot();
+
+        // แสดงไอเทมในช่องต่างๆ
+        for (int i = 0; i < items.Count && i < slots.Length; i++)
+        {
+            InventoryItem item = items[i]; // เพิ่มบรรทัดนี้
+            slots[i].SetItem(item.itemName, item.icon, item.quantity); // แก้ไขบรรทัดนี้
+        }
+    }
+
     void ShowPickupToast(string itemName, int totalAmount)
     {
         notificationUI.ShowNotification(itemName, totalAmount);
