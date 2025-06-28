@@ -28,7 +28,8 @@ public class QuestGiver : MonoBehaviour
     public FirstPersonCamera playerCameraController; 
     
     public float cameraElevateOffset = 1.5f; 
-    public float cameraElevateSpeed = 0.5f; 
+    public float cameraElevateSpeed = 0.5f;
+    public ShopKeeper shopKeeper;
 
     void Start()
     {
@@ -66,34 +67,38 @@ public class QuestGiver : MonoBehaviour
         {
             pressEUI.SetActive(false);
         }
-
-        // *** IMPORTANT: เควส "คุยกับ NPC" จะต้องถูก Start โดย Script อื่นเมื่อเริ่มเกม ***
-        // เช่นใน QuestManager.Awake() หรือ GameStateManager.Start()
-        // โดยใช้ Transform ของ QuestGiver นี้เป็น target
-        // ตัวอย่าง: QuestManager.Instance.StartQuest(new TalkToNPCQuest("คุยกับ NPC", "เดินทางไปหา NPC", this.transform));
-        // เราจะไม่ Start เควส "คุยกับ NPC" ซ้ำตรงนี้
     }
 
     void Update()
     {
-        // ตรวจสอบว่าผู้เล่นอยู่ในระยะ และยังไม่เคยเริ่มเควสถัดไป (ส่งจดหมาย)
-        if (playerInRange && Input.GetKeyDown(KeyCode.E) && !nextQuestStarted)
+        if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            // ล็อคการเคลื่อนที่และยกกล้อง
-            if (playerMovement != null)
+            if (!nextQuestStarted)
             {
-                playerMovement.SetCanMove(false); 
-                playerMovement.LockYPosition();   
-            }
+                // ✏ ยังไม่เคยเริ่มเควสถัดไป → เปิด dialogue
+                if (playerMovement != null)
+                {
+                    playerMovement.SetCanMove(false); 
+                    playerMovement.LockYPosition();   
+                }
 
-            if (playerCameraController != null)
+                if (playerCameraController != null)
+                {
+                    playerCameraController.StartCameraElevation(cameraElevateOffset, cameraElevateSpeed);
+                }
+
+                DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
+                pressEUI.SetActive(false); 
+            }
+            else
             {
-                playerCameraController.StartCameraElevation(cameraElevateOffset, cameraElevateSpeed);
+                // ✅ ถ้าเควสถัดไปเริ่มแล้ว → เปิดร้านค้าแทน
+                if (shopKeeper != null)
+                {
+                    shopKeeper.OpenShop();
+                    pressEUI.SetActive(false); // ซ่อนไว้ตอนเปิดร้าน
+                }
             }
-
-            // เริ่ม Dialogue
-            DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
-            pressEUI.SetActive(false); // ซ่อน UI "กด E"
         }
     }
 
@@ -103,7 +108,7 @@ public class QuestGiver : MonoBehaviour
         {
             playerInRange = true;
             // แสดง UI "กด E" เฉพาะเมื่อเควสถัดไปยังไม่เคยถูกเริ่ม
-            if (!nextQuestStarted)
+            if (pressEUI != null)
             {
                 pressEUI.SetActive(true);
             }
@@ -116,9 +121,6 @@ public class QuestGiver : MonoBehaviour
         {
             playerInRange = false;
             pressEUI.SetActive(false);
-            
-            // ปลดล็อคการเคลื่อนที่และรีเซ็ตกล้องเมื่อผู้เล่นเดินออก
-            // เฉพาะในกรณีที่ Dialogue ยังไม่เคยเริ่มเควสถัดไป
             if (!nextQuestStarted)
             {
                 if (playerMovement != null)
@@ -137,31 +139,26 @@ public class QuestGiver : MonoBehaviour
     void OnAccept()
     {
         Debug.Log("Dialogue Accepted! กำลังเริ่มเควสถัดไป...");
-
-        // *** STEP 1: ไม่ต้องทำอะไรกับเควส "คุยกับ NPC" ตรงนี้ ***
-        // เพราะมันถูกจบไปแล้วด้วย Logic ใน TalkToNPCQuest.UpdateQuest()
-        // เมื่อผู้เล่นเดินเข้าใกล้ QuestGiver ก่อนหน้านี้
-        // และ UI ก็ควรจะหายไปแล้วจากการ CompleteQuest() ใน TalkToNPCQuest
-
-        // *** STEP 2: เริ่มเควสถัดไป (เควส "ส่งจดหมาย") ***
-        // สร้างเควสใหม่สำหรับภารกิจต่อไป
         var nextQuest = new TalkToNPCQuest(quest2Name, quest2Description, quest2Target); // ใช้ TalkToNPCQuest หรือสร้างคลาสเฉพาะสำหรับเควสเดินทาง
         QuestManager.Instance.AddQuest(nextQuest);
         QuestManager.Instance.StartQuest(nextQuest); // นี่จะทำให้ UI เควสแสดงชื่อและรายละเอียดเควสใหม่ และ Waypoint ชี้ไปที่ quest2Target
         Debug.Log($"เริ่มเควสถัดไปแล้ว: {quest2Name}");
 
         nextQuestStarted = true; // ตั้ง Flag ว่าเควสถัดไปเริ่มแล้ว ป้องกันการเริ่มซ้ำ
-
+        if (shopKeeper != null)
+        {
+           shopKeeper.EnableShop(); 
+        }
         ResetPlayerAndCamera();
+        if (playerInRange && pressEUI != null)
+        {
+            pressEUI.SetActive(true);
+        }
     }
 
     void OnDecline()
     {
         Debug.Log("Dialogue Declined. ผู้เล่นต้อง Accept เพื่อทำเควสต่อ.");
-        // ตามที่คุณระบุว่า "เมื่อกดdeclineก็ไม่ต้องเปลี่ยนแปลงอะไรเพราะเราจะบังคับให้เขากดaccept"
-        // ดังนั้น เราจะทำอะไรให้น้อยที่สุดตรงนี้ และให้ผู้เล่นยังอยู่ในสถานะ Dialogue ที่ต้องเลือก Accept
-        // หรือถ้า Dialogue Manager ปิดเองหลัง Decline คุณอาจจะต้องให้ผู้เล่นกด E ใหม่
-        // สำหรับตอนนี้ ผมจะให้มันแค่ Debug.Log และ Reset กล้อง/การเคลื่อนที่ เพื่อให้ผู้เล่นกลับไปลองกด Accept ใหม่
         ResetPlayerAndCamera();
         // ไม่ต้องเปลี่ยน nextQuestStarted เป็น true ที่นี่ เพราะยังไม่ได้เริ่มเควสถัดไป
     }
