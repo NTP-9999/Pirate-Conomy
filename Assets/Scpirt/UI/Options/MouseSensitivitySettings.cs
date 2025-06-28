@@ -8,17 +8,21 @@ public class MouseSensitivitySettings : MonoBehaviour
 
     void Start()
     {
-        float saved = PlayerPrefs.GetFloat("MouseSensitivity", cameraScript.mouseSensitivity);
+        float saved;
+        if (PlayerPrefs.HasKey("MouseSensitivity"))
+        {
+            saved = PlayerPrefs.GetFloat("MouseSensitivity");
+        }
+        else
+        {
+            saved = 270f; // default กลางๆ
+            PlayerPrefs.SetFloat("MouseSensitivity", saved); // บันทึกไว้
+        }
+
         cameraScript.mouseSensitivity = saved;
         sensitivitySlider.value = saved;
-        if (cameraScript != null && sensitivitySlider != null)
-        {
-            // ตั้งค่า slider ให้ตรงกับ mouseSensitivity ปัจจุบัน
-            sensitivitySlider.value = cameraScript.mouseSensitivity;
 
-            // เพิ่ม event เมื่อ slider เปลี่ยนค่า
-            sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
-        }
+        sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
     }
 
     void OnSensitivityChanged(float newValue)
