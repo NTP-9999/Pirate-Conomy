@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Shadow.unity
+    guid: 7b386b614f256db4ebe390fddd70c4d6
+  - enabled: 1
     path: Assets/Scenes/ice island.unity
     guid: 27c9007633daaa1408fc5363d7c7ab64
   - enabled: 1
