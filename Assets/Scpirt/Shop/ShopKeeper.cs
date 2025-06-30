@@ -3,7 +3,8 @@ using UnityEngine;
 public class ShopKeeper : MonoBehaviour
 {
     public GameObject shopUIPanel;  // UI ร้านค้าใน Scene
-    private bool canOpenShop = false; // Flag ว่าตอนนี้ร้านเปิดได้ไหม
+    private bool canOpenShop = false; // Flag ว่าร้านค้า "พร้อมให้เปิด" (ได้หลังจากเควส)
+    private bool playerInShopRange = false; // ตอนนี้ผู้เล่นอยู่ในระยะร้านค้าหรือเปล่า
 
     void Start()
     {
@@ -18,7 +19,10 @@ public class ShopKeeper : MonoBehaviour
 
     private void Update()
     {
-        if (canOpenShop && Input.GetKeyDown(KeyCode.E))
+        // ✅ เปิดร้านได้เฉพาะตอนที่:
+        // - ร้านเปิดใช้งานแล้ว (EnableShop เคยถูกเรียก)
+        // - ผู้เล่นอยู่ในระยะ (playerInShopRange)
+        if (canOpenShop && playerInShopRange && Input.GetKeyDown(KeyCode.E))
         {
             OpenShop();
         }
@@ -29,7 +33,6 @@ public class ShopKeeper : MonoBehaviour
         if (shopUIPanel != null)
             shopUIPanel.SetActive(true);
 
-        // ปิดการเดิน & เปิดเมาส์
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         CharacterMovement.Instance.SetCanMove(false);
@@ -40,9 +43,27 @@ public class ShopKeeper : MonoBehaviour
         if (shopUIPanel != null)
             shopUIPanel.SetActive(false);
 
-        // กลับมาเดินได้ & ล็อกเมาส์
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CharacterMovement.Instance.SetCanMove(true);
+    }
+
+    // 🎯 เพิ่ม OnTriggerEnter/Exit
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInShopRange = true;
+            Debug.Log("Player entered shop range");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInShopRange = false;
+            Debug.Log("Player exited shop range");
+        }
     }
 }
