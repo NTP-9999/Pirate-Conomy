@@ -54,7 +54,7 @@ public class ShipEnterExit : MonoBehaviour
 
     void StartControlShip()
     { 
-        GetComponent<ShipController>().enabled = true;
+        
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false); // ❌ ปิดกล้องผู้เล่น
 
