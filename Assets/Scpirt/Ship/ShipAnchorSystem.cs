@@ -18,7 +18,7 @@ public class ShipAnchorSystem : MonoBehaviour
     private float holdTimer = 0f;
     private bool isInAnchorZone = false;
     private bool isHolding = false;
-    private bool anchorDeployed = false;
+    public bool anchorDeployed = false;
     private bool isWaitingAnchorSettle = false;
 
     private Rigidbody shipRb;

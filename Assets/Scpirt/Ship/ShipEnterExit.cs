@@ -14,6 +14,7 @@ public class ShipEnterExit : MonoBehaviour
     public bool IsControlling => isControlling;
 
     private GameObject shipCamObj;
+    private ShipAnchorSystem shipAnchorSystem;
 
     void Start()
     {
@@ -24,6 +25,7 @@ public class ShipEnterExit : MonoBehaviour
         shipCamObj = GameObject.Find("ShipCamera");
 
         helmUI.SetActive(false);
+        shipAnchorSystem = GetComponent<ShipAnchorSystem>();
     }
 
     void Update()
@@ -50,11 +52,15 @@ public class ShipEnterExit : MonoBehaviour
         {
             ExitControlShip();
         }
+        if (isControlling)
+        {
+            helmUI.SetActive(false); // ❌ ปิด UI เมื่อควบคุมเรือ
+        }
     }
 
     void StartControlShip()
-    { 
-        
+    {
+
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false); // ❌ ปิดกล้องผู้เล่น
 
@@ -69,6 +75,18 @@ public class ShipEnterExit : MonoBehaviour
 
         isControlling = true;
         player.gameObject.SetActive(false);
+        
+            
+                // *** ใช้ shipAnchorSystem ที่ Get มาใน Start() ***
+                if (shipAnchorSystem != null && shipAnchorSystem.anchorDeployed)
+                {
+                    GetComponent<ShipController>().enabled = false;
+                }
+                else
+                {
+                    GetComponent<ShipController>().enabled = true; // ✅ เปิดการควบคุมเรือ
+                }
+            
     }
 
     public void ExitControlShip()
