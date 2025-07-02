@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 public class OilResource : MonoBehaviour
 {
     [Header("Settings")]
@@ -14,9 +14,11 @@ public class OilResource : MonoBehaviour
     public GameObject interactUI;
 
     private bool playerInRange = false;
+    private MeshRenderer meshRenderer;
 
     private void Start()
     {
+        meshRenderer = GetComponent<MeshRenderer>();
         if (interactUI != null)
             interactUI.SetActive(false);
     }
@@ -40,13 +42,21 @@ public class OilResource : MonoBehaviour
 
         if (currentCollects >= maxCollects)
         {
+            Debug.Log("Oil resource depleted!");
             if (interactUI != null)
                 interactUI.SetActive(false);
 
-            // สั่งเกิดใหม่
-            TreeRespawner.Instance.RespawnTree(oilPrefab, transform.position, transform.rotation, respawnDelay);
-            Destroy(gameObject);
+            StartCoroutine(RespawnOil());
+            meshRenderer.enabled = false;
+            
         }
+    }
+    private IEnumerator RespawnOil()
+    {
+        Debug.Log("Respawning oil resource...");
+        yield return new WaitForSeconds(respawnDelay);
+        meshRenderer.enabled = true;
+        currentCollects = 0;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,7 +64,7 @@ public class OilResource : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            if (interactUI != null)
+            if (interactUI != null && (meshRenderer == null || meshRenderer.enabled))
                 interactUI.SetActive(true);
         }
     }

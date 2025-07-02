@@ -15,9 +15,13 @@ public class TreeTarget : MonoBehaviour
     public GameObject interactUI; // UI "Press E"
 
     private bool playerInRange = false;
+    private MeshRenderer meshRenderer;
+    private Collider treeCollider;
 
     private void Start()
     {
+        treeCollider = GetComponent<CapsuleCollider>();
+        meshRenderer = GetComponent<MeshRenderer>();
         if (interactUI != null)
             interactUI.SetActive(false);
     }
@@ -46,28 +50,26 @@ public class TreeTarget : MonoBehaviour
             if (interactUI != null)
                 interactUI.SetActive(false);
 
-            // เริ่ม coroutine สำหรับเกิดใหม่
-            TreeRespawner.Instance.RespawnTree(treePrefab, transform.position, transform.rotation, respawnDelay);
-
-            // ทำลายต้นไม้ต้นนี้
-            Destroy(gameObject);
+            StartCoroutine(RespawnTree());
+            meshRenderer.enabled = false;
+            treeCollider.enabled = false; // Disable collider to prevent further interaction
+            
         }
     }
 
-    private IEnumerator RespawnAfterDelay()
+    private IEnumerator RespawnTree()
     {
         yield return new WaitForSeconds(respawnDelay);
-
-        // สร้าง prefab ของตัวเองในตำแหน่งเดิม
-        Instantiate(treePrefab, transform.position, transform.rotation);
+        meshRenderer.enabled = true;
+        treeCollider.enabled = true; // Re-enable collider after respawn
+        currentChops = 0;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            if (interactUI != null)
+            if (interactUI != null && (meshRenderer == null || meshRenderer.enabled))
                 interactUI.SetActive(true);
         }
     }
