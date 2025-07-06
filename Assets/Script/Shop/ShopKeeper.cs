@@ -30,22 +30,26 @@ public class ShopKeeper : MonoBehaviour
 
     public void OpenShop()
     {
+        
         if (shopUIPanel != null)
             shopUIPanel.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         CharacterMovement.Instance.SetCanMove(false);
+        Time.timeScale = 0f;
     }
 
     public void CloseShop()
     {
+        Time.timeScale = 1f;
         if (shopUIPanel != null)
             shopUIPanel.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CharacterMovement.Instance.SetCanMove(true);
+
     }
 
     // 🎯 เพิ่ม OnTriggerEnter/Exit
