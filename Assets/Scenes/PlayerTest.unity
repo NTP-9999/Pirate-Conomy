@@ -5985,9 +5985,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ce4e5de4cdaba9f4a8230b0c3847dbf4, type: 2}
   - {fileID: 11400000, guid: 54872a783c2ee8c4e8a2a17e8abb88e6, type: 2}
   - {fileID: 11400000, guid: c2a52e502f199e14f95635561d7bf6fe, type: 2}
-  - {fileID: 11400000, guid: 46ae90238bce63e47960f457640a0f65, type: 2}
-  - {fileID: 11400000, guid: 92c86652ad2991b4bb4cac4ecc736627, type: 2}
-  - {fileID: 11400000, guid: 6ab739d76bd5339458e92203fcbee652, type: 2}
   resourceSellableItems:
   - {fileID: 11400000, guid: 6ab739d76bd5339458e92203fcbee652, type: 2}
   - {fileID: 11400000, guid: 46ae90238bce63e47960f457640a0f65, type: 2}
@@ -9687,7 +9684,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1518151311}
         m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
         m_MethodName: OnConfirmButton
         m_Mode: 1
@@ -11155,7 +11152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1518151308
 RectTransform:
   m_ObjectHideFlags: 0

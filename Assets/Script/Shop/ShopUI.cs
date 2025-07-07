@@ -57,7 +57,6 @@ public class ShopUI : MonoBehaviour
 
     public void PopulateItemList(List<ShopItemData> items, bool isBuy)
     {
-        // ลบของเก่าออกก่อน
         foreach (Transform child in itemListParent)
             Destroy(child.gameObject);
 
@@ -67,9 +66,12 @@ public class ShopUI : MonoBehaviour
             entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
             entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = (isBuy ? item.buyPrice : item.sellPrice) + "";
-            // CurrencyIcon สามารถเซ็ตเป็นรูปเหรียญ/เงินได้ตามต้องการ
 
-            // เพิ่ม Event เวลาคลิกเลือกไอเทม
+            // ซ่อน Amount ในหน้า Buy
+            var amountObj = entry.transform.Find("Amount");
+            if (amountObj != null)
+                amountObj.gameObject.SetActive(false);
+
             Button btn = entry.GetComponent<Button>();
             if (btn != null)
             {
@@ -89,7 +91,14 @@ public class ShopUI : MonoBehaviour
             entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
             entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + "";
-            entry.transform.Find("Amount").GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
+
+            // โชว์ Amount ในหน้า Sell
+            var amountObj = entry.transform.Find("Amount");
+            if (amountObj != null)
+            {
+                amountObj.gameObject.SetActive(true);
+                amountObj.GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
+            }
 
             Button btn = entry.GetComponent<Button>();
             if (btn != null)
@@ -141,7 +150,6 @@ public class ShopUI : MonoBehaviour
         if (isBuyMode)
         {
             bool success = shopManager.BuyItem(selectedItem, selectedAmount, FindObjectOfType<PlayerCurrency>(), FindObjectOfType<InventoryManager>());
-            if (success) HideShop();
         }
         else
         {
@@ -191,9 +199,12 @@ public class ShopUI : MonoBehaviour
         itemDetailPanel.SetActive(true);
         itemNameText.text = item.itemName;
         itemIconImage.sprite = item.icon;
-        amountInputField.text = "1";
-        UpdateDetailPanel();
 
-        // อาจเพิ่มการแสดงจำนวนสูงสุดที่ขายได้ (item.quantity)
+        // ป้องกัน OnValueChanged trigger ตอนเซ็ตค่า
+        amountInputField.onValueChanged.RemoveListener(OnAmountChanged);
+        amountInputField.text = "1";
+        amountInputField.onValueChanged.AddListener(OnAmountChanged);
+
+        UpdateDetailPanel();
     }
 } 
