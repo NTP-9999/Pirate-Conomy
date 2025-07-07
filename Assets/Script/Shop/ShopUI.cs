@@ -22,7 +22,6 @@ public class ShopUI : MonoBehaviour
     private bool isBuyMode = true;
     private ShopItemData selectedItem;
     private int selectedAmount = 1;
-
     public void ShowShop(ShopManager manager)
     {
         shopManager = manager;
@@ -58,7 +57,6 @@ public class ShopUI : MonoBehaviour
 
     public void PopulateItemList(List<ShopItemData> items, bool isBuy)
     {
-        // ลบของเก่าออกก่อน
         foreach (Transform child in itemListParent)
             Destroy(child.gameObject);
 
@@ -68,9 +66,12 @@ public class ShopUI : MonoBehaviour
             entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
             entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = (isBuy ? item.buyPrice : item.sellPrice) + "";
-            // CurrencyIcon สามารถเซ็ตเป็นรูปเหรียญ/เงินได้ตามต้องการ
 
-            // เพิ่ม Event เวลาคลิกเลือกไอเทม
+            // ซ่อน Amount ในหน้า Buy
+            var amountObj = entry.transform.Find("Amount");
+            if (amountObj != null)
+                amountObj.gameObject.SetActive(false);
+
             Button btn = entry.GetComponent<Button>();
             if (btn != null)
             {
@@ -89,8 +90,15 @@ public class ShopUI : MonoBehaviour
             GameObject entry = Instantiate(itemEntryPrefab, itemListParent);
             entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
-            entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + " N";
-            entry.transform.Find("Amount").GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
+            entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + "";
+
+            // โชว์ Amount ในหน้า Sell
+            var amountObj = entry.transform.Find("Amount");
+            if (amountObj != null)
+            {
+                amountObj.gameObject.SetActive(true);
+                amountObj.GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
+            }
 
             Button btn = entry.GetComponent<Button>();
             if (btn != null)
@@ -141,14 +149,16 @@ public class ShopUI : MonoBehaviour
         if (selectedItem == null) return;
         if (isBuyMode)
         {
-            // TODO: เชื่อมกับ PlayerCurrency และ InventoryManager จริง
             bool success = shopManager.BuyItem(selectedItem, selectedAmount, FindObjectOfType<PlayerCurrency>(), FindObjectOfType<InventoryManager>());
-            if (success) HideShop();
         }
         else
         {
             bool success = shopManager.SellItem(selectedItem, selectedAmount, FindObjectOfType<PlayerCurrency>(), FindObjectOfType<InventoryManager>());
-            if (success) HideShop();
+            if (success)
+            {
+                ShowSellTab();
+                itemDetailPanel.SetActive(false);
+            }
         }
     }
 
@@ -172,12 +182,29 @@ public class ShopUI : MonoBehaviour
                 resources.Add(item);
             }
         }
+        Debug.Log("Resource count: " + resources.Count);
         return resources;
     }
 
     private int GetSellPrice(string itemName)
     {
-        var shopItem = shopManager.itemsForSale.Find(i => i.itemName == itemName);
+        var shopItem = shopManager.resourceSellableItems.Find(i => i.itemName == itemName);
         return shopItem != null ? shopItem.sellPrice : 0;
+    }
+
+    public void OnSelectSellItem(InventoryItem item)
+    {
+        selectedItem = shopManager.resourceSellableItems.Find(i => i.itemName == item.itemName);
+        selectedAmount = 1;
+        itemDetailPanel.SetActive(true);
+        itemNameText.text = item.itemName;
+        itemIconImage.sprite = item.icon;
+
+        // ป้องกัน OnValueChanged trigger ตอนเซ็ตค่า
+        amountInputField.onValueChanged.RemoveListener(OnAmountChanged);
+        amountInputField.text = "1";
+        amountInputField.onValueChanged.AddListener(OnAmountChanged);
+
+        UpdateDetailPanel();
     }
 } 
