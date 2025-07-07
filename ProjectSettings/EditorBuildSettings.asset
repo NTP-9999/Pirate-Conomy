@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/venom 2.unity
+    guid: 952329c8298def54c86aee482537a3e5
+  - enabled: 1
     path: Assets/Scenes/venom.unity
     guid: 39685a5c30f02f54ba92b67871ae5ecd
   - enabled: 1
