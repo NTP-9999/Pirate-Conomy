@@ -4,8 +4,11 @@ using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
-    [Header("Shop Items (ขาย)")]
-    public List<ShopItemData> itemsForSale;
+    [Header("Shop Items (ซื้อได้)")]
+    public List<ShopItemData> itemsForSale; // สำหรับไอเทมที่ซื้อได้
+
+    [Header("Shop Items (ขายได้)")]
+    public List<ShopItemData> resourceSellableItems; // สำหรับ Wood, Ore, Oil
 
     [Header("UI Reference")]
     public ShopUI shopUI;

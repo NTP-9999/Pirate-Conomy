@@ -22,7 +22,6 @@ public class ShopUI : MonoBehaviour
     private bool isBuyMode = true;
     private ShopItemData selectedItem;
     private int selectedAmount = 1;
-
     public void ShowShop(ShopManager manager)
     {
         shopManager = manager;
@@ -89,7 +88,7 @@ public class ShopUI : MonoBehaviour
             GameObject entry = Instantiate(itemEntryPrefab, itemListParent);
             entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
             entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
-            entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + " N";
+            entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + "";
             entry.transform.Find("Amount").GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
 
             Button btn = entry.GetComponent<Button>();
@@ -141,14 +140,17 @@ public class ShopUI : MonoBehaviour
         if (selectedItem == null) return;
         if (isBuyMode)
         {
-            // TODO: เชื่อมกับ PlayerCurrency และ InventoryManager จริง
             bool success = shopManager.BuyItem(selectedItem, selectedAmount, FindObjectOfType<PlayerCurrency>(), FindObjectOfType<InventoryManager>());
             if (success) HideShop();
         }
         else
         {
             bool success = shopManager.SellItem(selectedItem, selectedAmount, FindObjectOfType<PlayerCurrency>(), FindObjectOfType<InventoryManager>());
-            if (success) HideShop();
+            if (success)
+            {
+                ShowSellTab();
+                itemDetailPanel.SetActive(false);
+            }
         }
     }
 
@@ -172,12 +174,26 @@ public class ShopUI : MonoBehaviour
                 resources.Add(item);
             }
         }
+        Debug.Log("Resource count: " + resources.Count);
         return resources;
     }
 
     private int GetSellPrice(string itemName)
     {
-        var shopItem = shopManager.itemsForSale.Find(i => i.itemName == itemName);
+        var shopItem = shopManager.resourceSellableItems.Find(i => i.itemName == itemName);
         return shopItem != null ? shopItem.sellPrice : 0;
+    }
+
+    public void OnSelectSellItem(InventoryItem item)
+    {
+        selectedItem = shopManager.resourceSellableItems.Find(i => i.itemName == item.itemName);
+        selectedAmount = 1;
+        itemDetailPanel.SetActive(true);
+        itemNameText.text = item.itemName;
+        itemIconImage.sprite = item.icon;
+        amountInputField.text = "1";
+        UpdateDetailPanel();
+
+        // อาจเพิ่มการแสดงจำนวนสูงสุดที่ขายได้ (item.quantity)
     }
 } 
