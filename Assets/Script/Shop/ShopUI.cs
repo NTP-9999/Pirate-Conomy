@@ -50,9 +50,9 @@ public class ShopUI : MonoBehaviour
         isBuyMode = false;
         buyTabButton.interactable = true;
         sellTabButton.interactable = false;
-        // TODO: ดึงไอเทมจาก InventoryManager ของผู้เล่น
-        List<ShopItemData> playerItems = GetPlayerSellableItems();
-        PopulateItemList(playerItems, false);
+
+        List<InventoryItem> playerResources = GetPlayerResourceItems();
+        PopulateSellItemList(playerResources);
         itemDetailPanel.SetActive(false);
     }
 
@@ -79,6 +79,27 @@ public class ShopUI : MonoBehaviour
         }
     }
 
+    public void PopulateSellItemList(List<InventoryItem> items)
+    {
+        foreach (Transform child in itemListParent)
+            Destroy(child.gameObject);
+
+        foreach (var item in items)
+        {
+            GameObject entry = Instantiate(itemEntryPrefab, itemListParent);
+            entry.transform.Find("Icon").GetComponent<Image>().sprite = item.icon;
+            entry.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.itemName;
+            entry.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = GetSellPrice(item.itemName) + " N";
+            entry.transform.Find("Amount").GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
+
+            Button btn = entry.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick.AddListener(() => OnSelectSellItem(item));
+            }
+        }
+    }
+
     public void OnSelectItem(ShopItemData item)
     {
         selectedItem = item;
@@ -86,14 +107,21 @@ public class ShopUI : MonoBehaviour
         itemDetailPanel.SetActive(true);
         itemNameText.text = item.itemName;
         itemIconImage.sprite = item.icon;
+
+        // ป้องกัน OnValueChanged trigger ตอนเซ็ตค่า
+        amountInputField.onValueChanged.RemoveListener(OnAmountChanged);
         amountInputField.text = "1";
+        amountInputField.onValueChanged.AddListener(OnAmountChanged);
+
         UpdateDetailPanel();
     }
 
     public void OnAmountChanged(string value)
     {
+        if (selectedItem == null) return;
         int.TryParse(value, out selectedAmount);
         selectedAmount = Mathf.Max(1, selectedAmount);
+        Debug.Log("OnAmountChanged: value=" + value + ", selectedAmount=" + selectedAmount);
         UpdateDetailPanel();
     }
 
@@ -102,6 +130,7 @@ public class ShopUI : MonoBehaviour
         if (selectedItem == null) return;
         int price = isBuyMode ? selectedItem.buyPrice : selectedItem.sellPrice;
         int total = price * selectedAmount;
+        Debug.Log($"selectedAmount={selectedAmount}, price={price}, total={total}");
         itemPriceText.text = price.ToString();
         totalPriceText.text = total.ToString();
         confirmButton.GetComponentInChildren<TextMeshProUGUI>().text = isBuyMode ? "Buy" : "Sell";
@@ -128,5 +157,27 @@ public class ShopUI : MonoBehaviour
         // TODO: ดึงไอเทมจาก InventoryManager จริง ๆ
         // ตัวอย่าง: return FindObjectOfType<InventoryManager>().GetAllSellableItems();
         return new List<ShopItemData>();
+    }
+
+    private List<InventoryItem> GetPlayerResourceItems()
+    {
+        var inventory = FindObjectOfType<InventoryManager>();
+        List<InventoryItem> resources = new List<InventoryItem>();
+        if (inventory == null) return resources;
+
+        foreach (var item in inventory.items)
+        {
+            if (item.itemName == "Wood" || item.itemName == "Ore" || item.itemName == "Oil")
+            {
+                resources.Add(item);
+            }
+        }
+        return resources;
+    }
+
+    private int GetSellPrice(string itemName)
+    {
+        var shopItem = shopManager.itemsForSale.Find(i => i.itemName == itemName);
+        return shopItem != null ? shopItem.sellPrice : 0;
     }
 } 
