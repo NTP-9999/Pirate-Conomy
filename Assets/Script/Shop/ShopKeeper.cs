@@ -39,6 +39,30 @@ public class ShopKeeper : MonoBehaviour
         if (shopUI != null && shopManager != null)
             shopUI.ShowShop(shopManager);
 
+        // ปิดทุก Component (ยกเว้น Transform) ของ GameObject "MC"
+        GameObject mc = GameObject.Find("MC");
+        if (mc != null)
+        {
+            foreach (var comp in mc.GetComponents<MonoBehaviour>())
+            {
+                comp.enabled = false;
+            }
+            // ถ้ามี Component ที่ไม่ใช่ MonoBehaviour (เช่น Collider, Renderer) ให้ปิดด้วย
+            foreach (var comp in mc.GetComponents<Component>())
+            {
+                if (!(comp is Transform) && !(comp is MonoBehaviour))
+                {
+                    if (comp is Behaviour behaviour)
+                        behaviour.enabled = false;
+                    else if (comp is Collider collider)
+                        collider.enabled = false;
+                    else if (comp is Renderer renderer)
+                        renderer.enabled = false;
+                    // เพิ่มประเภทอื่น ๆ ตามต้องการ
+                }
+            }
+        }
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         CharacterMovement.Instance.SetCanMove(false);
@@ -51,10 +75,31 @@ public class ShopKeeper : MonoBehaviour
         if (shopUIPanel != null)
             shopUIPanel.SetActive(false);
 
+        // เปิด Component กลับ
+        GameObject mc = GameObject.Find("MC");
+        if (mc != null)
+        {
+            foreach (var comp in mc.GetComponents<MonoBehaviour>())
+            {
+                comp.enabled = true;
+            }
+            foreach (var comp in mc.GetComponents<Component>())
+            {
+                if (!(comp is Transform) && !(comp is MonoBehaviour))
+                {
+                    if (comp is Behaviour behaviour)
+                        behaviour.enabled = true;
+                    else if (comp is Collider collider)
+                        collider.enabled = true;
+                    else if (comp is Renderer renderer)
+                        renderer.enabled = true;
+                }
+            }
+        }
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CharacterMovement.Instance.SetCanMove(true);
-
     }
 
     // 🎯 เพิ่ม OnTriggerEnter/Exit
