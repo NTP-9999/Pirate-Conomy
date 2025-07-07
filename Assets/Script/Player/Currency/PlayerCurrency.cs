@@ -46,7 +46,7 @@ public class PlayerCurrency : MonoBehaviour
         {
             if (text != null)
             {
-                text.text = currentNova.ToString() + " Nova";
+                text.text = currentNova.ToString();
             }
         }
     }

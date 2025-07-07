@@ -145,4 +145,17 @@ public class InventoryManager : MonoBehaviour
     {
         get { return isInventoryOpen; }
     }
+    public void RemoveItem(string itemName, int amount)
+    {
+        InventoryItem item = items.Find(i => i.itemName == itemName);
+        if (item != null)
+        {
+            item.quantity -= amount;
+            if (item.quantity <= 0)
+            {
+                items.Remove(item);
+            }
+            UpdateSlots();
+        }
+    }
 }

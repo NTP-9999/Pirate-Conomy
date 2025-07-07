@@ -30,9 +30,14 @@ public class ShopKeeper : MonoBehaviour
 
     public void OpenShop()
     {
-        
         if (shopUIPanel != null)
             shopUIPanel.SetActive(true);
+
+        // เรียก ShowShop ของ ShopUI
+        ShopUI shopUI = shopUIPanel.GetComponent<ShopUI>();
+        ShopManager shopManager = FindObjectOfType<ShopManager>();
+        if (shopUI != null && shopManager != null)
+            shopUI.ShowShop(shopManager);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
