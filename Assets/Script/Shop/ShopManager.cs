@@ -41,9 +41,9 @@ public class ShopManager : MonoBehaviour
         if (invItem != null && invItem.quantity >= amount)
         {
             inventory.RemoveItem(item.itemName, amount);
-            // ดึงราคาขายจาก customSellPrices ถ้ามี
+            // ดึงราคาขายจาก customSellPrices ถ้ามี (เปรียบเทียบด้วย itemName)
             int sellPrice = item.sellPrice;
-            var custom = customSellPrices != null ? customSellPrices.Find(c => c.item == item) : null;
+            var custom = customSellPrices != null ? customSellPrices.Find(c => c.item != null && c.item.itemName == item.itemName) : null;
             if (custom != null)
                 sellPrice = custom.sellPrice;
             int totalSell = sellPrice * amount;

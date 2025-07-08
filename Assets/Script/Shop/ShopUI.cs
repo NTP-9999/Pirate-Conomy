@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class ShopUI : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class ShopUI : MonoBehaviour
     private int selectedAmount = 1;
     public void ShowShop(ShopManager manager)
     {
+        Debug.Log("ShowShop called by: " + manager.name + " | customSellPrices: " +
+            string.Join(",", manager.customSellPrices.Select(c => c.item.itemName + "=" + c.sellPrice)));
         shopManager = manager;
         shopPanel.SetActive(true);
         ShowBuyTab();

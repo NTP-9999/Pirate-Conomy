@@ -1498,7 +1498,7 @@ MonoBehaviour:
   playerCameraController: {fileID: 653341090}
   cameraElevateOffset: 83.7
   cameraElevateSpeed: 11.48
-  shopKeeper: {fileID: 305533421}
+  shopKeeper: {fileID: 141689689}
 --- !u!1 &151778730
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,7 +2419,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 34.09, y: 38.79}
+  m_AnchoredPosition: {x: 32.11, y: 38.79}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &265583834
@@ -13825,7 +13825,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 37.9, y: 4.9}
+  m_AnchoredPosition: {x: 50.3, y: 4.9}
   m_SizeDelta: {x: 100, y: 67.5504}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1787812195
@@ -15290,7 +15290,7 @@ MonoBehaviour:
   playerCameraController: {fileID: 653341090}
   cameraElevateOffset: 83.7
   cameraElevateSpeed: 11.48
-  shopKeeper: {fileID: 305533421}
+  shopKeeper: {fileID: 1962740058}
 --- !u!1 &1988945989
 GameObject:
   m_ObjectHideFlags: 0
