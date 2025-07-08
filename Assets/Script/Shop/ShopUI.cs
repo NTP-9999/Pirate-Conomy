@@ -136,7 +136,7 @@ public class ShopUI : MonoBehaviour
     private void UpdateDetailPanel()
     {
         if (selectedItem == null) return;
-        int price = isBuyMode ? selectedItem.buyPrice : selectedItem.sellPrice;
+        int price = isBuyMode ? selectedItem.buyPrice : GetSellPrice(selectedItem.itemName);
         int total = price * selectedAmount;
         Debug.Log($"selectedAmount={selectedAmount}, price={price}, total={total}");
         itemPriceText.text = price.ToString();
@@ -188,6 +188,13 @@ public class ShopUI : MonoBehaviour
 
     private int GetSellPrice(string itemName)
     {
+        // หาราคาขายจาก customSellPrices ก่อน ถ้าไม่มี fallback ไปที่ sellPrice เดิม
+        if (shopManager != null && shopManager.customSellPrices != null)
+        {
+            var custom = shopManager.customSellPrices.Find(c => c.item != null && c.item.itemName == itemName);
+            if (custom != null)
+                return custom.sellPrice;
+        }
         var shopItem = shopManager.resourceSellableItems.Find(i => i.itemName == itemName);
         return shopItem != null ? shopItem.sellPrice : 0;
     }
