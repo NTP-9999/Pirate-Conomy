@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fried Chicken
   m_EditorClassIdentifier: 
   itemName: Fried Chicken
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c4d0c4a91bdd3c64e848462406fe7f92, type: 3}
   buyPrice: 1
   sellPrice: 0
   description: 

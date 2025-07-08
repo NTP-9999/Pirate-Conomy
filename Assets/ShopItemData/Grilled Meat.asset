@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grilled Meat
   m_EditorClassIdentifier: 
   itemName: Grilled Meat
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 56e3f2b1557c0d7419a5ee267d55b9f0, type: 3}
   buyPrice: 1
   sellPrice: 0
   description: 

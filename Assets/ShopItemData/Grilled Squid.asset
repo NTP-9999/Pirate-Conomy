@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grilled Squid
   m_EditorClassIdentifier: 
   itemName: Grilled Squid
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e051fdfa930cbb848a071c6c2fb6c677, type: 3}
   buyPrice: 1
   sellPrice: 0
   description: 
