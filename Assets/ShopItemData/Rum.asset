@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rum
   m_EditorClassIdentifier: 
   itemName: Rum
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 190d26c89821b8749bfca3b680c6c51f, type: 3}
   buyPrice: 1
   sellPrice: 0
   description: 
