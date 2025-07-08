@@ -3,6 +3,7 @@ using UnityEngine;
 public class ShopKeeper : MonoBehaviour
 {
     public GameObject shopUIPanel;  // UI ร้านค้าใน Scene
+    public ShopManager shopManager; // อ้างอิง ShopManager ของร้านนี้
     private bool canOpenShop = false; // Flag ว่าร้านค้า "พร้อมให้เปิด" (ได้หลังจากเควส)
     private bool playerInShopRange = false; // ตอนนี้ผู้เล่นอยู่ในระยะร้านค้าหรือเปล่า
 
@@ -33,11 +34,8 @@ public class ShopKeeper : MonoBehaviour
         if (shopUIPanel != null)
             shopUIPanel.SetActive(true);
 
-        // เรียก ShowShop ของ ShopUI
-        ShopUI shopUI = shopUIPanel.GetComponent<ShopUI>();
-        ShopManager shopManager = FindObjectOfType<ShopManager>();
-        if (shopUI != null && shopManager != null)
-            shopUI.ShowShop(shopManager);
+        if (shopManager != null)
+            shopManager.OpenShop();
 
         // ปิดทุก Component (ยกเว้น Transform) ของ GameObject "MC"
         GameObject mc = GameObject.Find("MC");
