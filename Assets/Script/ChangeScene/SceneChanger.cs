@@ -28,7 +28,7 @@ public abstract class SceneChanger : MonoBehaviour
     
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Ship"))
         {
             ChangeScene();
         }

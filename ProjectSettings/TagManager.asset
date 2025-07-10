@@ -11,6 +11,7 @@ TagManager:
   - Synty Medium Farm
   - Synty Small Farm
   - Enemy
+  - Ship
   layers:
   - Default
   - TransparentFX
