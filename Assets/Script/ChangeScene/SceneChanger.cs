@@ -42,16 +42,22 @@ public abstract class SceneChanger : MonoBehaviour
         }
         else
         {
-            // ถ้าไม่มี effect ให้เปลี่ยน scene ทันที
-            LoadingScreenData.nextScene = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
-            SceneManager.LoadScene("Loading_screen");
+            LoadTargetScene();
         }
     }
 
     private IEnumerator FadeAndChangeScene()
     {
         yield return StartCoroutine(fogEffect.FadeIn(fogFadeTime));
-        LoadingScreenData.nextScene = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
+        LoadTargetScene();
+    }
+    
+    protected virtual void LoadTargetScene()
+    {
+        string sceneName = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
+        
+        // ใช้ระบบเดิม
+        LoadingScreenData.nextScene = sceneName;
         SceneManager.LoadScene("Loading_screen");
     }
     

@@ -88,16 +88,7 @@ public class BossIsland : SceneChanger
     private void ProceedToBossFight()
     {
         Debug.Log($"Entering {bossName} boss fight...");
-        string sceneToLoad = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
-        
-        if (SceneTransitionManager.Instance != null)
-        {
-            SceneTransitionManager.Instance.LoadScene(sceneToLoad);
-        }
-        else
-        {
-            SceneManager.LoadScene(sceneToLoad);
-        }
+        LoadTargetScene(); // ใช้ LoadTargetScene จาก base class
     }
     
     private void HideWarning()
