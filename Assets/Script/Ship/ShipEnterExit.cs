@@ -60,7 +60,8 @@ public class ShipEnterExit : MonoBehaviour
 
     void StartControlShip()
     {
-        
+        WaypointUI.Instance.SetReferenceTransform(shipCamObj.transform);
+        WaypointUI.Instance.SetCamera(shipCamObj);
         if (playerCamera != null)
             playerCamera.gameObject.SetActive(false); // ❌ ปิดกล้องผู้เล่น
 
@@ -91,8 +92,9 @@ public class ShipEnterExit : MonoBehaviour
 
     public void ExitControlShip()
     {
+        WaypointUI.Instance.SetReferenceTransform(player.transform);
         isControlling = false;
-
+        WaypointUI.Instance.SetCamera(playerCamera);
         player.position = exitPoint.position;
         player.rotation = exitPoint.rotation;
         player.gameObject.SetActive(true);
@@ -105,5 +107,12 @@ public class ShipEnterExit : MonoBehaviour
             playerCamera.gameObject.SetActive(true); // ✅ เปิดกล้องผู้เล่นกลับ
 
         Debug.Log("Player exited ship control");
+
+        // หลังจาก player.gameObject.SetActive(true);
+        BoardingArea boardingArea = FindObjectOfType<BoardingArea>();
+        if (boardingArea != null)
+        {
+            boardingArea.CheckPlayerInArea();
+        }
     }
 }

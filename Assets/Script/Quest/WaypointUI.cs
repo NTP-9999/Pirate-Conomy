@@ -46,6 +46,17 @@ public class WaypointUI : MonoBehaviour
         distanceText.gameObject.SetActive(false);
     }
 
+    // เพิ่ม method นี้
+    public void SetCamera(Camera newCam)
+    {
+        cam = newCam;
+    }
+
+    public void SetReferenceTransform(Transform t)
+    {
+        playerTransform = t;
+    }
+
     void Update()
     {
         if (target == null || cam == null || playerTransform == null) return;
