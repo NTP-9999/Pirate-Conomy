@@ -83,14 +83,15 @@ public class QuestGiver : MonoBehaviour
                     playerMovement.SetCanMove(false); 
                     playerMovement.LockYPosition();   
                 }
+                DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
+                pressEUI.SetActive(false); 
 
                 if (playerCameraController != null)
                 {
                     playerCameraController.StartCameraElevation(cameraElevateOffset, cameraElevateSpeed);
                 }
 
-                DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
-                pressEUI.SetActive(false); 
+                
             }
             else
             {

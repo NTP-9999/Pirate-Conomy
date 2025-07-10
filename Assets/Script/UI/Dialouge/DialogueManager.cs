@@ -18,6 +18,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("DialogueManager Awake called!");
         Instance = this;
         dialoguePanel.SetActive(false);
     }
@@ -103,8 +104,10 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log("DialogueManager Update running...");
         if (dialoguePanel.activeSelf && Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Spacebar pressed, advancing dialogue...");
             NextLine();
         }
     }
