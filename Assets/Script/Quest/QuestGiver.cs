@@ -18,6 +18,8 @@ public class QuestGiver : MonoBehaviour
     public string quest2Name = "ส่งจดหมาย";
     public string quest2Description = "เดินทางไปยังหมู่บ้านเพื่อส่งจดหมาย";
     public Transform quest2Target; // เป้าหมายของเควส "ส่งจดหมาย" (อาจจะเป็นหมู่บ้านหรือ NPC คนอื่น)
+    [Header("Quest 2 Settings")]
+    public float quest2FinishRange = 10f; // ปรับได้ใน Inspector
 
     private bool playerInRange = false;
     private bool nextQuestStarted = false; // Flag เพื่อบอกว่าเควสถัดไป (ส่งจดหมาย) เริ่มต้นแล้ว
@@ -139,7 +141,7 @@ public class QuestGiver : MonoBehaviour
     void OnAccept()
     {
         Debug.Log("Dialogue Accepted! กำลังเริ่มเควสถัดไป...");
-        var nextQuest = new TalkToNPCQuest(quest2Name, quest2Description, quest2Target); // ใช้ TalkToNPCQuest หรือสร้างคลาสเฉพาะสำหรับเควสเดินทาง
+        var nextQuest = new TalkToNPCQuest(quest2Name, quest2Description, quest2Target, quest2FinishRange); // ส่ง questFinishRange ไปด้วย
         QuestManager.Instance.AddQuest(nextQuest);
         QuestManager.Instance.StartQuest(nextQuest); // นี่จะทำให้ UI เควสแสดงชื่อและรายละเอียดเควสใหม่ และ Waypoint ชี้ไปที่ quest2Target
         Debug.Log($"เริ่มเควสถัดไปแล้ว: {quest2Name}");
@@ -155,7 +157,7 @@ public class QuestGiver : MonoBehaviour
             pressEUI.SetActive(true);
         }
     }
-
+    
     void OnDecline()
     {
         Debug.Log("Dialogue Declined. ผู้เล่นต้อง Accept เพื่อทำเควสต่อ.");
@@ -173,6 +175,27 @@ public class QuestGiver : MonoBehaviour
         if (playerCameraController != null)
         {
             playerCameraController.ResetCameraElevation(cameraElevateSpeed);
+        }
+    }
+    
+    // Gizmos สำหรับแสดงระยะ QuestFinishRange ใน Scene View
+    void OnDrawGizmos()
+    {
+        if (quest2Target != null)
+        {
+            // วาดวงกลมแสดงระยะ QuestFinishRange
+            Gizmos.color = nextQuestStarted ? Color.blue : Color.yellow;
+            Gizmos.DrawWireSphere(quest2Target.position, quest2FinishRange);
+            
+            // วาดเส้นจาก target ไปยังระยะ
+            Gizmos.DrawLine(quest2Target.position, quest2Target.position + Vector3.right * quest2FinishRange);
+            
+            // แสดงข้อความ
+            #if UNITY_EDITOR
+            Vector3 labelPosition = quest2Target.position + Vector3.up * (quest2FinishRange + 1f);
+            UnityEditor.Handles.Label(labelPosition, 
+                $"Quest: {quest2Name}\nRange: {quest2FinishRange}m\nStarted: {nextQuestStarted}");
+            #endif
         }
     }
 }

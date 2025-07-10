@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class TalkToNPCQuest : Quest
 {
-    public TalkToNPCQuest(string name, string desc, Transform target)
-        : base(name, desc, target) { }
+    public float questFinishRange;
+    public TalkToNPCQuest(string name, string desc, Transform target, float finishRange = 5f)
+        : base(name, desc, target, finishRange) { }
 
     public override void UpdateQuest()
     {
@@ -18,7 +19,7 @@ public class TalkToNPCQuest : Quest
         }
 
         float distance = Vector3.Distance(Player.transform.position, target.position);
-        if (distance < 2f) // กำหนดระยะที่ถือว่า "ถึงจุด"
+        if (distance < questFinishRange) // ใช้ระยะที่กำหนดใน questFinishRange
         {
             Debug.Log($"เควส '{questName}' สำเร็จแล้วจากการเข้าใกล้! (ระยะ {distance:F2}m)");
             CompleteQuest(); // ทำให้ UI เควสหายไป

@@ -8,12 +8,14 @@ public abstract class Quest
     public bool isCompleted = false;
 
     public Transform target; // จุดที่ Waypoint จะชี้
+    public float questFinishRange = 5f; // ระยะที่เควสจะสำเร็จ (ปรับได้ใน Inspector)
 
-    public Quest(string name, string desc, Transform target)
+    public Quest(string name, string desc, Transform target, float finishRange = 5f)
     {
         this.questName = name;
         this.description = desc;
         this.target = target;
+        this.questFinishRange = finishRange;
     }
 
     public virtual void StartQuest()
