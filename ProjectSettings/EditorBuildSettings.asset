@@ -6,27 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Oildrift Atoll.unity
-    guid: 59b8d4bdd3e375d4eb70f9d7821b2967
-  - enabled: 1
-    path: Assets/Scenes/Glacier Hollow.unity
-    guid: 36a6209ee07409e438393d352fe6fbf6
-  - enabled: 1
-    path: Assets/Scenes/Witherwood.unity
-    guid: b241e40bf8baf4043be2868f0ac7b0ce
-  - enabled: 1
-    path: Assets/Scenes/venom 2.unity
-    guid: 952329c8298def54c86aee482537a3e5
-  - enabled: 1
-    path: Assets/Scenes/venom.unity
-    guid: 39685a5c30f02f54ba92b67871ae5ecd
-  - enabled: 1
-    path: Assets/Scenes/Shadow.unity
-    guid: 7b386b614f256db4ebe390fddd70c4d6
-  - enabled: 1
-    path: Assets/Scenes/ice island.unity
-    guid: 27c9007633daaa1408fc5363d7c7ab64
-  - enabled: 1
     path: Assets/Scenes/Main Menu.unity
     guid: 5f017701681485448b72b4dc6927ca24
   - enabled: 1
@@ -36,17 +15,35 @@ EditorBuildSettings:
     path: Assets/Scenes/pirate.unity
     guid: 6b6dd2ddceeea0c4487f5a4f63faee0c
   - enabled: 1
-    path: "Assets/Scenes/Leviathan\u2019s Grave.unity"
-    guid: 3bade5a8f27f7de4d8d392d65bda6fc2
+    path: Assets/Scenes/Oildrift Atoll.unity
+    guid: 59b8d4bdd3e375d4eb70f9d7821b2967
+  - enabled: 1
+    path: Assets/Scenes/Glacier Hollow.unity
+    guid: 36a6209ee07409e438393d352fe6fbf6
+  - enabled: 1
+    path: Assets/Scenes/Witherwood.unity
+    guid: b241e40bf8baf4043be2868f0ac7b0ce
   - enabled: 1
     path: Assets/Scenes/Emberstone Crag.unity
     guid: 22d1b4649fb043e4282b4ae8ceb279bb
   - enabled: 1
+    path: "Assets/Scenes/Leviathan\u2019s Grave.unity"
+    guid: 3bade5a8f27f7de4d8d392d65bda6fc2
+  - enabled: 1
     path: Assets/Scenes/Verdant Timberhold.unity
     guid: 567815490d3c37840a9d070cc560f338
   - enabled: 1
-    path: Assets/Scenes/PlayerTest.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/ice island.unity
+    guid: 27c9007633daaa1408fc5363d7c7ab64
+  - enabled: 1
+    path: Assets/Scenes/Shadow.unity
+    guid: 7b386b614f256db4ebe390fddd70c4d6
+  - enabled: 1
+    path: Assets/Scenes/venom.unity
+    guid: 39685a5c30f02f54ba92b67871ae5ecd
+  - enabled: 1
+    path: Assets/Scenes/venom 2.unity
+    guid: 952329c8298def54c86aee482537a3e5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

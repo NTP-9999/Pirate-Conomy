@@ -14,7 +14,7 @@ public class LoadingScreen : MonoBehaviour
 
     IEnumerator LoadNextScene()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(PlayButton.nextScene);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(LoadingScreenData.nextScene);
         operation.allowSceneActivation = false;
 
         while (!operation.isDone)

@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public abstract class SceneChanger : MonoBehaviour
 {
     [Header("Scene Settings")]
     [SerializeField] protected string targetSceneName;
     [SerializeField] protected bool useStaticNextScene = false;
+    [SerializeField] protected FogFadeEffect fogEffect; // ใส่ใน Inspector
+    [SerializeField] protected float fogFadeTime = 1.0f;
     
     protected virtual void Start()
     {
@@ -33,26 +36,23 @@ public abstract class SceneChanger : MonoBehaviour
     
     protected virtual void ChangeScene()
     {
-        string sceneToLoad = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
-        
-        if (!string.IsNullOrEmpty(sceneToLoad))
+        if (fogEffect != null)
         {
-            Debug.Log($"Loading scene: {sceneToLoad}");
-            
-            // Use SceneTransitionManager if available, otherwise fallback to direct loading
-            if (SceneTransitionManager.Instance != null)
-            {
-                SceneTransitionManager.Instance.LoadScene(sceneToLoad);
-            }
-            else
-            {
-                SceneManager.LoadScene(sceneToLoad);
-            }
+            StartCoroutine(FadeAndChangeScene());
         }
         else
         {
-            Debug.LogError($"No scene name specified for {gameObject.name}");
+            // ถ้าไม่มี effect ให้เปลี่ยน scene ทันที
+            LoadingScreenData.nextScene = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
+            SceneManager.LoadScene("Loading_screen");
         }
+    }
+
+    private IEnumerator FadeAndChangeScene()
+    {
+        yield return StartCoroutine(fogEffect.FadeIn(fogFadeTime));
+        LoadingScreenData.nextScene = useStaticNextScene ? GetStaticSceneName() : targetSceneName;
+        SceneManager.LoadScene("Loading_screen");
     }
     
     protected virtual string GetStaticSceneName()
