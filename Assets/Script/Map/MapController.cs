@@ -17,6 +17,9 @@ public class MapController : MonoBehaviour
     public float mapScale = 1f;
 
     private Transform player;
+    void Awake(){
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
