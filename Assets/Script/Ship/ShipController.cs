@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ShipController : Singleton<ShipController>
 {
+    public static ShipController Instance;
     public float acceleration = 5f;
     public float maxSpeed = 10f;
     public float turnSpeed = 30f;
@@ -23,6 +24,7 @@ public class ShipController : Singleton<ShipController>
 
     void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
