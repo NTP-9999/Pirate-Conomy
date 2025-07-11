@@ -26,8 +26,7 @@ public class QuestManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // ทำให้ QuestManager ไม่ถูกทำลายเมื่อเปลี่ยน Scene (ถ้าคุณต้องการ)
-            DontDestroyOnLoad(gameObject); 
+            
         }
         else
         {
@@ -39,17 +38,9 @@ public class QuestManager : MonoBehaviour
     {
         // *** NEW: เริ่มเควสแรกสุด "คุยกับ NPC" เมื่อเกมเริ่ม ***
         // ตรวจสอบว่ามี target สำหรับเควสเริ่มต้น และยังไม่มีเควส active
-        if (initialQuestGiverTarget != null && activeQuest == null)
-        {
-            var initialQuest = new TalkToNPCQuest("คุยกับ NPC", "เดินทางไปหา NPC เพื่อเริ่มต้นภารกิจ", initialQuestGiverTarget, initialQuestFinishRange);
-            AddQuest(initialQuest); // เพิ่มเควสเข้า List
-            StartQuest(initialQuest); // เริ่มเควสนี้ให้เป็น Active Quest และแสดง UI
-            Debug.Log("เควสเริ่มต้น: 'คุยกับ NPC' ถูกเริ่มแล้ว");
-        }
-        else if (initialQuestGiverTarget == null)
-        {
-            Debug.LogError("QuestManager: กรุณาตั้งค่า 'Initial Quest Giver Target' ใน Inspector!");
-        }
+        Transform startingTarget = GameObject.Find("Target1").transform;
+        var firstQuest = new TalkToNPCQuest("Tutorial", "Talk To Merchant", startingTarget);
+        QuestManager.Instance.AddQuest(firstQuest, autoStart: true);
     }
 
     void Update()

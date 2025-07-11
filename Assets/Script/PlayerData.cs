@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerData : Singleton<PlayerData>
 {
@@ -7,5 +8,5 @@ public class PlayerData : Singleton<PlayerData>
     public bool sailing;
     public int money;
     public int currenthealth;  
-    public InventoryManager inventorymanager;
+    public List<InventoryItem> items = new List<InventoryItem>();
 }
