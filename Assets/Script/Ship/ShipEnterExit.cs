@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShipEnterExit : MonoBehaviour
+public class ShipEnterExit : Singleton<ShipEnterExit>
 {
     public Transform helmPoint;
     public GameObject helmUI;
@@ -10,7 +10,7 @@ public class ShipEnterExit : MonoBehaviour
     private Transform player;
     private Camera playerCamera;
     private bool nearHelm = false;
-    private bool isControlling = false;
+    public bool isControlling = false;
     public bool IsControlling => isControlling;
 
     private Camera shipCamObj;
@@ -107,12 +107,5 @@ public class ShipEnterExit : MonoBehaviour
             playerCamera.gameObject.SetActive(true); // ✅ เปิดกล้องผู้เล่นกลับ
 
         Debug.Log("Player exited ship control");
-
-        // หลังจาก player.gameObject.SetActive(true);
-        BoardingArea boardingArea = FindObjectOfType<BoardingArea>();
-        if (boardingArea != null)
-        {
-            boardingArea.CheckPlayerInArea();
-        }
     }
 }

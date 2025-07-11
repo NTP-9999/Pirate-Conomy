@@ -23,16 +23,7 @@ public class QuestManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            // ทำให้ QuestManager ไม่ถูกทำลายเมื่อเปลี่ยน Scene (ถ้าคุณต้องการ)
-            // DontDestroyOnLoad(gameObject); 
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()

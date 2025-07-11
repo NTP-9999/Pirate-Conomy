@@ -1,6 +1,11 @@
 using UnityEngine;
-public class ShipController : MonoBehaviour
+public class ShipController : Singleton<ShipController>
 {
+    public Vector3 shipPosition
+    {
+        get { return transform.position; }
+        set { transform.position = value; }
+    }
     public float acceleration = 5f;
     public float maxSpeed = 10f;
     public float turnSpeed = 30f;
@@ -13,6 +18,10 @@ public class ShipController : MonoBehaviour
 
     private float yRotation; // ✅ ต้องย้ายมาที่นี่
     private float fixedYValue;
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
