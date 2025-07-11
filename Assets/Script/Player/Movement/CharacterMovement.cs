@@ -6,6 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterStats))]
 public class CharacterMovement : MonoBehaviour
 {
+    public Vector3 PlayerPosition
+    {
+        get { return transform.position; }
+        set { transform.position = value; }
+    }
     private CharacterController controller;
     private Animator animator;
     private BasicCombat combat;

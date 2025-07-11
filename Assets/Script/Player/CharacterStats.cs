@@ -3,10 +3,10 @@ using System;
 using System.Collections;
 using TMPro;
 
-public class CharacterStats : MonoBehaviour
+public class CharacterStats : Singleton<CharacterStats>
 {
     [Header("Health")]
-    [SerializeField] private float _currentHealth;
+    [SerializeField] public float _currentHealth;
     public float maxHealth = 100f;
 
     public float currentHealth

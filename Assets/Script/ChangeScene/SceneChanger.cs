@@ -36,6 +36,7 @@ public abstract class SceneChanger : MonoBehaviour
     
     protected virtual void ChangeScene()
     {
+        GameManager.Instance.SavePlayerData();
         if (fogEffect != null)
         {
             StartCoroutine(FadeAndChangeScene());
