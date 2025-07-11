@@ -6,11 +6,17 @@ public class ShopKeeper : MonoBehaviour
     public ShopManager shopManager; // อ้างอิง ShopManager ของร้านนี้
     private bool canOpenShop = false; // Flag ว่าร้านค้า "พร้อมให้เปิด" (ได้หลังจากเควส)
     private bool playerInShopRange = false; // ตอนนี้ผู้เล่นอยู่ในระยะร้านค้าหรือเปล่า
+    public bool shopAlwaysOpen = false;
+    public GameObject pressEUI;
 
     void Start()
     {
         if (shopUIPanel != null)
             shopUIPanel.SetActive(false);
+        if (shopAlwaysOpen)
+        {
+            canOpenShop = true;
+        }
     }
 
     public void EnableShop()
@@ -37,8 +43,8 @@ public class ShopKeeper : MonoBehaviour
         if (shopManager != null)
             shopManager.OpenShop();
 
-        // ปิดทุก Component (ยกเว้น Transform) ของ GameObject "MC"
-        GameObject mc = GameObject.Find("MC");
+        // ปิดทุก Component (ยกเว้น Transform) ของ GameObject ที่ Tag เป็น "Player"
+        GameObject mc = GameObject.FindGameObjectWithTag("Player");
         if (mc != null)
         {
             foreach (var comp in mc.GetComponents<MonoBehaviour>())
@@ -74,7 +80,7 @@ public class ShopKeeper : MonoBehaviour
             shopUIPanel.SetActive(false);
 
         // เปิด Component กลับ
-        GameObject mc = GameObject.Find("MC");
+        GameObject mc = GameObject.FindGameObjectWithTag("Player");
         if (mc != null)
         {
             foreach (var comp in mc.GetComponents<MonoBehaviour>())
@@ -103,6 +109,7 @@ public class ShopKeeper : MonoBehaviour
     // 🎯 เพิ่ม OnTriggerEnter/Exit
     private void OnTriggerEnter(Collider other)
     {
+        pressEUI.SetActive(true);
         if (other.CompareTag("Player"))
         {
             playerInShopRange = true;
@@ -112,6 +119,7 @@ public class ShopKeeper : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        pressEUI.SetActive(false);
         if (other.CompareTag("Player"))
         {
             playerInShopRange = false;
