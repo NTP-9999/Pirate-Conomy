@@ -8,21 +8,26 @@ public class TalkToNPCQuest : Quest
 
     public override void UpdateQuest()
     {
-        // ตรวจสอบว่าเควสยัง Active และยังไม่เสร็จสิ้น
         if (!isActive || isCompleted) return;
 
         GameObject Player = GameObject.FindGameObjectWithTag("Player");
-        if (Player == null)
-        {
-            Debug.LogError("Player GameObject not found for TalkToNPCQuest UpdateQuest!");
-            return;
-        }
+        if (Player == null) return;
 
-        float distance = Vector3.Distance(Player.transform.position, target.position);
-        if (distance < questFinishRange) // ใช้ระยะที่กำหนดใน questFinishRange
+        if (target != null)
         {
-            Debug.Log($"เควส '{questName}' สำเร็จแล้วจากการเข้าใกล้! (ระยะ {distance:F2}m)");
-            CompleteQuest(); // ทำให้ UI เควสหายไป
+            float distance = Vector3.Distance(Player.transform.position, target.position);
+            if (distance < questFinishRange)
+            {
+                Debug.Log($"ถึงเป้าหมาย {target.name} แล้ว!");
+                CompleteQuest();
+            }
         }
+    }
+
+    public override void StartQuest()
+    {
+        base.StartQuest();
+        Debug.Log($"[TalkToNPCQuest] StartQuest called, target: {target?.name}");
+        WaypointUI.Instance.SetTarget(target, this);
     }
 }

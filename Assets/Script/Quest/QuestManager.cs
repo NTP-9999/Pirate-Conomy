@@ -1,10 +1,14 @@
 // Assets\Scpirt\Quest\QuestManager.cs
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
+    
+    // เพิ่ม static flag เพื่อป้องกันการสร้างเควสซ้ำ
+    private static bool hasInitialQuestBeenCreated = false;
 
     private List<Quest> allQuests = new List<Quest>();
     public Quest activeQuest; // เปลี่ยนเป็น public เพื่อให้ QuestGiver เข้าถึง activeQuest ได้ง่ายขึ้น (สำหรับการ Debug)
@@ -26,21 +30,45 @@ public class QuestManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            
+            DontDestroyOnLoad(gameObject); // ทำให้ QuestManager ไม่ถูก destroy เมื่อเปลี่ยน scene
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            Debug.Log("[QuestManager] QuestManager set to DontDestroyOnLoad");
         }
         else
         {
+            Debug.Log("[QuestManager] Another QuestManager found, destroying duplicate");
             Destroy(gameObject);
         }
     }
 
     void Start()
     {
-        // *** NEW: เริ่มเควสแรกสุด "คุยกับ NPC" เมื่อเกมเริ่ม ***
-        // ตรวจสอบว่ามี target สำหรับเควสเริ่มต้น และยังไม่มีเควส active
-        Transform startingTarget = GameObject.Find("Target1").transform;
-        var firstQuest = new TalkToNPCQuest("Tutorial", "Talk To Merchant", startingTarget);
-        QuestManager.Instance.AddQuest(firstQuest, autoStart: true);
+        Debug.Log("[QuestManager] Start called");
+        
+        // สร้างเควสเริ่มต้นเฉพาะถ้ามี Target1 และยังไม่เคยสร้าง
+        if (!hasInitialQuestBeenCreated) 
+        {
+            GameObject go = GameObject.Find("Target1");
+            Debug.Log($"[QuestManager] Looking for Target1: {(go != null ? "Found" : "Not found")}");
+            
+            if (go != null)
+            {
+                Transform startingTarget = go.transform;
+                Debug.Log($"[QuestManager] Creating initial quest with target: {startingTarget.name}");
+                var firstQuest = new TalkToNPCQuest("Tutorial", "Talk To Merchant", startingTarget);
+                AddQuest(firstQuest, autoStart: true);
+                hasInitialQuestBeenCreated = true; // ตั้ง flag ว่าได้สร้างแล้ว
+                Debug.Log("[QuestManager] Initial quest created and started");
+            }
+            else
+            {
+                Debug.LogWarning("QuestManager: ไม่พบ Target1 ใน scene");
+            }
+        }
+        else
+        {
+            Debug.Log("[QuestManager] Initial quest already created, skipping");
+        }
     }
 
     void Update()
@@ -70,6 +98,18 @@ public class QuestManager : MonoBehaviour
 
     public void AddQuest(Quest quest, bool autoStart = false)
     {
+        Debug.Log($"[QuestManager] AddQuest called - Quest: {quest?.questName}, AutoStart: {autoStart}");
+        allQuests.Add(quest);
+        if (autoStart)
+        {
+            StartQuest(quest);
+        }
+    }
+    
+    // Method สำหรับ IslandQuest เพื่อสร้างเควสโดยไม่ถูก block โดย static flag
+    public void AddIslandQuest(Quest quest, bool autoStart = false)
+    {
+        Debug.Log($"[QuestManager] AddIslandQuest called - Quest: {quest?.questName}, AutoStart: {autoStart}");
         allQuests.Add(quest);
         if (autoStart)
         {
@@ -79,16 +119,17 @@ public class QuestManager : MonoBehaviour
 
     public void StartQuest(Quest quest)
     {
+        Debug.Log($"[QuestManager] StartQuest called - Quest: {quest?.questName}");
+        
+        // ถ้ามีเควส active อยู่ ให้ complete ก่อน
         if (activeQuest != null && !activeQuest.isCompleted)
         {
-            // อาจจะต้องการเปลี่ยนเควสไปเลย แทนที่จะ Debug.Log
-            // หรือตรวจสอบว่าเป็นเควสเดียวกันหรือไม่
-            Debug.Log($"มีเควสกำลัง Active อยู่แล้ว ({activeQuest.questName}). ไม่สามารถเริ่มเควส '{quest.questName}' ได้");
-            // ถ้าคุณต้องการให้มันบังคับเปลี่ยนเควสเลย uncomment บรรทัดนี้
-            // CompleteActiveQuest(); 
+            Debug.Log("[QuestManager] Completing previous active quest");
+            CompleteActiveQuest();
         }
 
         activeQuest = quest;
+        Debug.Log($"[QuestManager] Setting active quest: {quest?.questName}");
         quest.StartQuest(); // เรียก StartQuest ของเควสที่ทำให้ UI แสดง
     }
 
@@ -99,6 +140,12 @@ public class QuestManager : MonoBehaviour
             activeQuest.CompleteQuest(); // ทำให้ UI หายไป
             activeQuest = null;
         }
+    }
+    
+    // Method สำหรับ reset static flag เมื่อเกมเริ่มใหม่
+    public static void ResetStaticData()
+    {
+        hasInitialQuestBeenCreated = false;
     }
     
     // Gizmos สำหรับแสดงระยะ QuestFinishRange ใน Scene View
@@ -154,5 +201,20 @@ public class QuestManager : MonoBehaviour
         
         Gizmos.DrawLine(end, arrowHead1);
         Gizmos.DrawLine(end, arrowHead2);
+    }
+
+    void OnSceneUnloaded(Scene scene)
+    {
+        Debug.Log("[QuestManager] Scene unloaded, completing active quest.");
+        CompleteActiveQuest();
+        
+        // Reset static flag เพื่อให้ IslandQuest สามารถสร้างเควสใหม่ได้ใน scene ใหม่
+        hasInitialQuestBeenCreated = false;
+        Debug.Log("[QuestManager] Reset hasInitialQuestBeenCreated flag for new scene");
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
 }
