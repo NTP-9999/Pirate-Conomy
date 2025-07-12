@@ -21,7 +21,10 @@ public class GameManager : Singleton<GameManager>
         {
             CharacterMovement.Instance.PlayerPosition = PlayerData.Instance.playerposition;
         }
-        ShipController.Instance.shipPosition = PlayerData.Instance.shipPosition;
+        if (PlayerData.Instance.shipPosition != Vector3.zero)
+        {
+            ShipController.Instance.shipPosition = PlayerData.Instance.shipPosition;
+        }
         ShipEnterExit.Instance.isControlling = PlayerData.Instance.sailing;
         // TODO: Set inventory items here, e.g. InventoryManager.Instance.SetItems(PlayerData.Instance.inventoryItems);
         PlayerCurrency.Instance.currentNova = PlayerData.Instance.money;
