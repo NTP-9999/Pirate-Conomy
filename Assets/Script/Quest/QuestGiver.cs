@@ -17,7 +17,8 @@ public class QuestGiver : MonoBehaviour
     [Header("ข้อมูลเควสที่ 2 (หลังคุยกับ NPC)")]
     public string quest2Name = "ส่งจดหมาย";
     public string quest2Description = "เดินทางไปยังหมู่บ้านเพื่อส่งจดหมาย";
-    public Transform quest2Target; // เป้าหมายของเควส "ส่งจดหมาย" (อาจจะเป็นหมู่บ้านหรือ NPC คนอื่น)
+    public Transform quest2Target; // เป้าหมายของเควส "ส่งจดหมาย"
+    
     [Header("Quest 2 Settings")]
     public float quest2FinishRange = 10f; // ปรับได้ใน Inspector
 
@@ -32,43 +33,39 @@ public class QuestGiver : MonoBehaviour
     public float cameraElevateOffset = 1.5f; 
     public float cameraElevateSpeed = 0.5f;
     public ShopKeeper shopKeeper;
+    
 
     void Start()
     {
-        // ... (โค้ดส่วน Start() เดิมสำหรับการหา Reference ของ Player และ Camera) ...
-        if (playerMovement == null)
+        // หา Player GameObject ที่ inactive ด้วย
+        GameObject playerObj = null;
+        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        foreach (var go in allObjects)
         {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
+            if (go.CompareTag("Player") && go.hideFlags == HideFlags.None)
             {
-                playerMovement = playerObj.GetComponent<CharacterMovement>();
+                playerObj = go;
+                break;
             }
+        }
+
+        // หา Component ใน Player
+        if (playerObj != null)
+        {
             if (playerMovement == null)
-            {
-                Debug.LogError("QuestGiver: CharacterMovement reference is missing! Please assign it in the Inspector or ensure Player has CharacterMovement.", this);
-            }
+                playerMovement = playerObj.GetComponent<CharacterMovement>();
+
+            if (playerCameraController == null)
+                playerCameraController = playerObj.GetComponentInChildren<FirstPersonCamera>(true); // true = รวม inactive
+        }
+        else
+        {
+            Debug.LogWarning("QuestGiver: ไม่พบ Player (แม้จะ inactive)");
         }
 
-        if (playerCameraController == null)
-        {
-            if (playerMovement != null)
-            {
-                playerCameraController = playerMovement.GetComponentInChildren<FirstPersonCamera>();
-            }
-            if (playerCameraController == null)
-            {
-                playerCameraController = FindObjectOfType<FirstPersonCamera>();
-            }
-            if (playerCameraController == null)
-            {
-                Debug.LogError("QuestGiver: FirstPersonCamera script reference is missing! Please assign it in the Inspector or ensure it's in the scene.", this);
-            }
-        }
-
-        if (pressEUI != null)
-        {
-            pressEUI.SetActive(false);
-        }
+        // หา PressEUI ตามเดิม
+        if (pressEUI == null)
+            pressEUI = GameObject.Find("PressEPrompt");
     }
 
     void Update()
@@ -142,15 +139,27 @@ public class QuestGiver : MonoBehaviour
     void OnAccept()
     {
         Debug.Log("Dialogue Accepted! กำลังเริ่มเควสถัดไป...");
-        var nextQuest = new TalkToNPCQuest(quest2Name, quest2Description, quest2Target, quest2FinishRange); // ส่ง questFinishRange ไปด้วย
-        QuestManager.Instance.AddQuest(nextQuest);
-        QuestManager.Instance.StartQuest(nextQuest); // นี่จะทำให้ UI เควสแสดงชื่อและรายละเอียดเควสใหม่ และ Waypoint ชี้ไปที่ quest2Target
-        Debug.Log($"เริ่มเควสถัดไปแล้ว: {quest2Name}");
 
-        nextQuestStarted = true; // ตั้ง Flag ว่าเควสถัดไปเริ่มแล้ว ป้องกันการเริ่มซ้ำ
+        Quest nextQuest;
+        if (quest2Target != null)
+        {
+            nextQuest = new TalkToNPCQuest(quest2Name, quest2Description, quest2Target, quest2FinishRange);
+            Debug.Log($"เริ่มเควสจุดเดียว: {quest2Name}");
+        }
+        else
+        {
+            Debug.LogError("QuestGiver: ไม่มี target สำหรับเควสที่ 2!");
+            ResetPlayerAndCamera();
+            return;
+        }
+
+        QuestManager.Instance.AddQuest(nextQuest);
+        QuestManager.Instance.StartQuest(nextQuest);
+
+        nextQuestStarted = true;
         if (shopKeeper != null)
         {
-           shopKeeper.EnableShop(); 
+            shopKeeper.EnableShop();
         }
         ResetPlayerAndCamera();
         if (playerInRange && pressEUI != null)
@@ -182,21 +191,30 @@ public class QuestGiver : MonoBehaviour
     // Gizmos สำหรับแสดงระยะ QuestFinishRange ใน Scene View
     void OnDrawGizmos()
     {
+        // แสดง Gizmo สำหรับ single target
         if (quest2Target != null)
         {
-            // วาดวงกลมแสดงระยะ QuestFinishRange
-            Gizmos.color = nextQuestStarted ? Color.blue : Color.yellow;
-            Gizmos.DrawWireSphere(quest2Target.position, quest2FinishRange);
-            
-            // วาดเส้นจาก target ไปยังระยะ
-            Gizmos.DrawLine(quest2Target.position, quest2Target.position + Vector3.right * quest2FinishRange);
-            
-            // แสดงข้อความ
-            #if UNITY_EDITOR
-            Vector3 labelPosition = quest2Target.position + Vector3.up * (quest2FinishRange + 1f);
-            UnityEditor.Handles.Label(labelPosition, 
-                $"Quest: {quest2Name}\nRange: {quest2FinishRange}m\nStarted: {nextQuestStarted}");
-            #endif
+            DrawQuestGizmo(quest2Target.position, quest2FinishRange, 
+                          quest2Name, nextQuestStarted, nextQuestStarted ? Color.blue : Color.yellow);
         }
+        
+        // แสดง Gizmo สำหรับ multiple targets
+        // ลบส่วนนี้เนื่องจากไม่มีการสนับสนุน multiple targets แล้ว
+    }
+
+    private void DrawQuestGizmo(Vector3 position, float range, string label, bool started, Color gizmoColor)
+    {
+        Gizmos.color = gizmoColor;
+        Gizmos.DrawWireSphere(position, range);
+        
+        // วาดเส้นจาก target ไปยังระยะ
+        Gizmos.DrawLine(position, position + Vector3.right * range);
+        
+        // แสดงข้อความ
+        #if UNITY_EDITOR
+        Vector3 labelPosition = position + Vector3.up * (range + 1f);
+        UnityEditor.Handles.Label(labelPosition, 
+            $"Quest: {label}\nRange: {range}m\nStarted: {started}");
+        #endif
     }
 }

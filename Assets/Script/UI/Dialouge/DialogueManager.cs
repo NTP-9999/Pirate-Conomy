@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -19,8 +20,86 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         Debug.Log("DialogueManager Awake called!");
-        Instance = this;
-        dialoguePanel.SetActive(false);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        AssignReferences();
+        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("DialogueManager: Scene loaded, re-assigning references.");
+        AssignReferences();
+        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+    }
+
+    private void AssignReferences()
+    {
+        // หา DialoguePanel แม้จะ inactive
+        if (dialoguePanel == null)
+        {
+            var allPanels = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var go in allPanels)
+            {
+                if (go.name == "DialoguePanel")
+                {
+                    dialoguePanel = go;
+                    break;
+                }
+            }
+        }
+        if (dialogueText == null)
+        {
+            var allTexts = Resources.FindObjectsOfTypeAll<TMPro.TextMeshProUGUI>();
+            foreach (var t in allTexts)
+            {
+                if (t.name == "DialogueText")
+                {
+                    dialogueText = t;
+                    break;
+                }
+            }
+        }
+        if (acceptButton == null)
+        {
+            var allButtons = Resources.FindObjectsOfTypeAll<Button>();
+            foreach (var b in allButtons)
+            {
+                if (b.name == "AcceptButton")
+                {
+                    acceptButton = b;
+                    break;
+                }
+            }
+        }
+        if (declineButton == null)
+        {
+            var allButtons = Resources.FindObjectsOfTypeAll<Button>();
+            foreach (var b in allButtons)
+            {
+                if (b.name == "DeclineButton")
+                {
+                    declineButton = b;
+                    break;
+                }
+            }
+        }
     }
 
     public void StartDialogue(string[] lines, System.Action acceptCallback, System.Action declineCallback)

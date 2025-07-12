@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic; // Added for List
 
 public class WaypointUI : MonoBehaviour
 {
@@ -20,7 +21,28 @@ public class WaypointUI : MonoBehaviour
     private Transform playerTransform;
 
     void Awake()
-    {
+    {  
+        if (target == null)
+        {
+            target = GameObject.Find("Target1").transform;
+        }
+        GameObject playerObj = null;
+        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        foreach (var go in allObjects)
+        {
+            if (go.CompareTag("Player") && go.hideFlags == HideFlags.None)
+            {
+                playerObj = go;
+                break;
+            }
+        }
+        if (playerObj != null)
+        {
+            if (cam == null)
+            {
+                cam = FindObjectOfType<Camera>();
+            }
+        }
         // Singleton pattern
         if (Instance == null)
         {
@@ -52,10 +74,10 @@ public class WaypointUI : MonoBehaviour
     /// <param name="quest">The associated quest reference.</param>
     public void SetTarget(Transform t, Quest quest)
     {
-        target = t;
-        questRef = quest;
-        icon.gameObject.SetActive(true);
-        distanceText.gameObject.SetActive(true);
+        this.target = t;
+        this.questRef = quest;
+        if (icon != null) icon.gameObject.SetActive(true);
+        if (distanceText != null) distanceText.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -65,8 +87,8 @@ public class WaypointUI : MonoBehaviour
     {
         target = null;
         questRef = null;
-        icon.gameObject.SetActive(false);
-        distanceText.gameObject.SetActive(false);
+        if (icon != null) icon.gameObject.SetActive(false);
+        if (distanceText != null) distanceText.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -93,9 +115,8 @@ public class WaypointUI : MonoBehaviour
         // Ensure all necessary references are set
         if (target == null || cam == null || playerTransform == null)
         {
-            // If the target or essential references are missing, ensure UI is hidden
-            if (icon.gameObject.activeSelf) icon.gameObject.SetActive(false);
-            if (distanceText.gameObject.activeSelf) distanceText.gameObject.SetActive(false);
+            if (icon != null && icon.gameObject.activeSelf) icon.gameObject.SetActive(false);
+            if (distanceText != null && distanceText.gameObject.activeSelf) distanceText.gameObject.SetActive(false);
             return;
         }
 
@@ -112,69 +133,54 @@ public class WaypointUI : MonoBehaviour
 
         if (isTargetOnScreen)
         {
-            // If target is visible, show icon and text
-            icon.gameObject.SetActive(true);
-            distanceText.gameObject.SetActive(true);
+            if (icon != null) icon.gameObject.SetActive(true);
+            if (distanceText != null) distanceText.gameObject.SetActive(true);
 
             // Directly set position for on-screen targets
-            icon.position = Vector2.Lerp(icon.position, new Vector2(screenPos.x, screenPos.y), Time.deltaTime * smoothSpeed);
-            distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(screenPos.x, screenPos.y - 20f, 0), Time.deltaTime * smoothSpeed);
+            if (icon != null) icon.position = Vector2.Lerp(icon.position, new Vector2(screenPos.x, screenPos.y), Time.deltaTime * smoothSpeed);
+            if (distanceText != null) distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(screenPos.x, screenPos.y - 20f, 0), Time.deltaTime * smoothSpeed);
 
             // No rotation needed for on-screen target (or set a default if desired)
-            icon.rotation = Quaternion.Lerp(icon.rotation, Quaternion.identity, Time.deltaTime * smoothSpeed); // Reset to no rotation
+            if (icon != null) icon.rotation = Quaternion.Lerp(icon.rotation, Quaternion.identity, Time.deltaTime * smoothSpeed); // Reset to no rotation
         }
         else // Target is off-screen
         {
-            // If target is off-screen but in front of the camera (behind camera is handled by z < 0)
             if (isTargetInFrontOfCamera)
             {
-                icon.gameObject.SetActive(true);
-                distanceText.gameObject.SetActive(true);
+                if (icon != null) icon.gameObject.SetActive(true);
+                if (distanceText != null) distanceText.gameObject.SetActive(true);
 
-                // Calculate the direction from screen center to the target
                 Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-                Vector2 screenPointNormalized = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
-
-                // Clamp the screen position to the edges of the screen, accounting for padding
                 Vector2 clampedPosition = new Vector2(
                     Mathf.Clamp(screenPos.x, screenPadding.x, Screen.width - screenPadding.x),
                     Mathf.Clamp(screenPos.y, screenPadding.y, Screen.height - screenPadding.y)
                 );
 
-                // Determine which edge the target is off of
                 if (screenPos.x <= screenPadding.x || screenPos.x >= Screen.width - screenPadding.x ||
                     screenPos.y <= screenPadding.y || screenPos.y >= Screen.height - screenPadding.y)
                 {
-                    // If it's off-screen, but still in front of camera, clamp it
                     Vector2 directionToTarget = (new Vector2(screenPos.x, screenPos.y) - screenCenter).normalized;
-
-                    // Calculate the angle for the icon to point towards the off-screen target
                     float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
-                    icon.rotation = Quaternion.Slerp(icon.rotation, Quaternion.Euler(0, 0, angle - 90), Time.deltaTime * smoothSpeed);
-
-                    // Clamp the icon position to the screen edges with padding
-                    icon.position = Vector2.Lerp(icon.position, clampedPosition, Time.deltaTime * smoothSpeed);
-                    distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(clampedPosition.x, clampedPosition.y - 20f, 0), Time.deltaTime * smoothSpeed);
+                    if (icon != null) icon.rotation = Quaternion.Slerp(icon.rotation, Quaternion.Euler(0, 0, angle - 90), Time.deltaTime * smoothSpeed);
+                    if (icon != null) icon.position = Vector2.Lerp(icon.position, clampedPosition, Time.deltaTime * smoothSpeed);
+                    if (distanceText != null) distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(clampedPosition.x, clampedPosition.y - 20f, 0), Time.deltaTime * smoothSpeed);
                 }
                 else
                 {
-                    // This case handles targets that are "almost" off-screen but not quite clamped yet.
-                    // It's a fallback to ensure they are handled.
-                    icon.position = Vector2.Lerp(icon.position, new Vector2(screenPos.x, screenPos.y), Time.deltaTime * smoothSpeed);
-                    distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(screenPos.x, screenPos.y - 20f, 0), Time.deltaTime * smoothSpeed);
-                    icon.rotation = Quaternion.Lerp(icon.rotation, Quaternion.identity, Time.deltaTime * smoothSpeed);
+                    if (icon != null) icon.position = Vector2.Lerp(icon.position, new Vector2(screenPos.x, screenPos.y), Time.deltaTime * smoothSpeed);
+                    if (distanceText != null) distanceText.transform.position = Vector3.Lerp(distanceText.transform.position, new Vector3(screenPos.x, screenPos.y - 20f, 0), Time.deltaTime * smoothSpeed);
+                    if (icon != null) icon.rotation = Quaternion.Lerp(icon.rotation, Quaternion.identity, Time.deltaTime * smoothSpeed);
                 }
             }
             else // Target is behind the camera (screenPos.z <= 0)
             {
-                // Hide icon and text if target is behind the camera
-                icon.gameObject.SetActive(false);
-                distanceText.gameObject.SetActive(false);
+                if (icon != null) icon.gameObject.SetActive(false);
+                if (distanceText != null) distanceText.gameObject.SetActive(false);
             }
         }
 
         // Always update distance text if active
-        if (icon.gameObject.activeSelf)
+        if (icon != null && icon.gameObject.activeSelf && distanceText != null)
         {
             float dist = Vector3.Distance(playerTransform.position, target.position);
             distanceText.text = Mathf.RoundToInt(dist) + " m";
