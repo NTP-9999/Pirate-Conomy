@@ -22,7 +22,7 @@ public abstract class Quest
     {
         isActive = true;
         WaypointUI.Instance.SetTarget(target, this); // ส่งเควสนี้ให้ Waypoint UI
-        UIObjectiveText.Instance.SetText(questName + ": " + description);
+        UIObjectiveText.Instance.SetText(questName + " " + description);
     }
 
     public virtual void CompleteQuest()

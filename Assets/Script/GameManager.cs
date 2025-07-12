@@ -10,9 +10,6 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         SetPlayerData();
-        Transform startingTarget = GameObject.Find("Target1").transform;
-        var firstQuest = new TalkToNPCQuest("Tutorial", "Talk To Merchant", startingTarget);
-        QuestManager.Instance.AddQuest(firstQuest, autoStart: true);
     }
     public void SetPlayerData()
     {
@@ -25,6 +22,7 @@ public class GameManager : Singleton<GameManager>
         {
             ShipController.Instance.shipPosition = PlayerData.Instance.shipPosition;
         }
+        InventoryManager.Instance.items = PlayerData.Instance.items;
         ShipEnterExit.Instance.isControlling = PlayerData.Instance.sailing;
         // TODO: Set inventory items here, e.g. InventoryManager.Instance.SetItems(PlayerData.Instance.inventoryItems);
         PlayerCurrency.Instance.currentNova = PlayerData.Instance.money;
@@ -32,6 +30,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void SavePlayerData()
     {
+        PlayerData.Instance.items = InventoryManager.Instance.items;
         PlayerData.Instance.playerposition = CharacterMovement.Instance.PlayerPosition;
         PlayerData.Instance.sailing = ShipEnterExit.Instance.isControlling;
         PlayerData.Instance.shipPosition = ShipController.Instance.shipPosition;

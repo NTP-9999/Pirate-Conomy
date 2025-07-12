@@ -1,68 +1,68 @@
 using UnityEngine;
+
 public class ShipController : Singleton<ShipController>
 {
-    public Vector3 shipPosition
-    {
-        get { return transform.position; }
-        set { transform.position = value; }
-    }
+    public static ShipController Instance;
     public float acceleration = 5f;
     public float maxSpeed = 10f;
     public float turnSpeed = 30f;
     public float waterDrag = 0.5f;
 
+    public float rockingAmplitude = 2f; // องศาการโยก
+    public float rockingFrequency = 0.5f; // ความถี่
+    private float rockingTimer = 0f;
+    public Vector3 shipPosition
+    {
+        get { return transform.position; }
+        set { transform.position = value; }
+    }
+
+    public Transform shipVisual; // drag ShipVisual (child) มาใส่ใน Inspector
+
     private Rigidbody rb;
-    private float currentForwardInput = 0f;
-    private float currentTurnInput = 0f;
     private ShipEnterExit enterExit;
 
-    private float yRotation; // ✅ ต้องย้ายมาที่นี่
-    private float fixedYValue;
     void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        Vector3 currentEuler = transform.eulerAngles;
-        yRotation = currentEuler.y; // เก็บ rotation Y ตอนเริ่ม
-        fixedYValue = transform.position.y;
-
         enterExit = GetComponent<ShipEnterExit>();
         rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
     {
-        // 🔒 ล็อค Rotation X/Z แต่รักษา Y
-        transform.rotation = Quaternion.Euler(-4.696f, yRotation, 0f);
-
-        // 🔒 ล็อคตำแหน่ง Y
-        Vector3 position = transform.position;
-        position.y = fixedYValue;
-        transform.position = position;
-
         ApplyDrag();
         HandleMovement();
+
+        // Rocking (โยก Pitch/Roll ที่ mesh เท่านั้น)
+        rockingTimer += Time.fixedDeltaTime;
+        float pitch = Mathf.Sin(rockingTimer * rockingFrequency * Mathf.PI * 2f) * rockingAmplitude;
+        float roll = Mathf.Sin((rockingTimer + 1f) * rockingFrequency * Mathf.PI * 2f) * rockingAmplitude * 0.7f;
+        shipVisual.localRotation = Quaternion.Euler(pitch, 0, roll);
+
+        // ล็อก Rotation X/Z ของ Rigidbody หลัก
+        Vector3 euler = rb.rotation.eulerAngles;
+        rb.rotation = Quaternion.Euler(0, euler.y, 0);
     }
 
     void HandleMovement()
     {
         if (enterExit == null || !enterExit.IsControlling) return;
 
-        currentForwardInput = Input.GetAxis("Vertical");
-        currentTurnInput = Input.GetAxis("Horizontal");
-
-        // คำนวณ Rotation Y ใหม่ แล้วอัปเดต yRotation
-        yRotation += currentTurnInput * turnSpeed * Time.fixedDeltaTime;
+        float forward = Input.GetAxis("Vertical");
+        float turn = Input.GetAxis("Horizontal");
 
         // เคลื่อนที่
-        Vector3 force = transform.forward * currentForwardInput * acceleration;
         if (rb.linearVelocity.magnitude < maxSpeed)
-        {
-            rb.AddForce(force, ForceMode.Force);
-        }
+            rb.AddForce(transform.forward * forward * acceleration, ForceMode.Force);
+
+        // เลี้ยว
+        rb.AddTorque(Vector3.up * turn * turnSpeed, ForceMode.Force);
     }
 
     void ApplyDrag()
