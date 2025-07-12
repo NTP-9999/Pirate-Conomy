@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class Quest
 {
-    public string questName;
-    public string description;
+    public virtual string questName { get; protected set; }
+    public virtual string description { get; protected set; }
     public bool isActive = false;
     public bool isCompleted = false;
 
