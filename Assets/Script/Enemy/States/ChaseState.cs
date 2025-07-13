@@ -10,6 +10,7 @@ public class ChaseState : EnemyState
         base.Enter();
         Debug.Log("Enter Chase State");
         enemy.animator.SetBool("Chasing", true);
+        enemy.agent.speed = enemy.chaseSpeed; 
     }
 
     public override void LogicUpdate()
@@ -30,6 +31,7 @@ public class ChaseState : EnemyState
 
     public override void Exit()
     {
+        enemy.agent.speed = enemy.walkSpeed;
         base.Exit();
         Debug.Log("Exit Chase State");
     }

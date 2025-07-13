@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class AttackState : EnemyState
 {
@@ -13,8 +14,6 @@ public class AttackState : EnemyState
     {
         base.Enter();
         Debug.Log("Enter Attack State");
-
-        enemy.agent.isStopped = true;
         Attack();           // ตีทันทีตอนเข้า state
         timer = 0f;         // รีเซ็ต timer หลังจากตี
     }
@@ -40,14 +39,16 @@ public class AttackState : EnemyState
 
     private void Attack()
     {
+        enemy.agent.isStopped = true;
         enemy.animator.SetTrigger("Attack");
         if (CharacterStats.Instance != null)
         {
             CharacterStats.Instance.TakeDamage(Atkdamage);
             Debug.Log("Player took damage from enemy attack amount: " + Atkdamage);
         }
+        enemy.StartCoroutine(enemy.WaitEndAttack());
     }
-
+    
     public override void Exit()
     {
         base.Exit();
