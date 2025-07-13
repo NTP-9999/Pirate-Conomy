@@ -42,8 +42,7 @@ public class ShipController : Singleton<ShipController>
         // Rocking (โยก Pitch/Roll ที่ mesh เท่านั้น)
         rockingTimer += Time.fixedDeltaTime;
         float pitch = Mathf.Sin(rockingTimer * rockingFrequency * Mathf.PI * 2f) * rockingAmplitude;
-        float roll = Mathf.Sin((rockingTimer + 1f) * rockingFrequency * Mathf.PI * 2f) * rockingAmplitude * 0.7f;
-        shipVisual.localRotation = Quaternion.Euler(pitch, 0, roll);
+        shipVisual.localRotation = Quaternion.Euler(pitch, 0, 0);
 
         // ล็อก Rotation X/Z ของ Rigidbody หลัก
         Vector3 euler = rb.rotation.eulerAngles;
