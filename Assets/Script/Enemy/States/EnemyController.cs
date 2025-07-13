@@ -1,5 +1,6 @@
 using UnityEngine.AI;
 using UnityEngine;
+using System.Collections;
 
 public class EnemyController : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class EnemyController : MonoBehaviour
     [Header("Target")]
     public Transform player;
 
+    [Header("Movement")]
+    public float walkSpeed = 2f;
+    public float chaseSpeed = 4f;
+
     void Awake()
     {
         if(agent == null)
@@ -27,6 +32,7 @@ public class EnemyController : MonoBehaviour
         {
             animator = GetComponent<Animator>();
         }
+        agent.speed = walkSpeed;
         
         stateMachine = new EnemyStateMachine();
         attackState = new AttackState(this, stateMachine);
@@ -46,5 +52,10 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         stateMachine.currentState?.LogicUpdate();
+    }
+    public IEnumerator WaitEndAttack()
+    {
+        yield return new WaitForSeconds(0.8f);
+        agent.isStopped = false;
     }
 }

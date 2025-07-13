@@ -8,6 +8,7 @@ public class PlayerStateMachine : MonoBehaviour
     public PlayerAttackState attackState;
     public PlayerJumpState jumpState;
     public PlayerController playerController;
+    public PlayerHurtState hurtState;
 
     void Awake()
     {
@@ -16,6 +17,7 @@ public class PlayerStateMachine : MonoBehaviour
         moveState = new PlayerMoveState(this);
         attackState = new PlayerAttackState(this);
         jumpState = new PlayerJumpState(this);
+        hurtState = new PlayerHurtState(this);
     }
 
     void Start()

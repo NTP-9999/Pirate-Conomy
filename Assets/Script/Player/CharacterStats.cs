@@ -147,6 +147,11 @@ public class CharacterStats : Singleton<CharacterStats>
             if (playerAudioSource == null) Debug.LogWarning("Damage SFX: playerAudioSource is null.");
             if (damageSFX == null) Debug.LogWarning("Damage SFX: damageSFX AudioClip is null.");
         }
+        PlayerStateMachine stateMachine = GetComponent<PlayerStateMachine>();
+        if (stateMachine != null)
+        {
+            stateMachine.ChangeState(stateMachine.hurtState);
+        }
 
         OnPlayerDamaged?.Invoke(amount);
 

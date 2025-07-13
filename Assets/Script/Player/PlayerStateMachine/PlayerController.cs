@@ -17,11 +17,13 @@ public class PlayerController : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackDamage = 20f;
     public LayerMask enemyLayer;
+    public bool canMove = true;
 
     private bool grounded;
 
     private void Awake()
     {
+        CharacterStats.Instance.OnPlayerDamaged += OnPlayerDamagedHandler;
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         mainCamera = Camera.main;
@@ -34,6 +36,13 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (!canMove)
+        {
+            // ไม่ให้ควบคุม
+            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+            verticalVelocity += gravity * Time.deltaTime;
+            return;
+        }
         grounded = characterController.isGrounded;
 
         if (grounded && verticalVelocity < 0)
@@ -70,6 +79,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsRunning", isRunning);
         animator.SetBool("IsGrounded", grounded);
     }
+    
 
     public void Jump()
     {
@@ -106,6 +116,17 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         GetComponent<Collider>().enabled = false;
+    }
+    private void OnPlayerDamagedHandler(float damage)
+    {
+        StartCoroutine(HurtLockCoroutine(0.6f)); // 0.6 วิ
+    }
+
+    private IEnumerator HurtLockCoroutine(float duration)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(duration);
+        canMove = true;
     }
 }
 
