@@ -55,4 +55,11 @@ public class InventorySlotUI : MonoBehaviour
         countText.text = $"x{quantity}";
         countText.enabled = true;
     }
+    public void OnSlotClicked()
+    {
+        if (!string.IsNullOrEmpty(itemName))
+        {
+            InventoryManager.Instance.UseItem(itemName);
+        }
+    }
 }

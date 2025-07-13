@@ -26,7 +26,6 @@ public class GameManager : Singleton<GameManager>
         ShipEnterExit.Instance.isControlling = PlayerData.Instance.sailing;
         // TODO: Set inventory items here, e.g. InventoryManager.Instance.SetItems(PlayerData.Instance.inventoryItems);
         PlayerCurrency.Instance.currentNova = PlayerData.Instance.money;
-        CharacterStats.Instance.currentHealth = PlayerData.Instance.currenthealth;
     }
     public void SavePlayerData()
     {
@@ -36,6 +35,5 @@ public class GameManager : Singleton<GameManager>
         PlayerData.Instance.shipPosition = ShipController.Instance.shipPosition;
         // TODO: Save inventory items here, e.g. PlayerData.Instance.inventoryItems = InventoryManager.Instance.GetItems();
         PlayerData.Instance.money = PlayerCurrency.Instance.currentNova;
-        PlayerData.Instance.currenthealth = (int)CharacterStats.Instance.currentHealth;
     }
 }

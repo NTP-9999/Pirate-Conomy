@@ -158,4 +158,59 @@ public class InventoryManager : MonoBehaviour
             UpdateSlots();
         }
     }
+    public void UseItem(string itemName)
+    {
+        var item = items.Find(i => i.itemName == itemName);
+        if (item != null)
+        {
+            // ตรงนี้เป็น logic consume: สมมติว่าเราจะ hardcode ไปก่อนว่า item อะไรทำอะไร
+            if (itemName == "Fried Chicken") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(20);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Grilled Meat") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(10);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Grilled Squid") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(5);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Hard Bread") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(30);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Salted Fish") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(15);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Sashimi Salmon") // เป็นอาหาร
+            {
+                CharacterStats.Instance.Eat(40);
+                Debug.Log("Used food item: " + itemName);
+            }
+            else if (itemName == "Rum") // ลด stress
+            {
+                CharacterStats.Instance.DecreaseStress(40);
+                Debug.Log("Used stress relief item: " + itemName);
+            }
+            else if (itemName == "Water")
+            {
+                CharacterStats.Instance.DecreaseStress(20);
+                Debug.Log("Used stress relief item: " + itemName);
+            }
+            else
+            {
+                Debug.Log(itemName + " is a quest item or cannot be used.");
+                return; // ไม่ต้อง remove
+            }
+
+            RemoveItem(itemName, 1); // ใช้แล้วลดจำนวน
+        }
+    }
 }

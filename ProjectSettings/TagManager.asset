@@ -19,7 +19,7 @@ TagManager:
   - Boss
   - Water
   - UI
-  - Monster
+  - Enemy
   - Tree
   - PW_VFX
   - PW_Object_Small

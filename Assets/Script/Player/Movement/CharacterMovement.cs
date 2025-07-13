@@ -2,7 +2,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(BasicCombat))]
 [RequireComponent(typeof(CharacterStats))]
 public class CharacterMovement : MonoBehaviour
 {
@@ -13,7 +12,6 @@ public class CharacterMovement : MonoBehaviour
     }
     private CharacterController controller;
     private Animator animator;
-    private BasicCombat combat;
     private CharacterStats stats;
 
     [Header("Movement Settings")]
@@ -45,7 +43,6 @@ public class CharacterMovement : MonoBehaviour
         Instance = this;
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        combat = GetComponent<BasicCombat>();
         stats = GetComponent<CharacterStats>();
     }
 
