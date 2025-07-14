@@ -101,7 +101,7 @@ public class InventoryManager : MonoBehaviour
             items.Add(item);
         }
         UpdateSlots();
-        ShowPickupToast(itemName, item.quantity);
+        ShowPickupToast(item, item.quantity);
     }
     void UpdateSlots()
     {
@@ -117,9 +117,9 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    void ShowPickupToast(string itemName, int totalAmount)
+    void ShowPickupToast(InventoryItem item, int totalAmount)
     {
-        notificationUI.ShowNotification(itemName, totalAmount);
+        notificationUI.ShowNotification(item, totalAmount);
     }
 
     /// <summary>
