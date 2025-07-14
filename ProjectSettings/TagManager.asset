@@ -12,6 +12,7 @@ TagManager:
   - Synty Small Farm
   - Enemy
   - Ship
+  - EnemyProjectile
   layers:
   - Default
   - TransparentFX

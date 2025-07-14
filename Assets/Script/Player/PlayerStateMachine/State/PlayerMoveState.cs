@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public class PlayerMoveState : IState
 {
     PlayerStateMachine sm;
@@ -8,35 +9,56 @@ public class PlayerMoveState : IState
     {
         sm.playerController.animator.SetBool("IsMoving", true);
     }
+
     public void Execute()
     {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        bool moving = Mathf.Abs(h) > 0f || Mathf.Abs(v) > 0f;
+
+        // If skill is locked, only allow walking
+        if (sm.playerController.isSkillLocked)
+        {
+            sm.playerController.HandleMovement();
+            if (!moving)
+                sm.fsm.ChangeState(sm.idleState);
+            return;
+        }
+
+        // Allow dodge/roll even while moving
         if (Input.GetKeyDown(KeyCode.Q))
         {
             sm.fsm.ChangeState(sm.rollState);
             return;
         }
-        // copy–paste HandleMovement แต่กรอง input แค่ XZ
-        sm.playerController.HandleMovement(); // (ย้ายโค้ด HandleMovement มา public แล้วเรียกใช้)
-        
-        // ถ้าเลิกขยับ → กลับ Idle
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        if (Mathf.Approximately(h, 0f) && Mathf.Approximately(v, 0f))
+
+        // Normal movement
+        sm.playerController.HandleMovement();
+
+        // Stop moving → back to idle
+        if (!moving)
         {
             sm.fsm.ChangeState(sm.idleState);
             return;
         }
-        
-        // พ่วง Jump/Attack เหมือน Idle ก็ได้
+
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
+        {
             sm.fsm.ChangeState(sm.jumpState);
+            return;
+        }
+
+        // Attack
         if (Input.GetMouseButtonDown(0))
+        {
             sm.fsm.ChangeState(sm.attackState);
+            return;
+        }
     }
+
     public void Exit()
     {
         sm.playerController.animator.SetBool("IsMoving", false);
     }
-    
 }
-

@@ -1,25 +1,52 @@
 using UnityEngine;
+
 public class PlayerIdleState : IState
 {
     PlayerStateMachine sm;
     public PlayerIdleState(PlayerStateMachine sm) { this.sm = sm; }
+
     public void Enter()
     {
         sm.playerController.canMove = true;
         sm.playerController.animator.SetBool("IsMoving", false);
     }
+
     public void Execute()
     {
-        // 1) Movement
-        float h = Input.GetAxisRaw("Horizontal"),
-              v = Input.GetAxisRaw("Vertical");
-        bool moving = (Mathf.Abs(h)>0||Mathf.Abs(v)>0);
-        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded()) { sm.fsm.ChangeState(sm.jumpState); return; }
-        if (moving) { sm.fsm.ChangeState(sm.moveState); return; }
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        bool moving = Mathf.Abs(h) > 0f || Mathf.Abs(v) > 0f;
 
-        // 2) Attack
-        if (Input.GetMouseButtonDown(0)) { sm.fsm.ChangeState(sm.attackState); return; }
+        // If skill is locked, only allow walking
+        if (sm.playerController.isSkillLocked)
+        {
+            if (moving)
+                sm.fsm.ChangeState(sm.moveState);
+            return;
+        }
 
+        // Jump
+        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
+        {
+            sm.fsm.ChangeState(sm.jumpState);
+            return;
+        }
+
+        // Walk / run
+        if (moving)
+        {
+            sm.fsm.ChangeState(sm.moveState);
+            return;
+        }
+
+        // Attack
+        if (Input.GetMouseButtonDown(0))
+        {
+            sm.fsm.ChangeState(sm.attackState);
+            return;
+        }
+
+        // Interact / Collect
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (sm.currentOil != null)
@@ -37,12 +64,13 @@ public class PlayerIdleState : IState
                 sm.fsm.ChangeState(sm.collectTreeState);
                 return;
             }
-            // 5) Interact E → Fragment
-            if (sm.currentFragment != null) {
+            if (sm.currentFragment != null)
+            {
                 sm.fsm.ChangeState(sm.collectFragmentState);
                 return;
             }
         }
     }
+
     public void Exit() { }
 }

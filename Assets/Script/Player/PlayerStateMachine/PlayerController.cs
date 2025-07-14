@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool isRunning;
+    [HideInInspector] public bool isSkillLocked = false;
+
     
     private CharacterController characterController;
     public Animator animator;
@@ -139,5 +141,27 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("MoveZ", moveZ);
         animator.SetBool("IsRunning", isRunning);
         animator.SetBool("IsGrounded", grounded);
+    }
+    /// <summary>
+    /// ล็อกการใช้ skill: ลดความเร็ว เดินอย่างเดียว ห้าม Jump/Run/Roll ฯลฯ
+    /// </summary>
+    public IEnumerator SkillLock(float duration, float speedMultiplier)
+    {
+        isSkillLocked = true;
+        // เก็บค่าสปีดเดิม
+        float prevWalk = walkSpeed;
+        float prevRun  = runSpeed;
+
+        // ลดความเร็วทั้งเดิน/วิ่ง
+        walkSpeed *= speedMultiplier;
+        runSpeed  = walkSpeed;  
+
+        yield return new WaitForSeconds(duration);
+
+        // คืนค่าสปีดเดิม
+        walkSpeed = prevWalk;
+        runSpeed  = prevRun;
+
+        isSkillLocked = false;
     }
 }
