@@ -1,10 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerStateMachine : MonoBehaviour
 {
-    [HideInInspector] public StateMachine fsm;
-    [HideInInspector] public PlayerController playerController;
+    public StateMachine fsm;
+    public PlayerController playerController;
+    public int GetFragmentCount(string id)
+        => fragmentCounts.TryGetValue(id, out var c) ? c : 0;
+
     [HideInInspector] public PlayerState currentState;
+
+    // Fragment
+    [HideInInspector] public FragmentResource currentFragment;
+    [HideInInspector] public CollectFragmentState collectFragmentState;
 
     // Tree
     [HideInInspector] public TreeChopper  treeChopper;
@@ -31,8 +39,8 @@ public class PlayerStateMachine : MonoBehaviour
 
     void Awake()
     {
-        fsm = new StateMachine();
-
+        fsm                = new StateMachine();
+        collectFragmentState = new CollectFragmentState(this);
 
         playerController = GetComponent<PlayerController>();
         oilCollector = GetComponent<OilCollector>();
@@ -53,4 +61,14 @@ public class PlayerStateMachine : MonoBehaviour
     }
     void Start() => fsm.Initialize(idleState);
     void Update() => fsm.Update();
+
+    // Fragment count & unlock
+    Dictionary<string,int> fragmentCounts = new Dictionary<string,int>();
+    public void AddFragment(string id, int amt) {
+        if (!fragmentCounts.ContainsKey(id))
+            fragmentCounts[id] = 0;
+        fragmentCounts[id] += amt;
+        Debug.Log($"Fragment {id}: now {fragmentCounts[id]}");
+        SkillManager.Instance.TryUnlockSkill(id, fragmentCounts[id]);
+    }
 }

@@ -70,9 +70,6 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-Assets/New Terrain.asset
-ProjectSettings/ProjectSettings.asset
-Assets/New Terrain.asset
 Assets/Procedural Worlds/Flora.meta
 Assets/Procedural Worlds/Flora/Content Resources.meta
 Assets/Procedural Worlds/Flora/Content Resources/Audio.meta
@@ -6233,13 +6230,6 @@ Assets/Procedural Worlds/GeNa/Asset Samples.meta
 Assets/Procedural Worlds/GeNa/Asset Samples/Content Packs.meta
 Assets/Procedural Worlds/GeNa/Asset Samples/Content Packs.meta
 Assets/Procedural Worlds/GeNa.meta
-Assets/Prefabs.meta
-Assets/Prefabs/Slot.prefab
-Assets/Prefabs/Slot.prefab.meta
-Assets/Scenes/PlayerTest.unity
-Assets/Scpirt/TaskbarMenu.meta
-Assets/Scpirt/TaskbarMenu/HotbarController.cs
-Assets/Scpirt/TaskbarMenu/HotbarController.cs.meta
 Assets/Asset Catalog.meta
 Assets/Asset Catalog/Character.meta
 Assets/Asset Catalog/Character/27 NPC Characters Medieval.meta

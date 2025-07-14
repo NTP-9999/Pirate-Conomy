@@ -37,6 +37,11 @@ public class PlayerIdleState : IState
                 sm.fsm.ChangeState(sm.collectTreeState);
                 return;
             }
+            // 5) Interact E → Fragment
+            if (sm.currentFragment != null) {
+                sm.fsm.ChangeState(sm.collectFragmentState);
+                return;
+            }
         }
     }
     public void Exit() { }
