@@ -1,38 +1,47 @@
 using UnityEngine;
-
-public class PlayerJumpState : PlayerState
+public class PlayerJumpState : IState
 {
-    private PlayerController playerController;
+    PlayerStateMachine sm;
+    private float timer;
+    private readonly float minJumpTime = 0.1f; // ให้เล่นอนิเมชันอย่างน้อยนิดหน่อยก่อนเช็คตกพื้น
 
-    public PlayerJumpState(PlayerStateMachine stateMachine) : base(stateMachine)
+    public PlayerJumpState(PlayerStateMachine sm)
     {
-        playerController = stateMachine.playerController;
+        this.sm = sm;
     }
 
-    public override void Enter()
+    public void Enter()
     {
-        Debug.Log("Enter Jump State");
+        var pc = sm.playerController;
 
-        // สั่ง PlayerController กระโดด
-        playerController.Jump();
+        // 1) สั่งกระโดด
+        pc.Jump();
 
-        // เล่นแอนิเมชัน
-        playerController.animator.SetTrigger("Jump");
+        // 2) สั่งรีเซ็ตและป้องกันไม่ให้ Exit ทันที
+        timer = 0f;
+
+        pc.animator.SetBool("IsMoving", true);
+        pc.animator.SetTrigger("Jump");
     }
 
-    public override void LogicUpdate()
+    public void Execute()
     {
-        // ตรวจว่าตกถึงพื้นหรือยัง
-        if (playerController.IsGrounded())
-        {
-            stateMachine.ChangeState(stateMachine.idleState);
-        }
+        var pc = sm.playerController;
 
-        // ระหว่างลอยอยู่ สามารถตรวจ input เพิ่มเติมได้ถ้าอยากทำ (เช่น สั่งโจมตีกลางอากาศ)
+        // 1) ให้มันอัปเดต Movement+Gravity ตลอด (อัปเดต MoveX/MoveZ/IsRunning/IsGrounded)
+        pc.HandleMovement();
+
+        // 2) นับเวลาอย่างน้อยก่อนจะอนุญาตให้กลับ Idle
+        timer += Time.deltaTime;
+        if (timer < minJumpTime) return;
+
+        // 3) พอแตะพื้น → กลับ Idle  
+        if (pc.IsGrounded())
+            sm.fsm.ChangeState(sm.idleState);
     }
 
-    public override void Exit()
+    public void Exit()
     {
-        Debug.Log("Exit Jump State");
+        // ไม่มีอะไรต้องเคลียร์พิเศษ
     }
 }

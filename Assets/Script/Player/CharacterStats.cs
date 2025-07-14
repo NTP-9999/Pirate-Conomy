@@ -150,7 +150,7 @@ public class CharacterStats : Singleton<CharacterStats>
         PlayerStateMachine stateMachine = GetComponent<PlayerStateMachine>();
         if (stateMachine != null)
         {
-            stateMachine.ChangeState(stateMachine.hurtState);
+            stateMachine.fsm.ChangeState(stateMachine.hurtState);
         }
 
         OnPlayerDamaged?.Invoke(amount);

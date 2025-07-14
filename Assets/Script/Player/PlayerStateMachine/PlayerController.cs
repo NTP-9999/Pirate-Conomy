@@ -1,125 +1,79 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    private CharacterController characterController;
-    public Animator animator;
-    private Camera mainCamera;
+    // Movement parameters
     public float walkSpeed = 3f;
-    public float runSpeed = 6f;
-    private bool isRunning;
-
+    public float runSpeed  = 6f;
     public float jumpHeight = 2f;
-    public float gravity = -9.81f;
-    private float verticalVelocity;
-    public float attackRange = 1.5f;
+    public float gravity    = -9.81f;
+    public float rollSpeed  = 10f;
+
+    // Combat parameters
+    public float attackRange  = 1.5f;
     public float attackDamage = 20f;
     public LayerMask enemyLayer;
-    public bool canMove = true;
 
-    private bool grounded;
+    [HideInInspector] public bool canMove = true;
+    [HideInInspector] public bool isRunning;
+    
+    private CharacterController characterController;
+    public Animator animator;
+    private Camera    mainCamera;
+    private float     verticalVelocity;
 
     private void Awake()
     {
-        CharacterStats.Instance.OnPlayerDamaged += OnPlayerDamagedHandler;
         characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
-        mainCamera = Camera.main;
+        animator            = GetComponent<Animator>();
+        mainCamera          = Camera.main;
+
+        CharacterStats.Instance.OnPlayerDamaged += OnPlayerDamagedHandler;
     }
 
-    private void Update()
+    /// <summary>
+    /// Wrapper สำหรับ CharacterController.Move
+    /// </summary>
+    public void Move(Vector3 displacement)
     {
-        HandleMovement();
+        characterController.Move(displacement);
     }
 
-    void HandleMovement()
-    {
-        if (!canMove)
-        {
-            // ไม่ให้ควบคุม
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-            verticalVelocity += gravity * Time.deltaTime;
-            return;
-        }
-        grounded = characterController.isGrounded;
-
-        if (grounded && verticalVelocity < 0)
-        {
-            verticalVelocity = -2f; // ให้ติดพื้น
-        }
-
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-        isRunning = Input.GetKey(KeyCode.LeftShift);
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
-
-        Vector3 moveDir = new Vector3(moveX, 0f, moveZ).normalized;
-
-        if (moveDir.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y;
-            Vector3 moveDirRotated = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-
-            characterController.Move((moveDirRotated * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
-
-            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
-        }
-        else
-        {
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-        }
-
-        verticalVelocity += gravity * Time.deltaTime;
-
-        // Animator
-        animator.SetFloat("MoveX", moveX);
-        animator.SetFloat("MoveZ", moveZ);
-        animator.SetBool("IsRunning", isRunning);
-        animator.SetBool("IsGrounded", grounded);
-    }
-    
-
+    /// <summary>
+    /// สั่งกระโดด ถ้ากำลังอยู่บนพื้น
+    /// </summary>
     public void Jump()
     {
-        if (grounded)
+        if (IsGrounded())
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+
     public void DealDamage()
     {
-        // สร้างกล่องเช็คชนิด Collider รอบ player
-        Collider[] hitEnemies = Physics.OverlapSphere(transform.position + transform.forward * attackRange, attackRange, enemyLayer);
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position + transform.forward * attackRange,
+            attackRange, enemyLayer);
 
-        foreach (Collider enemyCollider in hitEnemies)
+        foreach (var col in hits)
         {
-            // เช็คว่า object นั้นมี tag เป็น Enemy หรือไม่
-            if (enemyCollider.CompareTag("Enemy"))
+            if (col.CompareTag("Enemy"))
             {
-                // หา component LivingThing (หรือ Test) แล้วเรียก TakeDamage
-                LivingThing enemyLivingThing = enemyCollider.GetComponent<LivingThing>();
-                if (enemyLivingThing != null)
-                {
-                    enemyLivingThing.TakeDamage(attackDamage);
-                }
+                var lt = col.GetComponent<LivingThing>();
+                if (lt != null) lt.TakeDamage(attackDamage);
             }
         }
     }
 
+    /// <summary>
+    /// คืนค่าสถานะว่าอยู่บนพื้นหรือไม่
+    /// </summary>
     public bool IsGrounded()
     {
-        return grounded;
-    }
-    IEnumerator WaitEndAttack()
-    {
-        yield return new WaitForSeconds(1f);
-        GetComponent<Collider>().enabled = false;
-    }
-    private void OnPlayerDamagedHandler(float damage)
-    {
-        StartCoroutine(HurtLockCoroutine(0.6f)); // 0.6 วิ
+        return characterController.isGrounded;
     }
 
     private IEnumerator HurtLockCoroutine(float duration)
@@ -128,5 +82,62 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(duration);
         canMove = true;
     }
-}
 
+    private void OnPlayerDamagedHandler(float damage)
+    {
+        StartCoroutine(HurtLockCoroutine(0.6f));
+    }
+
+    /// <summary>
+    /// เรียกจาก MoveState (หรือ JumpState) เพื่ออัปเดตการเคลื่อนที่+แรงโน้มถ่วง
+    /// </summary>
+    public void HandleMovement()
+    {
+        // เช็คพื้นก่อนอื่น (เพื่อรีเซ็ต verticalVelocity เมื่อแตะพื้น)
+        bool grounded = characterController.isGrounded;
+        if (grounded && verticalVelocity < 0f)
+        {
+            verticalVelocity = -2f; // ให้ติดพื้นแน่น
+        }
+
+        // ถ้า lock movement ไว้ (เช่น ตอน Hurt) ก็ให้ gravity ทำงาน แต่ไม่รับ input
+        if (!canMove)
+        {
+            verticalVelocity += gravity * Time.deltaTime;
+            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+            return;
+        }
+
+        // ดึง input เดิม
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+        isRunning   = Input.GetKey(KeyCode.LeftShift);
+        float speed = isRunning ? runSpeed : walkSpeed;
+
+        Vector3 inputDir = new Vector3(moveX, 0f, moveZ).normalized;
+        if (inputDir.magnitude >= 0.1f)
+        {
+            // คำนวณมุมและเคลื่อนที่ตามกล้อง
+            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
+                                + mainCamera.transform.eulerAngles.y;
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            Vector3 disp    = moveDir * speed + Vector3.up * verticalVelocity;
+
+            characterController.Move(disp * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+        }
+        else
+        {
+            // ไม่มี input ก็ปล่อยให้ gravity ทำงาน
+            verticalVelocity += gravity * Time.deltaTime;
+            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+        }
+
+        // อัปเดต verticalVelocity กับ Animator Parameters
+        verticalVelocity += gravity * Time.deltaTime;
+        animator.SetFloat("MoveX", moveX);
+        animator.SetFloat("MoveZ", moveZ);
+        animator.SetBool("IsRunning", isRunning);
+        animator.SetBool("IsGrounded", grounded);
+    }
+}

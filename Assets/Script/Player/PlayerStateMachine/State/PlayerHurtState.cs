@@ -1,38 +1,39 @@
 using UnityEngine;
 
-public class PlayerHurtState : PlayerState
+public class PlayerHurtState : IState
 {
-    private float hurtDuration = 0.7f; // ระยะเวลาที่ถูก stun
-    private float timer;
+    PlayerStateMachine sm;
+    float hurtDuration = 0.7f; // ระยะเวลาที่ถูก stun
+    float timer;
 
-    public PlayerHurtState(PlayerStateMachine stateMachine) : base(stateMachine) { }
+    public PlayerHurtState(PlayerStateMachine sm) { this.sm = sm; }
 
-    public override void Enter()
+    public void Enter()
     {
         Debug.Log("Player Enter Hurt State");
         timer = 0f;
-        stateMachine.playerController.animator.SetTrigger("Hurt");
+        sm.playerController.animator.SetTrigger("Hurt");
         // ปิดการเคลื่อนไหว
-        stateMachine.playerController.canMove = false;
+        sm.playerController.canMove = false;
     }
 
-    public override void LogicUpdate()
+    public void Execute()
     {
         timer += Time.deltaTime;
         if (timer >= hurtDuration)
         {
             // กลับไป idle หรือ move
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-                stateMachine.ChangeState(stateMachine.moveState);
+                sm.fsm.ChangeState(sm.moveState);
             else
-                stateMachine.ChangeState(stateMachine.idleState);
+                sm.fsm.ChangeState(sm.idleState);
         }
     }
 
-    public override void Exit()
+    public void Exit()
     {
         Debug.Log("Player Exit Hurt State");
         // กลับมาให้เคลื่อนไหวได้
-        stateMachine.playerController.canMove = true;
+        sm.playerController.canMove = true;
     }
 }

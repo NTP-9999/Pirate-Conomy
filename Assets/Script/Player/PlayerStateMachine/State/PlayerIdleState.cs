@@ -1,37 +1,52 @@
 using UnityEngine;
-
-public class PlayerIdleState : PlayerState
+public class PlayerIdleState : IState
 {
-    public PlayerIdleState(PlayerStateMachine stateMachine) : base(stateMachine) { }
-
-    public override void Enter()
+    PlayerStateMachine sm;
+    public PlayerIdleState(PlayerStateMachine sm) { this.sm = sm; }
+    public void Enter()
     {
-        Debug.Log("Player Enter Idle State");
-        // เล่นแอนิเมชัน idle ถ้ามี
+        sm.playerController.canMove = true;
+        sm.playerController.animator.SetBool("IsMoving", false);
     }
-
-    public override void LogicUpdate()
+    public void Execute()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveZ = Input.GetAxisRaw("Vertical");
-        bool isMoving = (Mathf.Abs(moveX) > 0 || Mathf.Abs(moveZ) > 0);
-        if (Input.GetKeyDown(KeyCode.Space) && stateMachine.playerController.IsGrounded() && isMoving)
+        // 1) Movement
+        float h = Input.GetAxisRaw("Horizontal"),
+              v = Input.GetAxisRaw("Vertical");
+        bool moving = (Mathf.Abs(h)>0||Mathf.Abs(v)>0);
+        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded()) { sm.fsm.ChangeState(sm.jumpState); return; }
+        if (moving) { sm.fsm.ChangeState(sm.moveState); return; }
+
+        // 2) Attack
+        if (Input.GetMouseButtonDown(0)) { sm.fsm.ChangeState(sm.attackState); return; }
+
+        // 4) Interact (Oil / Ore / Tree)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            stateMachine.ChangeState(stateMachine.jumpState);
-        }
-        else if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-        {
-            stateMachine.ChangeState(stateMachine.moveState);
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            stateMachine.ChangeState(stateMachine.attackState);
+            RaycastHit hit;
+            var origin = sm.transform.position + Vector3.up;
+            if (Physics.Raycast(origin, sm.transform.forward, out hit, sm.playerController.attackRange))
+            {
+                if (hit.collider.TryGetComponent<OilResource>(out var oil))
+                {
+                    sm.currentOil = oil;
+                    sm.fsm.ChangeState(sm.collectOilState);
+                    return;
+                }
+                if (hit.collider.TryGetComponent<OreResource>(out var ore))
+                {
+                    sm.currentOre = ore;
+                    sm.fsm.ChangeState(sm.collectOreState);
+                    return;
+                }
+                if (hit.collider.TryGetComponent<TreeTarget>(out var tree))
+                {
+                    sm.currentTree = tree;
+                    sm.fsm.ChangeState(sm.collectTreeState);
+                    return;
+                }
+            }
         }
     }
-
-
-    public override void Exit()
-    {
-        Debug.Log("Player Exit Idle State");
-    }
+    public void Exit() { }
 }

@@ -1,39 +1,20 @@
 using UnityEngine;
-
-public class PlayerAttackState : PlayerState
+public class PlayerAttackState : IState
 {
-    private float attackDuration = 0.5f;
-    private float timer;
+    PlayerStateMachine sm;
+    float timer, duration = 0.5f;
+    public PlayerAttackState(PlayerStateMachine sm) { this.sm = sm; }
 
-    public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine) { }
-
-    public override void Enter()
+    public void Enter()
     {
-        Debug.Log("Player Enter Attack State");
         timer = 0f;
-        stateMachine.playerController.animator.SetTrigger("Attack");
+        sm.playerController.animator.SetTrigger("Attack");
     }
-
-    public override void LogicUpdate()
+    public void Execute()
     {
         timer += Time.deltaTime;
-
-        if (timer >= attackDuration)
-        {
-            // กลับไป idle หรือ move ตาม input
-            if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-            {
-                stateMachine.ChangeState(stateMachine.moveState);
-            }
-            else
-            {
-                stateMachine.ChangeState(stateMachine.idleState);
-            }
-        }
+        if (timer >= duration)
+            sm.fsm.ChangeState(sm.idleState);
     }
-
-    public override void Exit()
-    {
-        Debug.Log("Player Exit Attack State");
-    }
+    public void Exit() { }
 }

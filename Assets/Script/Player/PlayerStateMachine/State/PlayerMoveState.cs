@@ -1,46 +1,42 @@
 using UnityEngine;
-
-public class PlayerMoveState : PlayerState
+public class PlayerMoveState : IState
 {
-    public PlayerMoveState(PlayerStateMachine stateMachine) : base(stateMachine) { }
+    PlayerStateMachine sm;
+    public PlayerMoveState(PlayerStateMachine sm) { this.sm = sm; }
 
-    public override void Enter()
+    public void Enter()
     {
-        Debug.Log("Player Enter Move State");
-        stateMachine.playerController.animator.SetBool("IsMoving", true); // ✅ ดึงจาก PlayerController
+        sm.playerController.animator.SetBool("IsMoving", true);
     }
-
-    public override void LogicUpdate()
+    public void Execute()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveZ = Input.GetAxisRaw("Vertical");
-
-        Vector3 moveDir = new Vector3(moveX, 0, moveZ).normalized;
-
-        // อัปเดตค่าพารามิเตอร์ใน Animator ผ่าน PlayerController
-        stateMachine.playerController.animator.SetFloat("MoveX", moveX);
-        stateMachine.playerController.animator.SetFloat("MoveZ", moveZ);
-
-        // ตรวจว่าผู้เล่นยังเคลื่อนที่อยู่ไหม
-        bool isMoving = (Mathf.Abs(moveX) > 0 || Mathf.Abs(moveZ) > 0);
-        stateMachine.playerController.animator.SetBool("IsMoving", isMoving);
-        if (Input.GetKeyDown(KeyCode.Space) && stateMachine.playerController.IsGrounded() && isMoving)
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            stateMachine.ChangeState(stateMachine.jumpState);
+            sm.fsm.ChangeState(sm.rollState);
+            return;
         }
-        if (!isMoving)
+        // copy–paste HandleMovement แต่กรอง input แค่ XZ
+        sm.playerController.HandleMovement(); // (ย้ายโค้ด HandleMovement มา public แล้วเรียกใช้)
+        
+        // ถ้าเลิกขยับ → กลับ Idle
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        if (Mathf.Approximately(h, 0f) && Mathf.Approximately(v, 0f))
         {
-            stateMachine.ChangeState(stateMachine.idleState);
+            sm.fsm.ChangeState(sm.idleState);
+            return;
         }
-
+        
+        // พ่วง Jump/Attack เหมือน Idle ก็ได้
+        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
+            sm.fsm.ChangeState(sm.jumpState);
         if (Input.GetMouseButtonDown(0))
-        {
-            stateMachine.ChangeState(stateMachine.attackState);
-        }
+            sm.fsm.ChangeState(sm.attackState);
     }
-
-    public override void Exit()
+    public void Exit()
     {
-        Debug.Log("Player Exit Move State");
+        sm.playerController.animator.SetBool("IsMoving", false);
     }
+    
 }
+
