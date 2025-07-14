@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CollectTreeState : IState
 {
-    PlayerStateMachine sm;
+    private PlayerStateMachine sm;
 
     public CollectTreeState(PlayerStateMachine sm)
     {
@@ -12,25 +12,17 @@ public class CollectTreeState : IState
 
     public void Enter()
     {
-        // เรียก playerController ไม่ใช่ controller
-        sm.playerController.canMove = false;
-        sm.playerController.animator.SetTrigger("Chop");
-
-        // เริ่ม Coroutine เก็บน้ำมัน
-        sm.StartCoroutine(Collect());
+        // สั่ง Coroutine ให้ TreeChopper ฟันต้นไม้
+        sm.StartCoroutine(ChopRoutine());
     }
 
-    IEnumerator Collect()
+    private IEnumerator ChopRoutine()
     {
-        yield return new WaitForSeconds(1.5f);
+        // รอจน TreeChopper.StartChopFromExternal จบ (ล็อก input, แอนิเม เสร็จ, PerformChop)
+        yield return sm.treeChopper.StartChopFromExternal(sm.currentTree);
 
-        // PerformCollect ใช้ sm.oilCollector และ sm.currentOil
-        sm.treeChopper.PerformChop(sm.currentTree);
-
-        // คืนสิทธิ์การเคลื่อนที่
-        sm.playerController.canMove = true;
-
-        // กลับไป IdleState
+        if (sm.currentTree.currentChops >= sm.currentTree.maxChops)
+            sm.currentTree = null;
         sm.fsm.ChangeState(sm.idleState);
     }
 

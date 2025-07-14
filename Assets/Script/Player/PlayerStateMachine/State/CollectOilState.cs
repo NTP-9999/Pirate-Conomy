@@ -4,36 +4,17 @@ using System.Collections;
 public class CollectOilState : IState
 {
     PlayerStateMachine sm;
-
-    public CollectOilState(PlayerStateMachine sm)
-    {
-        this.sm = sm;
-    }
+    public CollectOilState(PlayerStateMachine sm){this.sm=sm;}
 
     public void Enter()
+        => sm.StartCoroutine(Routine());
+    IEnumerator Routine()
     {
-        // เรียก playerController ไม่ใช่ controller
-        sm.playerController.canMove = false;
-        sm.playerController.animator.SetTrigger("Oil");
-
-        // เริ่ม Coroutine เก็บน้ำมัน
-        sm.StartCoroutine(Collect());
-    }
-
-    IEnumerator Collect()
-    {
-        yield return new WaitForSeconds(1.5f);
-
-        // PerformCollect ใช้ sm.oilCollector และ sm.currentOil
-        sm.oilCollector.PerformCollect(sm.currentOil);
-
-        // คืนสิทธิ์การเคลื่อนที่
-        sm.playerController.canMove = true;
-
-        // กลับไป IdleState
+        yield return sm.oilCollector.StartCollectFromExternal(sm.currentOil);
+        // ถ้าหมดแล้ว clear เป้า
+        if (sm.currentOil.currentCollects >= sm.currentOil.maxCollects)
+            sm.currentOil = null;
         sm.fsm.ChangeState(sm.idleState);
     }
-
-    public void Execute() { }
-    public void Exit()    { }
+    public void Execute(){} public void Exit(){}
 }

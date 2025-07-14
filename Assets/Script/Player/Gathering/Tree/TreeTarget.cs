@@ -1,41 +1,32 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class TreeTarget : MonoBehaviour
 {
-    [Header("Tree Settings")]
+    [Header("Settings")]
     public int maxChops = 5;
-    private int currentChops = 0;
+    [HideInInspector] public int currentChops = 0;
 
-    [Header("Respawn Settings")]
-    public float respawnDelay = 5f; // เวลารอเกิดใหม่ (วินาที)
-    public GameObject treePrefab;   // Prefab ของต้นไม้ (ลาก Prefab ของตัวเองมาใส่)
+    [Header("Respawn")]
+    public float respawnDelay = 5f;
 
     [Header("UI")]
-    public GameObject interactUI; // UI "Press E"
+    public GameObject interactUI;     // “Press E”
 
-    private bool playerInRange = false;
+    public Sprite woodIcon; // ให้ FSM ดึงมาใส่ Inventory
+
     private MeshRenderer meshRenderer;
-    private Collider treeCollider;
+    private Collider      boxCollider;
+    private Collider      capsuleCollider;
+    private bool          playerInRange;
 
-    private void Start()
+    void Start()
     {
-        treeCollider = GetComponent<CapsuleCollider>();
-        meshRenderer = GetComponent<MeshRenderer>();
-        if (interactUI != null)
-            interactUI.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            TreeChopper chopper = GameObject.FindWithTag("Player").GetComponent<TreeChopper>();
-            if (chopper != null)
-            {
-                StartCoroutine(chopper.StartChopFromExternal(this));
-            }
-        }
+        meshRenderer  = GetComponent<MeshRenderer>();
+        boxCollider   = GetComponent<BoxCollider>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
+        if (interactUI != null) interactUI.SetActive(false);
     }
 
     public void Chop()
@@ -46,41 +37,45 @@ public class TreeTarget : MonoBehaviour
         if (currentChops >= maxChops)
         {
             Debug.Log("Tree fell!");
-
-            if (interactUI != null)
-                interactUI.SetActive(false);
-
-            StartCoroutine(RespawnTree());
             meshRenderer.enabled = false;
-            treeCollider.enabled = false; // Disable collider to prevent further interaction
-            
+            boxCollider.enabled = false;
+            capsuleCollider.enabled = false;
+            if (interactUI != null) interactUI.SetActive(false);
+            StartCoroutine(RespawnTree());
         }
     }
 
-    private IEnumerator RespawnTree()
+    IEnumerator RespawnTree()
     {
         yield return new WaitForSeconds(respawnDelay);
-        meshRenderer.enabled = true;
-        treeCollider.enabled = true; // Re-enable collider after respawn
         currentChops = 0;
+        meshRenderer.enabled = true;
+        boxCollider.enabled = true;
+        capsuleCollider.enabled = true;
+        if (playerInRange && interactUI != null)
+            interactUI.SetActive(true);
     }
-    private void OnTriggerEnter(Collider other)
+
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!playerInRange && other.CompareTag("Player"))
         {
             playerInRange = true;
-            if (interactUI != null && (meshRenderer == null || meshRenderer.enabled))
+            if (interactUI != null && meshRenderer.enabled)
                 interactUI.SetActive(true);
+            // บอก FSM เป้าหมายตัวนี้
+            other.GetComponent<PlayerStateMachine>().currentTree = this;
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (playerInRange && other.CompareTag("Player"))
         {
             playerInRange = false;
-            if (interactUI != null)
-                interactUI.SetActive(false);
+            if (interactUI != null) interactUI.SetActive(false);
+            var psm = other.GetComponent<PlayerStateMachine>();
+            if (psm.currentTree == this) psm.currentTree = null;
         }
     }
 }

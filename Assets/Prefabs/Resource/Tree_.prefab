@@ -129,9 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxChops: 5
+  currentChops: 0
   respawnDelay: 5
-  treePrefab: {fileID: 8371348965403284149}
   interactUI: {fileID: 0}
+  woodIcon: {fileID: 21300000, guid: 79a0afb912d40e642a914735bcee0b64, type: 3}
 --- !u!65 &3101666083287549866
 BoxCollider:
   m_ObjectHideFlags: 0

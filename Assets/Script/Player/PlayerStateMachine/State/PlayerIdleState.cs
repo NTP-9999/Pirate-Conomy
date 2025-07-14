@@ -20,31 +20,22 @@ public class PlayerIdleState : IState
         // 2) Attack
         if (Input.GetMouseButtonDown(0)) { sm.fsm.ChangeState(sm.attackState); return; }
 
-        // 4) Interact (Oil / Ore / Tree)
         if (Input.GetKeyDown(KeyCode.E))
         {
-            RaycastHit hit;
-            var origin = sm.transform.position + Vector3.up;
-            if (Physics.Raycast(origin, sm.transform.forward, out hit, sm.playerController.attackRange))
+            if (sm.currentOil != null)
             {
-                if (hit.collider.TryGetComponent<OilResource>(out var oil))
-                {
-                    sm.currentOil = oil;
-                    sm.fsm.ChangeState(sm.collectOilState);
-                    return;
-                }
-                if (hit.collider.TryGetComponent<OreResource>(out var ore))
-                {
-                    sm.currentOre = ore;
-                    sm.fsm.ChangeState(sm.collectOreState);
-                    return;
-                }
-                if (hit.collider.TryGetComponent<TreeTarget>(out var tree))
-                {
-                    sm.currentTree = tree;
-                    sm.fsm.ChangeState(sm.collectTreeState);
-                    return;
-                }
+                sm.fsm.ChangeState(sm.collectOilState);
+                return;
+            }
+            if (sm.currentOre != null)
+            {
+                sm.fsm.ChangeState(sm.collectOreState);
+                return;
+            }
+            if (sm.currentTree != null)
+            {
+                sm.fsm.ChangeState(sm.collectTreeState);
+                return;
             }
         }
     }

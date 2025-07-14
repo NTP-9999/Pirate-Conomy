@@ -6,18 +6,20 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public PlayerController playerController;
     [HideInInspector] public PlayerState currentState;
 
-    [HideInInspector] public OilCollector  oilCollector;
-    [HideInInspector] public OilResource   currentOil;
-    [HideInInspector] public CollectOilState collectOilState;
-
-    [HideInInspector] public OreCollector  oreCollector;
-    [HideInInspector] public OreResource   currentOre;
-    [HideInInspector] public CollectOreState collectOreState;
-
+    // Tree
     [HideInInspector] public TreeChopper  treeChopper;
-    [HideInInspector] public TreeTarget  currentTree;
+    [HideInInspector] public TreeTarget   currentTree;
     [HideInInspector] public CollectTreeState collectTreeState;
 
+    // Oil
+    [HideInInspector] public OilCollector oilCollector;
+    [HideInInspector] public OilResource  currentOil;
+    [HideInInspector] public CollectOilState collectOilState;
+
+    // Ore
+    [HideInInspector] public OreCollector oreCollector;
+    [HideInInspector] public OreResource  currentOre;
+    [HideInInspector] public CollectOreState collectOreState;
 
     [HideInInspector] public PlayerIdleState idleState;
     [HideInInspector] public PlayerMoveState moveState;
@@ -33,9 +35,9 @@ public class PlayerStateMachine : MonoBehaviour
 
 
         playerController = GetComponent<PlayerController>();
-        oilCollector     = GetComponent<OilCollector>();
-        oreCollector     = GetComponent<OreCollector>();
-        treeChopper     = GetComponent<TreeChopper>();
+        oilCollector = GetComponent<OilCollector>();
+        oreCollector = GetComponent<OreCollector>();
+        treeChopper = GetComponent<TreeChopper>();
         
         idleState = new PlayerIdleState(this);
         moveState = new PlayerMoveState(this);
