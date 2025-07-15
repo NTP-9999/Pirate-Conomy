@@ -1,77 +1,71 @@
-// ใน PlayerSkillController.cs
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerSkillController : MonoBehaviour
 {
+    private Dictionary<string, ISkill> _skills;
+
     [Header("Firewall Skill")]
     public GameObject firewallPrefab;
-    public float      firewallOffset    = 1f;
-    public float      firewallHeight    = 0.5f;
-    public float      castDelay         = 1f;   // เวลาร่ายก่อนยิง
-    public float      lockDuration      = 3f;   // ระยะเวลาล็อก action
-    public float      speedMultiplier   = 0.5f; // เดินช้าลง 50%
-    public float      cooldown          = 5f;   // Cooldown ทั้งหมด
+    public float firewallOffset = 1f;
+    public float firewallHeight = 0.5f;
+    public float castingDelay   = 1f;
+    public float lockDuration    = 3f;
+    public float slowMultiplier  = 0.5f;
+    public float cooldownTime    = 5f;
 
-    public Transform playerTransform;
-    public Camera    playerCamera;
-
-    private Animator animator;
-    private bool     onCooldown = false;
+    [Header("Punch Skill")]
+    public GameObject punchEffectPrefab;          // Prefab ของ Particle / VFX
+    public Transform  punchEffectOrigin;          // Transform (ตำแหน่งปล่อย)
+    public float      punchCastDelay    = 0.3f;   // เท่ากับความยาว animation
+    public float      punchCooldown     = 1f;
+    public float      punchRange        = 2f;
+    public string     projectileTag     = "EnemyProjectile";
 
     void Awake()
     {
-        animator = GetComponent<Animator>();
-        if (playerCamera == null) playerCamera = Camera.main;
+        var pc = GetComponent<PlayerController>();
+        var cam = Camera.main;
+        _skills = new Dictionary<string, ISkill>
+        {
+            ["Firewall"] = new FirewallSkill(
+                pc,
+                firewallPrefab,
+                pc.transform,
+                cam,
+                castingDelay,
+                lockDuration,
+                slowMultiplier,
+                cooldownTime,
+                firewallOffset,
+                firewallHeight
+            ),
+                ["Punch"] = new PunchSkill(
+                pc,
+                punchEffectPrefab,
+                punchEffectOrigin,
+                punchCastDelay,
+                punchCooldown,
+                punchRange,
+                projectileTag
+            )
+            
+        };
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) &&
-            !onCooldown &&
-            SkillManager.Instance.IsUnlocked("Firewall"))
+        if (Input.GetKeyDown(KeyCode.F)
+            && _skills["Firewall"].IsOnCooldown == false
+            && SkillManager.Instance.IsUnlocked("Firewall"))
         {
-            StartCoroutine(CastingFirewall());
+            StartCoroutine(_skills["Firewall"].Activate());
         }
-    }
-
-    IEnumerator CastingFirewall()
-    {
-        onCooldown = true;
-
-        // 1) Lock player action + ลดสปีด
-        var pc = playerTransform.GetComponent<PlayerController>();
-        StartCoroutine(pc.SkillLock(lockDuration, speedMultiplier));
-
-        // 2) Trigger animation (ถ้ามี)
-        if (animator != null)
-            animator.SetTrigger("CastFirewall");
-
-        // 3) รอจน animation จบ (castDelay)
-        yield return new WaitForSeconds(castDelay);
-
-        // 4) ยิงจริง
-        CastFirewall();
-
-        // 5) รอจนหมด cooldown
-        yield return new WaitForSeconds(cooldown);
-        onCooldown = false;
-    }
-
-    void CastFirewall()
-    {
-        // ทิศกล้องบนระนาบ XZ
-        Vector3 dir = playerCamera.transform.forward;
-        dir.y = 0f;
-        dir.Normalize();
-
-        // จุด Spawn หน้าผู้เล่น
-        Vector3 origin = playerTransform.position
-                       + dir * firewallOffset
-                       + Vector3.up * firewallHeight;
-
-        // สร้าง projectile
-        var go = Instantiate(firewallPrefab, origin, Quaternion.identity);
-        go.GetComponent<FirewallProjectile>().Initialize(dir);
+        if (Input.GetKeyDown(KeyCode.G)
+            && !_skills["Punch"].IsOnCooldown
+            && SkillManager.Instance.IsUnlocked("Punch"))
+        {
+            StartCoroutine(_skills["Punch"].Activate());
+        }
     }
 }

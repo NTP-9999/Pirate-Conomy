@@ -4,6 +4,9 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    [Header("Weapon")]
+    public GameObject playerWeapon;
+
     // Movement parameters
     public float walkSpeed = 3f;
     public float runSpeed  = 6f;
