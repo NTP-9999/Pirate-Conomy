@@ -8,7 +8,7 @@ public class OreResource : MonoBehaviour
     public int maxHits = 5;
     public int currentHits;
     public float respawnDelay = 5f;
-    public ResourceInteractUI interactUI;
+    [HideInInspector]public ResourceInteractUI interactUI;
 
     public Transform interactPoint;
     private SphereCollider oreCollider;

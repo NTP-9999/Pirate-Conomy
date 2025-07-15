@@ -8,7 +8,7 @@ public class OilResource : MonoBehaviour
     public int maxCollects = 3;
     public int currentCollects;
     public float respawnDelay = 5f;
-    public ResourceInteractUI interactUI;
+    [HideInInspector]public ResourceInteractUI interactUI;
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;

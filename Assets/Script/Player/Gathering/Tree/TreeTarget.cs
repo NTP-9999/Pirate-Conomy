@@ -13,7 +13,7 @@ public class TreeTarget : MonoBehaviour
     public float respawnDelay = 5f;
 
     [Header("UI")]
-    public ResourceInteractUI interactUI;
+    [HideInInspector]public ResourceInteractUI interactUI;
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;

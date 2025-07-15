@@ -15,14 +15,14 @@ public class InteractableUIManager : Singleton<InteractableUIManager>
         uiInstance.GetComponent<Canvas>().worldCamera = Camera.main;
         return uiInstance;
     }
-    public OtherInteractUI CreateOtherInteractUI(Transform interactPoint)
+    public GameObject CreateOtherInteractUI(Transform interactPoint)
     {
         if (otherInteractUI == null) return null;
 
-        GameObject uiInstance = Instantiate(otherInteractUI, interactPoint.position, interactPoint.rotation);
-        uiInstance.transform.SetParent(interactPoint, false);
-        OtherInteractUI otherUI = uiInstance.GetComponent<OtherInteractUI>();
-        return otherUI;
+        GameObject uiInstance = Instantiate(otherInteractUI, interactPoint);
+        uiInstance.transform.localPosition = Vector3.zero;
+        uiInstance.GetComponent<Canvas>().worldCamera = Camera.main;
+        return uiInstance;
     }
 
 }
