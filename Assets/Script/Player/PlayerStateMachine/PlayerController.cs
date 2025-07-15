@@ -37,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
         CharacterStats.Instance.OnPlayerDamaged += OnPlayerDamagedHandler;
     }
+    void Update()
+    {
+        SnapToGround();
+    }
 
     /// <summary>
     /// Wrapper สำหรับ CharacterController.Move
@@ -70,6 +74,19 @@ public class PlayerController : MonoBehaviour
                 var lt = col.GetComponent<LivingThing>();
                 if (lt != null) lt.TakeDamage(attackDamage);
             }
+        }
+    }
+    void SnapToGround()
+    {
+        // ยิง Raycast ลงมาจากหัวตัวละครลงพื้น
+        Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
+        if (Physics.Raycast(ray, out var hit, 1.5f))
+        {
+            // ถ้าพื้นต่ำกว่าหรือตื้นกว่าตัวละคร ให้สแน็ปลงไป
+            float targetY = hit.point.y;
+            Vector3 pos = transform.position;
+            pos.y = Mathf.Lerp(pos.y, targetY, 20f * Time.deltaTime);
+            transform.position = pos;
         }
     }
 
