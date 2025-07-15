@@ -14,6 +14,7 @@ public class OilCollector : MonoBehaviour
         playerWeapon.SetActive(false);
         oilObject.SetActive(true);
         animator.SetTrigger("Oil");
+        oil.interactUI.Interacting();
         yield return new WaitForSeconds(1.5f);
         oil.Collect();
         InventoryManager.Instance.AddItem("Oil", oilIcon, 1);

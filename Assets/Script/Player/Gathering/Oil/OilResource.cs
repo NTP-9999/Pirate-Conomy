@@ -4,18 +4,30 @@ using System.Collections;
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class OilResource : MonoBehaviour
 {
+    public string displayName = "Oil";
     public int maxCollects = 3;
     public int currentCollects;
     public float respawnDelay = 5f;
-    public GameObject interactUI;
+    public ResourceInteractUI interactUI;
+    public Transform interactPoint;
+    private SphereCollider sphereCollider;
+    private float interactShowRange => sphereCollider.radius;
+    private float interactableRange => interactShowRange * .75f;
 
     MeshRenderer meshRenderer;
     bool playerInRange;
 
+    void Awake()
+    {
+        sphereCollider = GetComponent<SphereCollider>();
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
     void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
-        if (interactUI != null) interactUI.SetActive(false);
+        if (interactPoint == null)
+        {
+            interactPoint = transform;
+        }
     }
 
     public void Collect()
@@ -25,7 +37,8 @@ public class OilResource : MonoBehaviour
         {
             meshRenderer.enabled = false;
             StartCoroutine(Respawn());
-            if (interactUI != null) interactUI.SetActive(false);
+            interactUI.HideUI();
+            interactUI = null;
         }
     }
 
@@ -34,26 +47,39 @@ public class OilResource : MonoBehaviour
         yield return new WaitForSeconds(respawnDelay);
         currentCollects = 0;
         meshRenderer.enabled = true;
-        if (playerInRange && interactUI != null) interactUI.SetActive(true);
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
+            interactUI.SetUp(displayName);
             playerInRange = true;
-            if (interactUI!=null && meshRenderer.enabled)
-                interactUI.SetActive(true);
             other.GetComponent<PlayerStateMachine>().currentOil = this;
         }
     }
-
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && playerInRange && interactUI != null)
+        {
+            float distance = Vector3.Distance(other.transform.position, transform.position);
+            if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
+            {
+                interactUI.ReturnToShowInteractable();
+            }
+            else if (distance <= interactableRange && interactUI.interactUIState != InteractUIState.Interactable)
+            {
+                interactUI.Interactable();
+            }
+        }
+    }
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            if (interactUI!=null) interactUI.SetActive(false);
+            interactUI.HideUI();
             var psm = other.GetComponent<PlayerStateMachine>();
             if (psm.currentOil == this) psm.currentOil = null;
         }

@@ -5,6 +5,7 @@ using System.Collections;
 public class TreeChopper : MonoBehaviour
 {
     [Header("References")]
+    public Sprite woodIcon;  // ไอคอนไม้ที่ได้จากการฟัน
     public GameObject axeObject;      // ขวานที่ซ่อนอยู่ก่อนใช้
     public GameObject playerWeapon;   // อาวุธปกติของผู้เล่น
     public Animator animator;
@@ -24,13 +25,13 @@ public class TreeChopper : MonoBehaviour
 
         // สั่งเล่นแอนิเมชัน Chop
         animator.SetTrigger("Chop");
-
+        tree.interactUI.Interacting();  // เรียก UI ให้แสดงว่าเริ่มฟัน
         // รอให้แอนิเมชันเล่นจนจบ (1.5 วิ ตามตัวอย่าง)
         yield return new WaitForSeconds(1.5f);
 
         // ทำงานจริง: เรียก Chop บนต้นไม้ + เก็บของ
         tree.Chop();  // TreeTarget จะอัปเดต currentChops + UI + respawn
-        InventoryManager.Instance.AddItem("Wood", tree.woodIcon, 1);
+        InventoryManager.Instance.AddItem("Wood", woodIcon, 1);
 
         // คืนสภาพอาวุธ
         axeObject.SetActive(false);

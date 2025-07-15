@@ -14,6 +14,7 @@ public class OreCollector : MonoBehaviour
         playerWeapon.SetActive(false);
         pickaxeObject.SetActive(true);
         animator.SetTrigger("Mine");
+        ore.interactUI.Interacting();
         yield return new WaitForSeconds(1.5f);
         ore.Hit();
         InventoryManager.Instance.AddItem("Ore", oreIcon, 1);

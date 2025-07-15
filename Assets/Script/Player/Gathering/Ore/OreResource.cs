@@ -4,20 +4,24 @@ using System.Collections;
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class OreResource : MonoBehaviour
 {
+    public string displayName = "Ore";
     public int maxHits = 5;
     public int currentHits;
     public float respawnDelay = 5f;
-    public GameObject interactUI;
+    public ResourceInteractUI interactUI;
+
+    public Transform interactPoint;
+    private SphereCollider oreCollider;
+    private float interactShowRange => oreCollider.radius;
+    private float interactableRange => interactShowRange * .75f;
 
     MeshRenderer meshRenderer;
-    Collider oreCollider;
     bool playerInRange;
 
     void Start()
     {
         meshRenderer  = GetComponent<MeshRenderer>();
-        oreCollider   = GetComponent<Collider>();
-        if (interactUI!=null) interactUI.SetActive(false);
+        oreCollider   = GetComponent<SphereCollider>();
     }
 
     public void Hit()
@@ -25,10 +29,10 @@ public class OreResource : MonoBehaviour
         currentHits++;
         if (currentHits >= maxHits)
         {
-            meshRenderer.enabled  = false;
-            oreCollider.enabled   = false;
-            if (interactUI!=null) interactUI.SetActive(false);
+            meshRenderer.enabled = false;
             StartCoroutine(Respawn());
+            interactUI.HideUI();
+            interactUI = null;
         }
     }
 
@@ -37,27 +41,39 @@ public class OreResource : MonoBehaviour
         yield return new WaitForSeconds(respawnDelay);
         currentHits = 0;
         meshRenderer.enabled  = true;
-        oreCollider.enabled   = true;
-        if (playerInRange && interactUI!=null) interactUI.SetActive(true);
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
+            interactUI.SetUp(displayName);
             playerInRange = true;
-            if (interactUI!=null && meshRenderer.enabled)
-                interactUI.SetActive(true);
             other.GetComponent<PlayerStateMachine>().currentOre = this;
         }
     }
-
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && playerInRange && interactUI != null)
+        {
+            float distance = Vector3.Distance(other.transform.position, transform.position);
+            if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
+            {
+                interactUI.ReturnToShowInteractable();
+            }
+            else if (distance <= interactableRange && interactUI.interactUIState != InteractUIState.Interactable)
+            {
+                interactUI.Interactable();
+            }
+        }
+    }
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            if (interactUI!=null) interactUI.SetActive(false);
+            interactUI.HideUI();
             var psm = other.GetComponent<PlayerStateMachine>();
             if (psm.currentOre == this) psm.currentOre = null;
         }
