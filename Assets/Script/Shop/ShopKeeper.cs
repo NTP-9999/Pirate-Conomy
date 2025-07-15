@@ -69,7 +69,6 @@ public class ShopKeeper : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        CharacterMovement.Instance.SetCanMove(false);
         Time.timeScale = 0f;
     }
 
@@ -103,7 +102,7 @@ public class ShopKeeper : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        CharacterMovement.Instance.SetCanMove(true);
+        Time.timeScale = 1f;
     }
 
     // 🎯 เพิ่ม OnTriggerEnter/Exit

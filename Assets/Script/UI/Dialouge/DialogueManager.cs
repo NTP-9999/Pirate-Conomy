@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
-
+    public static bool IsInDialogue { get; private set; }
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
     public Button acceptButton;
@@ -16,6 +16,8 @@ public class DialogueManager : MonoBehaviour
     private int currentLine;
     private System.Action onAccept;
     private System.Action onDecline;
+
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -33,6 +35,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         AssignReferences();
+        FindPlayerController();
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
     }
 
@@ -46,6 +49,7 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("DialogueManager: Scene loaded, re-assigning references.");
         AssignReferences();
+        FindPlayerController();
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
     }
 
@@ -101,9 +105,29 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
+    private void FindPlayerController()
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerController = player.GetComponent<PlayerController>();
+            if (playerController == null)
+                Debug.LogWarning("DialogueManager: ไม่พบ PlayerController บน Player");
+        }
+        else
+        {
+            Debug.LogWarning("DialogueManager: ไม่พบ GameObject Tag \"Player\"");
+        }
+    }
 
     public void StartDialogue(string[] lines, System.Action acceptCallback, System.Action declineCallback)
     {
+        IsInDialogue = true;
+        if (playerController != null)
+        {
+            playerController.canMove = false;
+            playerController.enabled = false;
+        }
         dialogueLines = lines;
         currentLine = 0;
         onAccept = acceptCallback;
@@ -116,8 +140,12 @@ public class DialogueManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        CharacterMovement.Instance.SetCanMove(false); // ต้องมี script คุม movement
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        // ✂ ตรงนี้เปลี่ยนเป็น PlayerController
+        if (playerController != null)
+            playerController.canMove = false;
+
+        var player = GameObject.FindGameObjectWithTag("Player");
         HideAllChildrenExceptCamera(player);
     }
     void HideAllChildrenExceptCamera(GameObject player)
@@ -171,13 +199,23 @@ public class DialogueManager : MonoBehaviour
         EndDialogue();
     }
 
-    void EndDialogue()
+    private void EndDialogue()
     {
+        IsInDialogue = false;
+        if (playerController != null)
+        {
+            playerController.enabled = true;
+            playerController.canMove = true;
+        }
         dialoguePanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        CharacterMovement.Instance.SetCanMove(true);
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        // ✂ ตรงนี้ก็เช่นกัน
+        if (playerController != null)
+            playerController.canMove = true;
+
+        var player = GameObject.FindGameObjectWithTag("Player");
         ShowAllChildren(player);
     }
 

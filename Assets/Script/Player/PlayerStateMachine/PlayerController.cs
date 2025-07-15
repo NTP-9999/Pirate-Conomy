@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void Move(Vector3 displacement)
     {
+        if (DialogueManager.IsInDialogue) return;
         characterController.Move(displacement);
     }
 
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void Jump()
     {
+        if (DialogueManager.IsInDialogue) return;
         if (IsGrounded())
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
@@ -119,6 +121,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void HandleMovement()
     {
+        if (DialogueManager.IsInDialogue) return;
         // เช็คพื้นก่อนอื่น (เพื่อรีเซ็ต verticalVelocity เมื่อแตะพื้น)
         bool grounded = characterController.isGrounded;
         if (grounded && verticalVelocity < 0f)
