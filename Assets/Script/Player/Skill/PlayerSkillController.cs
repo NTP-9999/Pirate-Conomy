@@ -22,6 +22,11 @@ public class PlayerSkillController : MonoBehaviour
     public float      punchRange        = 2f;
     public string     projectileTag     = "EnemyProjectile";
 
+    [Header("Block Skill")]
+    public float blockCastDelay    = 0.5f;  // ความยาวอนิเมชันบล็อค
+    public float blockLockDuration = 0.5f;  // ระยะเวลาล็อกเดินไม่ได้ (มักเท่ากับ castDelay)
+    public float blockCooldown     = 2f;    // คูลดาวน์สกิล
+
     void Awake()
     {
         var pc = GetComponent<PlayerController>();
@@ -48,8 +53,13 @@ public class PlayerSkillController : MonoBehaviour
                 punchCooldown,
                 punchRange,
                 projectileTag
+            ),
+            ["Block"] = new BlockSkill(
+                pc,
+                blockCastDelay,
+                blockLockDuration,
+                blockCooldown
             )
-            
         };
     }
 
@@ -66,6 +76,12 @@ public class PlayerSkillController : MonoBehaviour
             && SkillManager.Instance.IsUnlocked("Punch"))
         {
             StartCoroutine(_skills["Punch"].Activate());
+        }
+        if (Input.GetKeyDown(KeyCode.V)
+            && !_skills["Block"].IsOnCooldown
+            && SkillManager.Instance.IsUnlocked("Block"))
+        {
+            StartCoroutine(_skills["Block"].Activate());
         }
     }
 }

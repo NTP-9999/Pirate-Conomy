@@ -39,6 +39,10 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        bool runPressed = Input.GetKey(KeyCode.LeftShift)
+                   && Input.GetAxis("Vertical") > 0.1f;
+        isRunning = runPressed;
+        animator.SetBool("IsRunning", runPressed);
         SnapToGround();
     }
 
@@ -80,7 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         // ยิง Raycast ลงมาจากหัวตัวละครลงพื้น
         Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
-        if (Physics.Raycast(ray, out var hit, 1.5f))
+        if (Physics.Raycast(ray, out var hit, 0.1f))
         {
             // ถ้าพื้นต่ำกว่าหรือตื้นกว่าตัวละคร ให้สแน็ปลงไป
             float targetY = hit.point.y;
