@@ -12,7 +12,16 @@ public class PlayerJumpState : IState
 
     public void Enter()
     {
+        var stats = CharacterStats.Instance;
         var pc = sm.playerController;
+        if (stats.currentStamina < pc.jumpStaminaCost)
+        {
+            sm.fsm.ChangeState(sm.idleState);
+            return;
+        }
+
+        // ตัด Stamina
+        stats.UseStamina(pc.jumpStaminaCost);
 
         // 1) สั่งกระโดด
         pc.Jump();
