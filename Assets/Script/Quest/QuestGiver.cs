@@ -57,7 +57,7 @@ public class QuestGiver : MonoBehaviour
         }
 
         if (pressEUI == null)
-            pressEUI = GameObject.Find("PressEPrompt");
+            pressEUI = GameObject.Find("PressE");
     }
 
     void Update()

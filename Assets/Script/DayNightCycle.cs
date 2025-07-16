@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DayNightCycle : MonoBehaviour
 {
@@ -39,9 +40,26 @@ public class DayNightCycle : MonoBehaviour
             Debug.LogWarning("No Skybox Material assigned in Lighting Settings. Ambient light and fog may not change as expected.");
         }
     }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (sunLight == null)
+        {
+            var go = GameObject.Find("Directional Light");
+            if (go != null)
+                sunLight = go.GetComponent<Light>();
+            else
+                Debug.LogError($"DayNightCycle.OnSceneLoaded: ไม่พบ 'Directional Light' ใน Scene '{scene.name}'");
+        }
+    }
+    void OnDestroy()
+    {
+        // ป้องกัน memory leak ถ้า GameObject ตัวนี้ถูกทำลาย
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     void Update()
     {
+        if (sunLight == null) return;
         // คำนวณเวลาที่ผ่านไป
         currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
         if (currentTimeOfDay >= 1f)
@@ -76,15 +94,5 @@ public class DayNightCycle : MonoBehaviour
         // สามารถใช้ AnimationCurve เพื่อควบคุมความสว่างได้ละเอียดกว่านี้
         sunLight.intensity = intensity;
 
-
-        // (Optional) เปิด/ปิดเงาตอนกลางคืนเพื่อประสิทธิภาพ
-        // if (currentTimeOfDay > 0.75f || currentTimeOfDay < 0.25f) // ช่วงกลางคืน
-        // {
-        //     sunLight.shadows = LightShadows.None;
-        // }
-        // else // ช่วงกลางวัน
-        // {
-        //     sunLight.shadows = LightShadows.Hard; // หรือ Soft
-        // }
     }
 }

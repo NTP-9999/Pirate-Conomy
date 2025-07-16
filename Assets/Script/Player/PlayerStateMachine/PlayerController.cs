@@ -19,6 +19,16 @@ public class PlayerController : MonoBehaviour
     public float attackDamage = 20f;
     public LayerMask enemyLayer;
 
+    [Header("Ground Snapping")]
+    // ระบุเลเยอร์ของพื้น (Optional แต่แนะนำให้เซ็ตเฉพาะพื้นจะได้ไม่ชนกับ Collider อื่นๆ)
+    public LayerMask groundLayer;
+    // ยกจุดเริ่มยิง ray ขึ้นเหนือจุดยืนของตัวละคร
+    public float groundCheckHeight   = 1.0f;
+    // ระยะลงไปหา ground สูงสุด
+    public float groundCheckDistance = 2.0f;
+    // ความเร็วในการสแน็ป (ยิ่งสูง ยิ่งเร็ว)
+    public float snapSpeed           = 10f;
+
     [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool isRunning;
     [HideInInspector] public bool isSkillLocked = false;
@@ -84,16 +94,21 @@ public class PlayerController : MonoBehaviour
     }
     void SnapToGround()
     {
-        // ยิง Raycast ลงมาจากหัวตัวละครลงพื้น
-        Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
-        if (Physics.Raycast(ray, out var hit, 0.1f))
+        // 1) เริ่ม raycast จากบนหัวลงมา
+        Vector3 origin = transform.position + Vector3.up * groundCheckHeight;
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundLayer))
         {
-            // ถ้าพื้นต่ำกว่าหรือตื้นกว่าตัวละคร ให้สแน็ปลงไป
-            float targetY = hit.point.y;
-            Vector3 pos = transform.position;
-            pos.y = Mathf.Lerp(pos.y, targetY, 20f * Time.deltaTime);
-            transform.position = pos;
+            // 2) หาระยะต่างระดับ y ระหว่างตัวละครกับพื้น
+            float yOffset = hit.point.y - transform.position.y;
+            if (Mathf.Abs(yOffset) > 0.01f)
+            {
+                // 3) เลื่อนผ่าน CharacterController.Move ให้ไปในทิศทางขึ้น/ลง
+                //    โดยใช้ Lerp เพื่อความนุ่มนวล
+                float moveY = Mathf.Lerp(0, yOffset, snapSpeed * Time.deltaTime);
+                characterController.Move(Vector3.up * moveY);
+            }
         }
+        // ถ้า Raycast ไม่ชน (ตกลงน้ำ หรือตกเหว) ก็ปล่อยให้ gravity เดิมทำงานต่อได้
     }
 
     /// <summary>

@@ -13,7 +13,7 @@ public class TreeTarget : MonoBehaviour
     public float respawnDelay = 5f;
 
     [Header("UI")]
-    [HideInInspector]public ResourceInteractUI interactUI;
+    public ResourceInteractUI interactUI;
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;
@@ -71,7 +71,7 @@ public class TreeTarget : MonoBehaviour
     {
         if (other.CompareTag("Player") && playerInRange && interactUI != null)
         {
-            float distance = Vector3.Distance(other.transform.position, transform.position);
+            float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
             if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
             {
                 interactUI.ReturnToShowInteractable();
