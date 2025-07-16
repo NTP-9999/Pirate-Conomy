@@ -46,7 +46,6 @@ public class ResourceInteractUI : MonoBehaviour
         interactableIcon.gameObject.SetActive(true);
         interactableIcon.alpha = 0f;
         interactableIcon.DOFade(1f, 0.3f);
-        interactableIcon.transform.localScale = Vector3.one * 0.8f;
         interactableIcon.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
     }
 
@@ -58,11 +57,9 @@ public class ResourceInteractUI : MonoBehaviour
         interactableIcon.DOFade(0f, 0.2f).OnComplete(() => interactableIcon.gameObject.SetActive(false));
 
         interactName.gameObject.SetActive(true);
-        interactName.transform.localScale = Vector3.one * 0.8f;
         interactName.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 
         pressE.gameObject.SetActive(true);
-        pressE.transform.localScale = Vector3.one * 0.8f;
         pressE.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 
         pressETween?.Kill();
@@ -88,7 +85,6 @@ public class ResourceInteractUI : MonoBehaviour
 
         progressBar.gameObject.SetActive(true);
         progressBar.value = 0f;
-        progressBar.transform.localScale = Vector3.one * 0.8f;
         progressBar.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 
         progressBar.DOValue(1f, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
@@ -149,7 +145,6 @@ public class ResourceInteractUI : MonoBehaviour
 
     public void ReturnToShowInteractable()
     {
-        HideUI();
         DOVirtual.DelayedCall(0.25f, () =>
         {
             interactableBG.DOFade(0f, 0.2f);
