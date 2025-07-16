@@ -14,8 +14,10 @@ public class AttackState : EnemyState
     {
         base.Enter();
         Debug.Log("Enter Attack State");
-        Attack();           // ตีทันทีตอนเข้า state
-        timer = 0f;         // รีเซ็ต timer หลังจากตี
+        // ล็อกปลายทางของ NavMeshAgent ไว้ที่ตำแหน่งเดิม
+        enemy.agent.SetDestination(enemy.transform.position);
+        Attack();           
+        timer = 0f;         
     }
 
     public override void LogicUpdate()
@@ -23,7 +25,6 @@ public class AttackState : EnemyState
         base.LogicUpdate();
 
         timer += Time.deltaTime;
-
         float distance = Vector3.Distance(enemy.transform.position, enemy.player.position);
 
         if (distance > enemy.agent.stoppingDistance + 0.5f)
@@ -32,27 +33,28 @@ public class AttackState : EnemyState
         }
         else if (timer >= attackCooldown)
         {
-            Attack();       // ตีอีกครั้ง
-            timer = 0f;     // รีเซ็ต timer
+            // ก่อนตีใหม่ ก็ล็อกตำแหน่งไว้ก่อนเหมือนเดิม
+            enemy.agent.SetDestination(enemy.transform.position);
+            Attack();
+            timer = 0f;
         }
     }
 
     private void Attack()
     {
-        enemy.agent.isStopped = true;
+        // สั่งให้เล่นอนิเม Trigger:
         enemy.animator.SetTrigger("Attack");
-        if (CharacterStats.Instance != null)
-        {
-            CharacterStats.Instance.TakeDamage(Atkdamage);
-            Debug.Log("Player took damage from enemy attack amount: " + Atkdamage);
-        }
+        // ไม่ต้อง Call TakeDamage ตรงนี้อีก
+        // เดี๋ยว Hitbox จะจัดการให้ตอน Activate() ทันที
         enemy.StartCoroutine(enemy.WaitEndAttack());
     }
-    
+
     public override void Exit()
     {
         base.Exit();
         Debug.Log("Exit Attack State");
-        enemy.agent.isStopped = false;
+        // พอออก AttackState ก็เลิกล็อกปลายทาง ให้มันวิ่งตามปกติได้
+        // (agent.isStopped ไม่เคยถูกเซ็ต true เลย จึงไม่ต้องเปลี่ยนอะไร)
     }
 }
+
