@@ -14,8 +14,19 @@ public class PlayerRollState : IState
 
     public void Enter()
     {
+        var pc = sm.playerController;
         Debug.Log("→ Enter RollState, trigger sent");
         sm.playerController.canMove = false;
+        var stats = CharacterStats.Instance;
+        if (stats.currentStamina < pc.rollStaminaCost)
+        {
+            sm.fsm.ChangeState(sm.idleState);
+            return;
+        }
+
+        // ตัด Stamina
+        stats.UseStamina(pc.rollStaminaCost);
+
 
         // อ่าน Input
         float h = Input.GetAxisRaw("Horizontal");

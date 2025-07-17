@@ -28,10 +28,14 @@ public class PlayerController : MonoBehaviour
     public float groundCheckDistance = 2.0f;
     // ความเร็วในการสแน็ป (ยิ่งสูง ยิ่งเร็ว)
     public float snapSpeed           = 10f;
+    [Header("Stamina Costs")]
+    public float jumpStaminaCost = 20f;
+    public float rollStaminaCost = 15f;
 
     [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool isRunning;
     [HideInInspector] public bool isSkillLocked = false;
+    [HideInInspector] public bool skipGroundSnap = false;
 
     
     private CharacterController characterController;
@@ -94,6 +98,8 @@ public class PlayerController : MonoBehaviour
     }
     void SnapToGround()
     {
+        if (skipGroundSnap)
+            return;
         // 1) เริ่ม raycast จากบนหัวลงมา
         Vector3 origin = transform.position + Vector3.up * groundCheckHeight;
         if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundLayer))
@@ -135,55 +141,80 @@ public class PlayerController : MonoBehaviour
     /// เรียกจาก MoveState (หรือ JumpState) เพื่ออัปเดตการเคลื่อนที่+แรงโน้มถ่วง
     /// </summary>
     public void HandleMovement()
+{
+    var stats = CharacterStats.Instance;
+
+    if (DialogueManager.IsInDialogue) return;
+
+    // 1) Ground check เพื่อรีเซ็ต verticalVelocity
+    bool grounded = characterController.isGrounded;
+    if (grounded && verticalVelocity < 0f)
+        verticalVelocity = -2f;
+
+    // 2) อ่าน input ก่อน — ต้องประกาศ moveX, moveZ, inputDir, speed ก่อนใช้งาน
+    float moveX = Input.GetAxis("Horizontal");
+    float moveZ = Input.GetAxis("Vertical");
+    Vector3 inputDir = new Vector3(moveX, 0f, moveZ).normalized;
+    bool wantRun = Input.GetKey(KeyCode.LeftShift) && inputDir.magnitude >= 0.1f;
+
+    // default speed เป็นเดิน
+    float speed = walkSpeed;
+
+    // 3) Stamina + running logic
+    if (!isSkillLocked && wantRun && stats.currentStamina > 0f)
     {
-        if (DialogueManager.IsInDialogue) return;
-        // เช็คพื้นก่อนอื่น (เพื่อรีเซ็ต verticalVelocity เมื่อแตะพื้น)
-        bool grounded = characterController.isGrounded;
-        if (grounded && verticalVelocity < 0f)
-        {
-            verticalVelocity = -2f; // ให้ติดพื้นแน่น
-        }
-
-        // ถ้า lock movement ไว้ (เช่น ตอน Hurt) ก็ให้ gravity ทำงาน แต่ไม่รับ input
-        if (!canMove)
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-            return;
-        }
-
-        // ดึง input เดิม
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-        isRunning   = Input.GetKey(KeyCode.LeftShift);
-        float speed = isRunning ? runSpeed : walkSpeed;
-
-        Vector3 inputDir = new Vector3(moveX, 0f, moveZ).normalized;
-        if (inputDir.magnitude >= 0.1f)
-        {
-            // คำนวณมุมและเคลื่อนที่ตามกล้อง
-            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
-                                + mainCamera.transform.eulerAngles.y;
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            Vector3 disp    = moveDir * speed + Vector3.up * verticalVelocity;
-
-            characterController.Move(disp * Time.deltaTime);
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-        }
-        else
-        {
-            // ไม่มี input ก็ปล่อยให้ gravity ทำงาน
-            verticalVelocity += gravity * Time.deltaTime;
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-        }
-
-        // อัปเดต verticalVelocity กับ Animator Parameters
-        verticalVelocity += gravity * Time.deltaTime;
-        animator.SetFloat("MoveX", moveX);
-        animator.SetFloat("MoveZ", moveZ);
-        animator.SetBool("IsRunning", isRunning);
-        animator.SetBool("IsGrounded", grounded);
+        isRunning = true;
+        stats.StartStaminaDrain();    // เริ่ม drain stamina
+        speed = runSpeed;
     }
+    else
+    {
+        isRunning = false;
+        stats.StopStaminaDrain();     // หยุด drain แล้วเริ่ม regen ตาม delay
+    }
+
+    // บังคับถ้า Stamina หมด
+    if (stats.currentStamina <= 0f)
+    {
+        isRunning = false;
+        speed = walkSpeed;
+        stats.StopStaminaDrain();
+    }
+
+    // 4) ถ้าโดน lock movement (เช่น ตอนโดนฮิต) ก็ปล่อย gravity แต่ไม่รับ input เดิน/วิ่ง
+    if (!canMove)
+    {
+        verticalVelocity += gravity * Time.deltaTime;
+        characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+        return;
+    }
+
+    // 5) เคลื่อนที่ปกติ ถ้ามี input
+    if (inputDir.magnitude >= 0.1f)
+    {
+        // หมุนตัวและ move ตามกล้อง
+        float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
+                            + mainCamera.transform.eulerAngles.y;
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+        Vector3 disp    = moveDir * speed + Vector3.up * verticalVelocity;
+
+        characterController.Move(disp * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+    }
+    else
+    {
+        // ไม่มี input → แค่ปล่อย gravity
+        verticalVelocity += gravity * Time.deltaTime;
+        characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+    }
+
+    // 6) อัพเดต verticalVelocity + Animator params
+    verticalVelocity += gravity * Time.deltaTime;
+    animator.SetFloat("MoveX", moveX);
+    animator.SetFloat("MoveZ", moveZ);
+    animator.SetBool("IsRunning", isRunning);
+    animator.SetBool("IsGrounded", grounded);
+}
     /// <summary>
     /// ล็อกการใช้ skill: ลดความเร็ว เดินอย่างเดียว ห้าม Jump/Run/Roll ฯลฯ
     /// </summary>

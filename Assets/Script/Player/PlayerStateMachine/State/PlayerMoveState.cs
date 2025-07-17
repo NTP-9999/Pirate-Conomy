@@ -12,9 +12,28 @@ public class PlayerMoveState : IState
 
     public void Execute()
     {
+          // Attack
+        if (Input.GetMouseButtonDown(0))
+        {
+            sm.fsm.ChangeState(sm.attackState);
+            return;
+        }
+        // Allow dodge/roll even while moving
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            sm.fsm.ChangeState(sm.rollState);
+            return;
+        }
+        // Jump
+        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
+        {
+            sm.fsm.ChangeState(sm.jumpState);
+            return;
+        }
+        
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        bool moving = Mathf.Abs(h) > 0f || Mathf.Abs(v) > 0f;
+        bool moving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;
 
         // If skill is locked, only allow walking
         if (sm.playerController.isSkillLocked)
@@ -24,14 +43,6 @@ public class PlayerMoveState : IState
                 sm.fsm.ChangeState(sm.idleState);
             return;
         }
-
-        // Allow dodge/roll even while moving
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            sm.fsm.ChangeState(sm.rollState);
-            return;
-        }
-
         // Normal movement
         sm.playerController.HandleMovement();
 
@@ -39,20 +50,6 @@ public class PlayerMoveState : IState
         if (!moving)
         {
             sm.fsm.ChangeState(sm.idleState);
-            return;
-        }
-
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
-        {
-            sm.fsm.ChangeState(sm.jumpState);
-            return;
-        }
-
-        // Attack
-        if (Input.GetMouseButtonDown(0))
-        {
-            sm.fsm.ChangeState(sm.attackState);
             return;
         }
     }

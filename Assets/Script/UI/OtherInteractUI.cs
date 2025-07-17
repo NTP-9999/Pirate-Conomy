@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-using Mono.Cecil;
 
 public class OtherInteractUI : MonoBehaviour
 {
