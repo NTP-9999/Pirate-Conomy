@@ -14,9 +14,9 @@ public class HidablePart : MonoBehaviour {
 	private Material mat;
 	private float currentAlpha;
 	
-	public float fadeOutSpeed = 3f;	
-	public float minAlpha = 0f;
-	public float maxAlpha = 1f;
+	private float fadeOutSpeed = 1f;	
+	private float minAlpha = 0.5f;
+	private float maxAlpha = 1f;
 			
 	void Start ()
 		{			
