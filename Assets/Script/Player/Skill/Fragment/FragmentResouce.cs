@@ -47,6 +47,21 @@ public class FragmentResource : MonoBehaviour
             if (psm != null) psm.currentFragment = this;
         }
     }
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && playerInRange && interactUI != null)
+        {
+            float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
+            if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
+            {
+                interactUI.ReturnToShowInteractable();
+            }
+            else if (distance <= interactableRange && interactUI.interactUIState != InteractUIState.Interactable)
+            {
+                interactUI.Interactable();
+            }
+        }
+    }
 
     void OnTriggerExit(Collider other) 
     {

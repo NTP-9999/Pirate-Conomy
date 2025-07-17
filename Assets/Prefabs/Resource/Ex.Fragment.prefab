@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fragmentID: 1
-  displayName: 
+  displayName: ???
   amount: 1
   playerInRange: 0
   interactUI: {fileID: 0}
@@ -153,8 +153,8 @@ Transform:
   m_GameObject: {fileID: 8338044456114454547}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.54}
-  m_LocalScale: {x: 0.7549889, y: 0.7549889, z: 0.7549889}
+  m_LocalPosition: {x: 0, y: 0.257, z: -0.815}
+  m_LocalScale: {x: 2.3885815, y: 2.3885815, z: 2.3885815}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1355620520094168836}
