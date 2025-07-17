@@ -22,6 +22,7 @@ public class PlayerJumpState : IState
 
         // ตัด Stamina
         stats.UseStamina(pc.jumpStaminaCost);
+        pc.skipGroundSnap = true;
 
         // 1) สั่งกระโดด
         pc.Jump();
@@ -51,6 +52,6 @@ public class PlayerJumpState : IState
 
     public void Exit()
     {
-        // ไม่มีอะไรต้องเคลียร์พิเศษ
+        sm.playerController.skipGroundSnap = false;
     }
 }

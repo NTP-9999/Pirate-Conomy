@@ -15,20 +15,20 @@ public class PlayerIdleState : IState
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        bool moving = Mathf.Abs(h) > 0f || Mathf.Abs(v) > 0f;
+        bool moving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;
+
+        // Jump
+        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
+        {
+            sm.fsm.ChangeState(sm.jumpState);
+            return;
+        }
 
         // If skill is locked, only allow walking
         if (sm.playerController.isSkillLocked)
         {
             if (moving)
                 sm.fsm.ChangeState(sm.moveState);
-            return;
-        }
-
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space) && sm.playerController.IsGrounded())
-        {
-            sm.fsm.ChangeState(sm.jumpState);
             return;
         }
 

@@ -11,9 +11,6 @@ public class CollectFragmentState : IState
         if (frag != null) {
             // เก็บข้อมูลเข้าตัว player
             sm.AddFragment(frag.fragmentID, frag.amount);
-            if (frag.interactUI != null)
-            frag.interactUI.SetActive(false);
-            // เลิกใช้งานชิ้นส่วน
             Object.Destroy(frag.gameObject);
         }
 

@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool isRunning;
     [HideInInspector] public bool isSkillLocked = false;
+    [HideInInspector] public bool skipGroundSnap = false;
 
     
     private CharacterController characterController;
@@ -97,6 +98,8 @@ public class PlayerController : MonoBehaviour
     }
     void SnapToGround()
     {
+        if (skipGroundSnap)
+            return;
         // 1) เริ่ม raycast จากบนหัวลงมา
         Vector3 origin = transform.position + Vector3.up * groundCheckHeight;
         if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundLayer))

@@ -13,7 +13,8 @@ public class OreResource : MonoBehaviour
     public Transform interactPoint;
     private SphereCollider oreCollider;
     private float interactShowRange => oreCollider.radius;
-    private float interactableRange => interactShowRange * .75f;
+    private float interactableRange => maxDistance * .75f;
+    private float maxDistance = 0;
 
     MeshRenderer meshRenderer;
     bool playerInRange;
@@ -45,6 +46,11 @@ public class OreResource : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (maxDistance == 0)
+            {
+                maxDistance = //Distance from ship to player
+                    Vector3.Distance(interactPoint.transform.position, other.transform.position);
+            }
         if (other.CompareTag("Player"))
         {
             interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();

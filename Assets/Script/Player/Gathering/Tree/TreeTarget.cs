@@ -15,16 +15,19 @@ public class TreeTarget : MonoBehaviour
     [Header("UI")]
     public ResourceInteractUI interactUI;
     public Transform interactPoint;
+    private CapsuleCollider TreeCollider;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;
-    private float interactableRange => interactShowRange * .75f;
+    private float interactableRange => maxDistance * .75f;
+    private float maxDistance = 0;
 
     MeshRenderer meshRenderer;
     bool playerInRange;
 
     void Awake()
     {
-        meshRenderer  = GetComponent<MeshRenderer>();
+        TreeCollider = GetComponent<CapsuleCollider>();
+        meshRenderer  = GetComponentInChildren<MeshRenderer>();
         sphereCollider   = GetComponent<SphereCollider>();
     }
     void Start()
@@ -33,6 +36,8 @@ public class TreeTarget : MonoBehaviour
         {
             interactPoint = transform;
         }
+        // Try to find a child named "Point" and assign its transform, otherwise use this object's transform
+        interactPoint = transform.Find("Point") != null ? transform.Find("Point") : transform;
     }
 
     public void Chop()
@@ -42,6 +47,7 @@ public class TreeTarget : MonoBehaviour
 
         if (currentChops >= maxChops)
         {
+            TreeCollider.enabled = false;
             meshRenderer.enabled = false;
             StartCoroutine(RespawnTree());
             interactUI.HideUI();
@@ -53,6 +59,7 @@ public class TreeTarget : MonoBehaviour
     {
         yield return new WaitForSeconds(respawnDelay);
         currentChops = 0;
+        TreeCollider.enabled = true;
         meshRenderer.enabled = true;
     }
 
@@ -60,6 +67,11 @@ public class TreeTarget : MonoBehaviour
     {
         if (!playerInRange && other.CompareTag("Player"))
         {
+            if (maxDistance == 0)
+            {
+                maxDistance = //Distance from ship to player
+                    Vector3.Distance(interactPoint.transform.position, other.transform.position);
+            }
             interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
             interactUI.SetUp(displayName);
             playerInRange = true;

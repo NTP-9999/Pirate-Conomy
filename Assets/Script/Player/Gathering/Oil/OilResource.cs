@@ -12,7 +12,8 @@ public class OilResource : MonoBehaviour
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;
-    private float interactableRange => interactShowRange * .75f;
+    private float interactableRange => maxDistance * .75f;
+    private float maxDistance = 0;
 
     MeshRenderer meshRenderer;
     bool playerInRange;
@@ -51,6 +52,11 @@ public class OilResource : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (maxDistance == 0)
+        {
+            maxDistance = //Distance from ship to player
+                Vector3.Distance(interactPoint.transform.position, other.transform.position);
+        }
         if (other.CompareTag("Player"))
         {
             interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
