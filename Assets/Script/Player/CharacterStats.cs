@@ -271,6 +271,9 @@ public class CharacterStats : Singleton<CharacterStats>
     void Die()
     {
         if (isDead) return;
+        var deathCam = Camera.main.GetComponent<DeathCameraTransition>();
+        if (deathCam != null)
+           deathCam.StartTransition();
 
         isDead = true;
         Debug.Log("Player has died!");
@@ -282,15 +285,8 @@ public class CharacterStats : Singleton<CharacterStats>
 
         if (animator != null)
         {
-            animator.SetBool("IsDead", true);
             animator.SetTrigger("Death");
             Debug.Log("Player Animator: Set 'IsDead' Bool and 'Death' Trigger.");
-        }
-
-        CharacterMovement movementScript = GetComponent<CharacterMovement>();
-        if (movementScript != null)
-        {
-            movementScript.enabled = false;
         }
         if (characterController != null)
         {
@@ -300,6 +296,21 @@ public class CharacterStats : Singleton<CharacterStats>
         if (fpCamera != null)
         {
             fpCamera.enabled = false;
+        }
+        PlayerStateMachine stateMachine = GetComponent<PlayerStateMachine>();
+        if (stateMachine != null)
+        {
+            stateMachine.enabled = false;
+        }
+        PlayerSkillController skillController = GetComponent<PlayerSkillController>();
+        if (skillController != null)
+        {
+            skillController.enabled = false;
+        }
+        PlayerController pc = GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            pc.enabled = false;
         }
 
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -312,7 +323,6 @@ public class CharacterStats : Singleton<CharacterStats>
         }
 
         StopAllCoroutines();
-        Destroy(gameObject , 3f);
     }
 
     void OnDeathAnimationEnd()

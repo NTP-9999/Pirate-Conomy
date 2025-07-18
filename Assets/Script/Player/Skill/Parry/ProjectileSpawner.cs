@@ -11,7 +11,7 @@ public class ProjectileSpawner : MonoBehaviour
 
     void Start()
     {
-        Invoke(nameof(SpawnOne), delay);
+        InvokeRepeating(nameof(SpawnOne), delay, delay);
     }
 
     void SpawnOne()
