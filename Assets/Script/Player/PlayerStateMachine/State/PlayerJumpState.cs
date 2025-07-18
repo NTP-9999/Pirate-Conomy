@@ -12,6 +12,12 @@ public class PlayerJumpState : IState
 
     public void Enter()
     {
+        var pcCheck = sm.playerController;
+        if (pcCheck.isParryActive)
+        {
+            sm.fsm.ChangeState(sm.idleState);
+            return;
+        }
         var stats = CharacterStats.Instance;
         var pc = sm.playerController;
         if (stats.currentStamina < pc.jumpStaminaCost)

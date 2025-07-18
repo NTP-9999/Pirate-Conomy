@@ -63,6 +63,9 @@ public class CharacterStats : Singleton<CharacterStats>
     public AudioClip damageSFX;
 
     public event Action<float> OnPlayerDamaged;
+    private bool _isInvincible = false;
+    public bool IsInvincible => _isInvincible;
+    public void SetInvincibility(bool value) => _isInvincible = value;
 
     private void Start()
     {
@@ -72,7 +75,7 @@ public class CharacterStats : Singleton<CharacterStats>
         currentStress = 0f;
         isDead = false;
 
-        
+
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -126,7 +129,7 @@ public class CharacterStats : Singleton<CharacterStats>
 
     public void TakeDamage(float amount)
     {
-        if (isDead) return;
+        if (isDead  || _isInvincible) return;
 
         currentHealth -= amount;
         Debug.Log("Player took " + amount + " damage. Current Health: " + currentHealth);

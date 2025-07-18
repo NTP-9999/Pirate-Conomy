@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isRunning;
     [HideInInspector] public bool isSkillLocked = false;
     [HideInInspector] public bool skipGroundSnap = false;
+    [HideInInspector] public bool isParryActive = false;
 
     
     private CharacterController characterController;
@@ -199,7 +200,6 @@ public class PlayerController : MonoBehaviour
         Vector3 disp    = moveDir * speed + Vector3.up * verticalVelocity;
 
         characterController.Move(disp * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
     }
     else
     {

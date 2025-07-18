@@ -27,6 +27,14 @@ public class PlayerSkillController : MonoBehaviour
     public float blockLockDuration = 0.5f;  // ระยะเวลาล็อกเดินไม่ได้ (มักเท่ากับ castDelay)
     public float blockCooldown     = 2f;    // คูลดาวน์สกิล
 
+    [Header("Parry Skill")]
+    public ParryHitbox parryHitbox;        // assign จาก Inspector (child ของ Player)
+    public float      parryCastDelay      = 0.2f;
+    public float      parryWindowDuration = 0.4f;
+    public float      parryCooldown       = 2f;
+    // ใช้ tag เดิมจาก PunchSkill ถ้าต้องการให้ Parry สะท้อนเฉพาะ EnemyProjectile
+    // public string   projectileTag;
+
     void Awake()
     {
         var pc = GetComponent<PlayerController>();
@@ -45,7 +53,7 @@ public class PlayerSkillController : MonoBehaviour
                 firewallOffset,
                 firewallHeight
             ),
-                ["Punch"] = new PunchSkill(
+            ["Punch"] = new PunchSkill(
                 pc,
                 punchEffectPrefab,
                 punchEffectOrigin,
@@ -59,7 +67,15 @@ public class PlayerSkillController : MonoBehaviour
                 blockCastDelay,
                 blockLockDuration,
                 blockCooldown
-            )
+            ),
+            ["Parry"] = new ParrySkill(
+                pc,
+                parryHitbox,
+                parryCastDelay,
+                parryWindowDuration,
+                parryCooldown,
+                "EnemyProjectile"
+           )
         };
     }
 
@@ -77,11 +93,17 @@ public class PlayerSkillController : MonoBehaviour
         {
             StartCoroutine(_skills["Punch"].Activate());
         }
-        if (Input.GetKeyDown(KeyCode.V)
+        if (Input.GetKeyDown(KeyCode.T)
             && !_skills["Block"].IsOnCooldown
             && SkillManager.Instance.IsUnlocked("Block"))
         {
             StartCoroutine(_skills["Block"].Activate());
+        }
+        if (Input.GetKeyDown(KeyCode.R) // หรือปุ่มที่คุณเลือกสำหรับ Parry
+            && !_skills["Parry"].IsOnCooldown
+            && SkillManager.Instance.IsUnlocked("Parry"))
+        {
+            StartCoroutine(_skills["Parry"].Activate());
         }
     }
 }

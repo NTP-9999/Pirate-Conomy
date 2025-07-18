@@ -34,9 +34,11 @@ public class BlockSkill : ISkill
 
         // 3) สั่ง Animator เล่น Trigger "Block"
         _pc.animator?.SetTrigger("Block");
+        CharacterStats.Instance.SetInvincibility(true);
 
         // 4) รอจนอนิเมชันบล็อคจบ
         yield return new WaitForSeconds(_castDelay);
+        CharacterStats.Instance.SetInvincibility(false);
 
         // 6) รอคูลดาวน์ก่อนให้ใช้สกิลได้อีกครั้ง
         yield return new WaitForSeconds(_cooldown);
