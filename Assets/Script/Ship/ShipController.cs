@@ -51,7 +51,7 @@ public class ShipController : Singleton<ShipController>
 
     void HandleMovement()
     {
-        if (enterExit == null || !enterExit.IsControlling) return;
+        if (enterExit == null || !enterExit.isControlling) return;
 
         float forward = Input.GetAxis("Vertical");
         float turn = Input.GetAxis("Horizontal");
