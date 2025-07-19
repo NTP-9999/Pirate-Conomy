@@ -15,6 +15,8 @@ public class PunchSkill : ISkill
     private readonly float            _cooldown;     // เวลาคูลดาวน์นับถอยหลัง
     private readonly float            _range;        // ระยะตรวจหา projectiles
     private readonly string           _projTag;      // Tag ของเป้าหมายที่จะทำลาย
+    private readonly float _damage; // ดาเมจที่ทำ
+
 
     public PunchSkill(
         PlayerController pc,
@@ -23,17 +25,19 @@ public class PunchSkill : ISkill
         float castDelay,
         float cooldown,
         float range,
+        float damage, // ดาเมจที่ทำ
         string projTag
     )
     {
-        _pc                = pc;
+        _pc = pc;
         _punchEffectPrefab = punchEffectPrefab;
-        _origin            = origin;
-        _castDelay         = castDelay;
-        _lockDuration      = castDelay;  // ล็อกเดินไม่ได้จน animation จบ
-        _cooldown          = cooldown;
-        _range             = range;
-        _projTag           = projTag;
+        _origin = origin;
+        _castDelay = castDelay;
+        _lockDuration = castDelay;  // ล็อกเดินไม่ได้จน animation จบ
+        _cooldown = cooldown;
+        _range = range;
+        _damage = damage;
+        _projTag = projTag;
     }
 
     public IEnumerator Activate()
@@ -58,6 +62,7 @@ public class PunchSkill : ISkill
 
         // ── ปล่อย VFX + ทำลาย projectile ───────────
         SpawnEffect();
+        DamageEnemies();
         DestroyProjectilesByTag();
         yield return new WaitForSeconds(1.2f);
         if (_pc.playerWeapon != null)
@@ -66,6 +71,25 @@ public class PunchSkill : ISkill
         // ── รอ Cooldown ──────────────────────────────
         yield return new WaitForSeconds(_cooldown);
         IsOnCooldown = false;
+    }
+    private void DamageEnemies()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            _origin.position,
+            _range,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Collide
+        );
+        foreach (var c in hits)
+        {
+            // มองหา LivingThing บนตัว collider นั้น
+            var living = c.GetComponent<Monster>();
+            if (living != null)
+            {
+                living.TakeDamage(_damage);
+                Debug.Log($"Hit {c.name}: dealt {_damage} damage");
+            }
+        }
     }
 
     private void SpawnEffect()

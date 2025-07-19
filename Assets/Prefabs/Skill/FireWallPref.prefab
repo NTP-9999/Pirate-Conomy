@@ -4939,3 +4939,7 @@ MonoBehaviour:
   maxDistance: 1.02
   lifeTime: 1
   fadeTime: 0.8
+  initialDamage: 10
+  burnDamage: 2
+  burnDuration: 3
+  burnInterval: 1

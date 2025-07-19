@@ -20,7 +20,8 @@ public class PlayerSkillController : MonoBehaviour
     public float      punchCastDelay    = 0.3f;   // เท่ากับความยาว animation
     public float      punchCooldown     = 1f;
     public float      punchRange        = 2f;
-    public string     projectileTag     = "EnemyProjectile";
+    public float      punchDamage       = 30f; // ดาเมจที่ทำ
+    public string projectileTag = "EnemyProjectile";
 
     [Header("Block Skill")]
     public float blockCastDelay    = 0.5f;  // ความยาวอนิเมชันบล็อค
@@ -60,6 +61,7 @@ public class PlayerSkillController : MonoBehaviour
                 punchCastDelay,
                 punchCooldown,
                 punchRange,
+                punchDamage,
                 projectileTag
             ),
             ["Block"] = new BlockSkill(
