@@ -92,8 +92,13 @@ public class PlayerController : MonoBehaviour
         {
             if (col.CompareTag("Enemy"))
             {
-                var lt = col.GetComponent<LivingThing>();
+                var lt = col.GetComponent<Monster>();
                 if (lt != null) lt.TakeDamage(attackDamage);
+            }
+            if(col.CompareTag("Boss"))
+            {
+                var boss = col.GetComponent<BossStat>();
+                if (boss != null) boss.TakeDamage(attackDamage);
             }
         }
     }

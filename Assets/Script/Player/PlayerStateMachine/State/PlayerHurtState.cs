@@ -10,6 +10,7 @@ public class PlayerHurtState : IState
 
     public void Enter()
     {
+        CharacterStats.Instance.SetInvincibility(true);
         Debug.Log("Player Enter Hurt State");
         timer = 0f;
         sm.playerController.animator.SetTrigger("Hurt");
@@ -22,7 +23,7 @@ public class PlayerHurtState : IState
         timer += Time.deltaTime;
         if (timer >= hurtDuration)
         {
-            // กลับไป idle หรือ move
+            CharacterStats.Instance.SetInvincibility(false);    
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 sm.fsm.ChangeState(sm.moveState);
             else
@@ -35,5 +36,6 @@ public class PlayerHurtState : IState
         Debug.Log("Player Exit Hurt State");
         // กลับมาให้เคลื่อนไหวได้
         sm.playerController.canMove = true;
+        CharacterStats.Instance.SetInvincibility(false);
     }
 }

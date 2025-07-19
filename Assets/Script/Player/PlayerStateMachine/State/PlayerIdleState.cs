@@ -42,7 +42,7 @@ public class PlayerIdleState : IState
         // Attack
         if (Input.GetMouseButtonDown(0))
         {
-            sm.fsm.ChangeState(sm.attackState);
+            sm.fsm.ChangeState(sm.attack1State);
             return;
         }
 
