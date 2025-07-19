@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class Projectile : MonoBehaviour
 {
+    private float time = 0f; // ใช้สำหรับตรวจสอบเวลา
     [HideInInspector] public Transform owner;    // เจ้าของปัจจุบัน (Boss ก่อน Parry, Player หลัง Parry)
     public float speed = 10f;
     public int   damage = 10;
@@ -27,24 +28,29 @@ public class Projectile : MonoBehaviour
     /// <param name="shooter">Transform ของผู้ยิง (Boss)</param>
     public void Shoot(Vector3 direction, Transform shooter)
     {
-        owner  = shooter;
+        owner = shooter;
         // ตั้งเป้าเป็น Player (หาโดย Tag="Player")
         var go = GameObject.FindGameObjectWithTag("Player");
         if (go != null) _target = go.transform;
 
         // ตั้งทิศทางและความเร็วเริ่มต้น
-        transform.forward    = direction.normalized;
-        _rb.linearVelocity         = transform.forward * speed;
+        transform.forward = direction.normalized;
+        _rb.linearVelocity = transform.forward * speed;
     }
 
     void Update()
     {
+        time += Time.deltaTime;
+        if (time >= 4f)
+        {
+            Destroy(gameObject);
+        }
         // ถ้ามีเป้า ให้คำนวณทิศทางและปรับ velocity ทุกเฟรม
         if (_target != null)
         {
             Vector3 dir = (_target.position - transform.position).normalized;
             transform.forward = dir;
-            _rb.linearVelocity      = dir * speed;
+            _rb.linearVelocity = dir * speed;
         }
     }
 
@@ -72,12 +78,10 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        // 2) ถ้าชน Boss (หลัง Parry) — สมมติ Boss มี tag="Boss"
         if (other.CompareTag("Boss") && owner != other.transform)
         {
-            // ทำดาเมจ Boss — ถ้ามีระบบ Boss.ReceiveDamage(damage) ก็เรียกที่นี่
-            var boss = other.GetComponent<LivingThing>();
-            if (boss != null) boss.TakeDamage(damage);
+            var BossStat = other.GetComponent<BossStat>();
+            if (BossStat != null) BossStat.TakeDamage(damage);
 
             Destroy(gameObject);
             return;

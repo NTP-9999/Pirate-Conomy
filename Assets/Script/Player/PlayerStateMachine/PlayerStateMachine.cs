@@ -29,9 +29,15 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public OreResource  currentOre;
     [HideInInspector] public CollectOreState collectOreState;
 
+    // --- Combo ---
+    [HideInInspector] public PlayerAttackState attackState;
+    [HideInInspector] public float comboStep = 0;           // ขั้นที่กำลังเล่น (0 = ยังไม่เริ่ม)
+    [HideInInspector] public bool comboInputBuffered;     // เก็บว่ากดปุ่มโจมตีขณะคอมโบ
+    public float maxComboStep     = 3;                      // สูงสุดกี่ท่า
+    public float maxComboDelay  = 0.5f; 
+
     [HideInInspector] public PlayerIdleState idleState;
     [HideInInspector] public PlayerMoveState moveState;
-    [HideInInspector] public PlayerAttackState attackState;
     [HideInInspector] public PlayerJumpState jumpState;
     [HideInInspector] public PlayerHurtState hurtState;
     [HideInInspector] public PlayerSwimState swimState;

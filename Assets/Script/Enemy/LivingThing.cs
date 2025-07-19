@@ -71,6 +71,6 @@ public abstract class LivingThing : MonoBehaviour
     protected virtual void OnDeath()
     {
         // ตัวอย่าง: ปิด gameobject
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }

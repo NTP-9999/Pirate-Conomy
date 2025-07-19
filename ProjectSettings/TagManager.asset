@@ -13,6 +13,7 @@ TagManager:
   - Enemy
   - Ship
   - EnemyProjectile
+  - Boss
   layers:
   - Default
   - TransparentFX
