@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(Animator), typeof(BossStat))]
+[RequireComponent(typeof(Animator), typeof(BossStat), typeof(NavMeshAgent))]
 public class IceDragonBossAI : MonoBehaviour
 {
     [Header("Detection & Cooldowns")]
@@ -8,23 +9,29 @@ public class IceDragonBossAI : MonoBehaviour
     public float attackCooldown = 2f;
 
     [Header("Damage Settings")]
-    public float tailRadius = 2f;
-    public float tailDamage = 15f;
+    public float tailRadius    = 2f;
+    public float tailDamage    = 15f;
+    public float scratchRadius = 4f;
+    public float scratchDamage = 25f;
 
-    public float slamRadius = 4f;
-    public float slamDamage = 25f;
-
-    private Transform player;
-    [HideInInspector] public Animator animator;
+    [HideInInspector] public Transform       player;
+    [HideInInspector] public Animator        animator;
+    [HideInInspector] public NavMeshAgent    agent;
     [HideInInspector] public BossStateMachine stateMachine;
     private float cooldownTimer;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        stateMachine = new BossStateMachine();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        agent         = GetComponent<NavMeshAgent>();
+        animator      = GetComponent<Animator>();
+        stateMachine  = new BossStateMachine();
+        player        = GameObject.FindGameObjectWithTag("Player").transform;
         cooldownTimer = 0f;
+
+        // NavMeshAgent tuning:
+        agent.stoppingDistance = 2f;
+        agent.speed            = 3.5f;
+        agent.angularSpeed     = 120f;
     }
 
     private void Start()
@@ -38,20 +45,11 @@ public class IceDragonBossAI : MonoBehaviour
         stateMachine.Tick();
     }
 
-    public bool PlayerInRange()
-    {
-        return Vector3.Distance(transform.position, player.position) <= detectionRange;
-    }
-
     public bool CanAttack()
-    {
-        return cooldownTimer <= 0f;
-    }
+        => cooldownTimer <= 0f;
 
     public void ResetAttackCooldown()
-    {
-        cooldownTimer = attackCooldown;
-    }
+        => cooldownTimer = attackCooldown;
 
     public void FacePlayer()
     {
@@ -60,23 +58,25 @@ public class IceDragonBossAI : MonoBehaviour
         if (dir.sqrMagnitude > 0.01f)
         {
             Quaternion look = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, look, Time.deltaTime * 5f
+            );
         }
     }
 
     public void OnTailSwipeHit()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, tailRadius);
+        var hits = Physics.OverlapSphere(transform.position, tailRadius);
         foreach (var hit in hits)
             if (hit.CompareTag("Player"))
                 hit.GetComponent<CharacterStats>()?.TakeDamage(tailDamage);
     }
 
-    public void OnWingSlamHit()
+    public void OnScratchHit()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, slamRadius);
+        var hits = Physics.OverlapSphere(transform.position, scratchRadius);
         foreach (var hit in hits)
             if (hit.CompareTag("Player"))
-                hit.GetComponent<CharacterStats>()?.TakeDamage(slamDamage);
+                hit.GetComponent<CharacterStats>()?.TakeDamage(scratchDamage);
     }
 }
