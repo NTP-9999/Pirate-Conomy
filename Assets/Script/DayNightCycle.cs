@@ -58,41 +58,53 @@ public class DayNightCycle : MonoBehaviour
     }
 
     void Update()
+{
+    if (sunLight == null) return;
+
+    // — 1. อัพเดตเวลาและหมุนดวงอาทิตย์ เหมือนเดิม —
+    currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
+    if (currentTimeOfDay >= 1f) currentTimeOfDay -= 1f;
+    sunLight.transform.localRotation =
+        Quaternion.Euler((currentTimeOfDay * 360f) - 90f, 170f, 0);
+
+    // — 2. คอนฟิกค่าปกติ —
+    float minIntensity = 0.1f, maxIntensity = 0.3f;
+    float sunriseNorm = sunRiseHour / 24f; // ex: 6/24 = 0.25
+    float sunsetNorm  = sunSetHour  / 24f; // ex:18/24 = 0.75
+
+    Color skyTint;
+    float intensity;
+
+    // — 3. ก่อนพระอาทิตย์ขึ้น (00:00 → sunrise): night → day —
+    if (currentTimeOfDay < sunriseNorm)
     {
-        if (sunLight == null) return;
-        // คำนวณเวลาที่ผ่านไป
-        currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
-        if (currentTimeOfDay >= 1f)
-        {
-            currentTimeOfDay = 0f; // เมื่อครบรอบ 1 วัน ให้กลับไปเริ่มต้นใหม่
-        }
-
-        // หมุน Directional Light เพื่อจำลองการขึ้น-ตกของดวงอาทิตย์
-        // 0.25 = 6 โมงเช้า, 0.5 = เที่ยงวัน, 0.75 = 6 โมงเย็น, 0 = เที่ยงคืน
-        // หมุน 360 องศา ใน 1 วัน
-        sunLight.transform.localRotation = Quaternion.Euler((currentTimeOfDay * 360f) - 90f, 170f, 0); // -90f เพื่อให้เริ่มจากขอบฟ้า
-
-        // ปรับสีแสง Ambient และ Fog
-        RenderSettings.ambientLight = ambientLightColor.Evaluate(currentTimeOfDay);
-        RenderSettings.fogColor = fogColor.Evaluate(currentTimeOfDay);
-
-        // ปรับความเข้มของแสงดวงอาทิตย์
-        // ทำให้ดวงอาทิตย์มืดลงตอนกลางคืน
-        float intensity = 0;
-        if (currentTimeOfDay > 0.23f && currentTimeOfDay < 0.77f) // ช่วงกลางวัน (ประมาณ 5:30 - 18:30)
-        {
-            intensity = 1f; // สว่างเต็มที่
-            // ปรับ Skybox เป็นสีกลางวัน
-            if (skyboxMaterial != null) skyboxMaterial.SetColor("_Tint", daySkyboxTint);
-        }
-        else // ช่วงกลางคืน
-        {
-            intensity = 0.1f; // หรี่แสงลง
-            // ปรับ Skybox เป็นสีกลางคืน
-            if (skyboxMaterial != null) skyboxMaterial.SetColor("_Tint", nightSkyboxTint);
-        }
-        // สามารถใช้ AnimationCurve เพื่อควบคุมความสว่างได้ละเอียดกว่านี้
-        sunLight.intensity = intensity;
-
+        float t = Mathf.InverseLerp(0f, sunriseNorm, currentTimeOfDay);
+        skyTint    = Color.Lerp(nightSkyboxTint, daySkyboxTint, t);
+        intensity  = Mathf.Lerp(minIntensity, maxIntensity, t);
     }
+    // — 4. กลางวัน (sunrise → sunset): คงที่เป็น day —
+    else if (currentTimeOfDay < sunsetNorm)
+    {
+        skyTint   = daySkyboxTint;
+        intensity = maxIntensity;
+    }
+    // — 5. หลังพระอาทิตย์ตก (sunset → 24:00): day → night —
+    else
+    {
+        float t = Mathf.InverseLerp(sunsetNorm, 1f, currentTimeOfDay);
+        skyTint   = Color.Lerp(daySkyboxTint, nightSkyboxTint, t);
+        intensity = Mathf.Lerp(maxIntensity, minIntensity, t);
+    }
+
+    // — 6. เซ็ตค่าลงในระบบจริง —
+    if (skyboxMaterial != null)
+        skyboxMaterial.SetColor("_Tint", skyTint);
+
+    sunLight.intensity = intensity;
+
+    // — 7. Ambient & Fog แล้วแต่เดิม —
+    RenderSettings.ambientLight = ambientLightColor.Evaluate(currentTimeOfDay);
+    RenderSettings.fogColor     = fogColor.Evaluate(currentTimeOfDay);
+}
+
 }
