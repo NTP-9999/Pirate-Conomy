@@ -1,59 +1,67 @@
 using UnityEngine;
-using System.Collections.Generic;
 
+[RequireComponent(typeof(Collider))]
 public class ShopKeeper : MonoBehaviour
 {
+    [Header("Shop Settings")]
     public GameObject shopUIPanel;  
     public ShopManager shopManager; 
-    private bool canOpenShop = false; 
-    private bool playerInShopRange = false;
     public bool shopAlwaysOpen = false;
-    public GameObject pressEUI;
-    public PlayerController playerController;
-    public PlayerSkillController playerSkillController;
 
-    void Start()
+    [Header("UI")]
+    [Tooltip("Where the 'Press E' UI will appear")]
+    public Transform interactPoint;
+    private ResourceInteractUI interactUI;
+    private bool playerInRange = false;
+    private bool canOpenShop = false;              // ← new
+
+    [Header("Ranges")]
+    [Tooltip("How far away to show the UI at all")]
+    public float showRange = 8f;
+    [Tooltip("How close before the UI goes 'press to open'")]
+    public float interactableRange = 5f;
+
+    private PlayerController      playerController;
+    private PlayerSkillController playerSkillController;
+
+    void Awake()
     {
-        if (playerController == null)
+        // cache player scripts
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
         {
-            var playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-                playerController = playerObj.GetComponent<PlayerController>();
-                
+            if (playerController      == null) playerController      = player.GetComponent<PlayerController>();
+            if (playerSkillController == null) playerSkillController = player.GetComponent<PlayerSkillController>();
         }
-        if (playerSkillController == null)
-        {
-            var playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-                playerSkillController = playerObj.GetComponent<PlayerSkillController>();
-        }
-        if (shopUIPanel != null) shopUIPanel.SetActive(false);
-        if (shopAlwaysOpen)     canOpenShop = true;
+
+        if (interactPoint == null) interactPoint = transform;
+        if (shopUIPanel  != null)  shopUIPanel.SetActive(false);
+
+        // initialize canOpenShop
+        canOpenShop = shopAlwaysOpen;
     }
 
     void Update()
     {
-        if (canOpenShop && playerInShopRange && Input.GetKeyDown(KeyCode.E))
+        if (!canOpenShop) return;
+
+        if (playerInRange &&
+            interactUI != null &&
+            interactUI.interactUIState == InteractUIState.Interactable &&
+            Input.GetKeyDown(KeyCode.E))
+        {
             OpenShop();
+        }
     }
 
     public void OpenShop()
     {
-        // เปิด UI ร้าน
         if (shopUIPanel != null) shopUIPanel.SetActive(true);
         shopManager?.OpenShop();
 
-        // ปิดการควบคุมผู้เล่น
-        if (playerController != null)
-        {
-            playerController.enabled = false;  // Disabled ทั้งสคริปต์
-            playerController.canMove = false;  // หรือถ้าต้องการแค่ล็อกเดินก็ใช้ค่านี้ได้
-        }
-        if (playerSkillController != null)
-            playerSkillController.enabled = false;
+        if (playerController      != null) { playerController.enabled = false; playerController.canMove = false; }
+        if (playerSkillController != null) playerSkillController.enabled = false;
 
-
-        // เอาเมาส์มาปลดล็อก และหยุดเวลา
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
         Time.timeScale   = 0f;
@@ -61,47 +69,59 @@ public class ShopKeeper : MonoBehaviour
 
     public void CloseShop()
     {
-        // คืนเวลา
         Time.timeScale = 1f;
-
-        // ปิด UI ร้าน
         if (shopUIPanel != null) shopUIPanel.SetActive(false);
 
-        // เปิดการควบคุมผู้เล่นคืน
-        if (playerController != null)
-        {
-            playerController.enabled = true;
-            playerController.canMove = true;
-        }
-        if (playerSkillController != null)
-            playerSkillController.enabled = true;
+        if (playerController      != null) { playerController.enabled = true;  playerController.canMove = true; }
+        if (playerSkillController != null) playerSkillController.enabled = true;
 
-        // ล็อกเมาส์กลับและซ่อน
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible   = false;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInShopRange = true;
-            pressEUI.SetActive(true);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInShopRange = false;
-            pressEUI.SetActive(false);
-        }
-    }
-
+    // ← the missing method!
     public void EnableShop()
     {
         canOpenShop = true;
-        // (ถ้าต้องการให้เดินได้ทันทีหลังรับเควส สามารถใส่ playerController.canMove = true; ได้ที่นี่)
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!canOpenShop || !other.CompareTag("Player")) return;
+        playerInRange = true;
+        interactUI = InteractableUIManager
+                       .Instance
+                       .CreateResourceInteractUI(interactPoint)
+                       .GetComponent<ResourceInteractUI>();
+        interactUI.SetUp("Talk");
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (!canOpenShop || !playerInRange || !other.CompareTag("Player") || interactUI == null)
+            return;
+
+        float dist = Vector3.Distance(other.transform.position, interactPoint.position);
+        if (dist <= interactableRange)
+            interactUI.Interactable();
+        else if (dist <= showRange)
+            interactUI.ReturnToShowInteractable();
+        else
+        {
+            interactUI.HideUI();
+            interactUI = null;
+            playerInRange = false;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!canOpenShop || !other.CompareTag("Player")) return;
+        playerInRange = false;
+        if (interactUI != null)
+        {
+            interactUI.HideUI();
+            interactUI = null;
+        }
     }
 }

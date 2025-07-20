@@ -1,200 +1,139 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class QuestGiver : MonoBehaviour
 {
-    public string[] dialogueLines = new string[] {
+    [Header("Dialogue")]
+    public string[] dialogueLines = {
         "สวัสดี นักผจญภัย!",
         "ช่วยไปส่งจดหมายที่หมู่บ้านใกล้ ๆ ให้หน่อยนะ"
     };
 
-    [Header("ข้อมูลเควสที่ 2 (หลังคุยกับ NPC)")]
-    public string quest2Name = "ส่งจดหมาย";
-    public string quest2Description = "เดินทางไปยังหมู่บ้านเพื่อส่งจดหมาย";
-    public Transform quest2Target; // เป้าหมายของเควส "ส่งจดหมาย"
+    [Header("Next Quest")]
+    public string   quest2Name        = "ส่งจดหมาย";
+    public string   quest2Description = "เดินทางไปยังหมู่บ้านเพื่อส่งจดหมาย";
+    public Transform quest2Target;
+    public float    quest2FinishRange = 10f;
 
-    [Header("Quest 2 Settings")]
-    public float quest2FinishRange = 10f; 
-
+    [Header("UI")]
+    public Transform interactPoint;
+    private ResourceInteractUI interactUI;
     private bool playerInRange = false;
-    private bool nextQuestStarted = false; 
 
-    public GameObject pressEUI;
+    [Header("Ranges")]
+    public float showRange         = 8f;
+    private float interactableRange => maxDistance * 0.75f;
 
-    // เปลี่ยนจาก CharacterMovement → PlayerController
-    public PlayerController playerController; 
-    public FirstPersonCamera playerCameraController; 
-    
-    public float cameraElevateOffset = 1.5f; 
-    public float cameraElevateSpeed = 0.5f;
-    public ShopKeeper shopKeeper;
+    [Header("References")]
+    public ShopKeeper shopKeeper;      // to open shop after quest
+    private PlayerController      playerController;
+    private FirstPersonCamera     playerCameraController;
 
-    void Start()
+    private bool nextQuestStarted = false;
+    public float maxDistance = 0;
+
+    void Awake()
     {
-        // หา Player GameObject ที่ inactive ด้วย
-        GameObject playerObj = null;
-        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-        foreach (var go in allObjects)
+        // find player & camera if not set
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
         {
-            if (go.CompareTag("Player") && go.hideFlags == HideFlags.None)
-            {
-                playerObj = go;
-                break;
-            }
+            if (playerController      == null) playerController      = player.GetComponent<PlayerController>();
+            if (playerCameraController == null) playerCameraController = player.GetComponentInChildren<FirstPersonCamera>(true);
         }
 
-        if (playerObj != null)
-        {
-            // หา PlayerController แทน
-            if (playerController == null)
-                playerController = playerObj.GetComponent<PlayerController>();
-
-            if (playerCameraController == null)
-                playerCameraController = playerObj.GetComponentInChildren<FirstPersonCamera>(true);
-        }
-        else
-        {
-            Debug.LogWarning("QuestGiver: ไม่พบ Player (แม้จะ inactive)");
-        }
-
-        if (pressEUI == null)
-            pressEUI = GameObject.Find("PressE");
+        if (interactPoint == null) interactPoint = transform;
     }
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (!playerInRange || interactUI == null) return;
+
+        // press E to talk or to open shop
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (!nextQuestStarted)
             {
-                // ✏ ยังไม่เคยเริ่มเควสถัดไป → เปิด dialogue
-                if (playerController != null)
-                {
-                    // ปิดการเคลื่อนที่
-                    playerController.canMove = false;
-                }
+                // start dialogue
+                playerController.canMove = false;
                 DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
-                pressEUI.SetActive(false);
+                interactUI.HideUI();
 
-                if (playerCameraController != null)
-                {
-                    playerCameraController.StartCameraElevation(cameraElevateOffset, cameraElevateSpeed);
-                }
+                // optionally elevate camera
+                playerCameraController?.StartCameraElevation(100f, 14f);
             }
             else
             {
-                // ✅ ถ้าเควสถัดไปเริ่มแล้ว → เปิดร้านค้าแทน
-                if (shopKeeper != null)
-                {
-                    shopKeeper.OpenShop();
-                    pressEUI.SetActive(false);
-                }
+                // quest done → open shop
+                shopKeeper.OpenShop();
+                interactUI.HideUI();
             }
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
+        playerInRange = true;
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
-            if (pressEUI != null)
-                pressEUI.SetActive(true);
+            if (maxDistance == 0)
+            {
+                maxDistance = //Distance from ship to player
+                    Vector3.Distance(interactPoint.transform.position, other.transform.position);
+            }
+            interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
+            interactUI.SetUp("Talk");
+        }
+    }
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && playerInRange && interactUI != null)
+        {
+            float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
+            if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
+            {
+                interactUI.ReturnToShowInteractable();
+            }
+            else if (distance <= interactableRange && interactUI.interactUIState != InteractUIState.Interactable)
+            {
+                interactUI.Interactable();
+            }
         }
     }
 
     void OnTriggerExit(Collider other)
     {
+        playerInRange = false;
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
-            pressEUI.SetActive(false);
+            interactUI.HideUI();
+        }
 
-            // ถ้ายังไม่ได้เริ่มเควสถัดไป ให้คืนค่าสถานะการเคลื่อนที่และกล้อง
-            if (!nextQuestStarted)
-            {
-                if (playerController != null)
-                {
-                    playerController.canMove = true;
-                }
-                if (playerCameraController != null)
-                {
-                    playerCameraController.ResetCameraElevation(cameraElevateSpeed);
-                }
-            }
+        // restore movement/camera if mid-dialogue
+        if (!nextQuestStarted)
+        {
+            playerController.canMove = true;
+            playerCameraController?.ResetCameraElevation(0.5f);
         }
     }
 
     void OnAccept()
     {
-        Debug.Log("Dialogue Accepted! กำลังเริ่มเควสถัดไป...");
-
-        if (quest2Target == null)
-        {
-            Debug.LogError("QuestGiver: ไม่มี target สำหรับเควสที่ 2!");
-            ResetPlayerAndCamera();
-            return;
-        }
-
+        // start the next quest
         var nextQuest = new TalkToNPCQuest(
             quest2Name, quest2Description, quest2Target, quest2FinishRange
         );
-
         QuestManager.Instance.AddQuest(nextQuest);
         QuestManager.Instance.StartQuest(nextQuest);
 
         nextQuestStarted = true;
-        if (shopKeeper != null)
-            shopKeeper.EnableShop();
-
-        ResetPlayerAndCamera();
-        if (playerInRange && pressEUI != null)
-            pressEUI.SetActive(true);
+        shopKeeper.EnableShop();
     }
 
     void OnDecline()
     {
-        Debug.Log("Dialogue Declined. ผู้เล่นต้อง Accept เพื่อทำเควสต่อ.");
-        ResetPlayerAndCamera();
-    }
-
-    void ResetPlayerAndCamera()
-    {
-        if (playerController != null)
-        {
-            playerController.canMove = true;
-        }
-        if (playerCameraController != null)
-        {
-            playerCameraController.ResetCameraElevation(cameraElevateSpeed);
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        if (quest2Target != null)
-        {
-            DrawQuestGizmo(
-                quest2Target.position,
-                quest2FinishRange,
-                quest2Name,
-                nextQuestStarted ? true : false,
-                nextQuestStarted ? Color.blue : Color.yellow
-            );
-        }
-    }
-
-    private void DrawQuestGizmo(
-        Vector3 position, float range, string label, bool started, Color gizmoColor
-    )
-    {
-        Gizmos.color = gizmoColor;
-        Gizmos.DrawWireSphere(position, range);
-        Gizmos.DrawLine(position, position + Vector3.right * range);
-
-        #if UNITY_EDITOR
-        Vector3 labelPosition = position + Vector3.up * (range + 1f);
-        UnityEditor.Handles.Label(labelPosition,
-            $"Quest: {label}\nRange: {range}m\nStarted: {started}");
-        #endif
+        // player declined
+        playerController.canMove = true;
+        playerCameraController?.ResetCameraElevation(0.5f);
     }
 }

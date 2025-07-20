@@ -21,9 +21,7 @@ public class WalkState : BossIState
         // continually set the NavMeshAgent destination
         boss.agent.SetDestination(boss.player.position);
 
-        float dist = Vector3.Distance(boss.transform.position, boss.player.position);
-        // once you're close enough (agent.stoppingDistance), go back to idle
-        if (dist <= boss.agent.stoppingDistance)
+        if (!boss.agent.pathPending && boss.agent.remainingDistance <= boss.agent.stoppingDistance)
         {
             boss.stateMachine.ChangeState(new BossIdleState(boss));
         }

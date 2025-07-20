@@ -13,7 +13,9 @@ public class IceDragonBossAI : MonoBehaviour
     public float tailDamage    = 15f;
     public float scratchRadius = 4f;
     public float scratchDamage = 25f;
-
+    [Header("Attack Settings")]
+    public float attackRange = 25f;
+    
     [HideInInspector] public Transform       player;
     [HideInInspector] public Animator        animator;
     [HideInInspector] public NavMeshAgent    agent;
@@ -22,16 +24,16 @@ public class IceDragonBossAI : MonoBehaviour
 
     private void Awake()
     {
-        agent         = GetComponent<NavMeshAgent>();
-        animator      = GetComponent<Animator>();
-        stateMachine  = new BossStateMachine();
-        player        = GameObject.FindGameObjectWithTag("Player").transform;
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+        stateMachine = new BossStateMachine();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         cooldownTimer = 0f;
 
         // NavMeshAgent tuning:
-        agent.stoppingDistance = 2f;
-        agent.speed            = 3.5f;
-        agent.angularSpeed     = 120f;
+        agent.speed = 8f;
+        agent.angularSpeed = 120f;
+        agent.stoppingDistance = attackRange;
     }
 
     private void Start()

@@ -30,28 +30,24 @@ public class BossIdleState : BossIState
     {
         float dist = Vector3.Distance(boss.transform.position, boss.player.position);
 
-        // 1) If outside detectionRange, do nothing (or you could add a PatrolState here)
+        // only chase if too far away
         if (dist > boss.detectionRange)
-            return;
-
-        // 2) If within detectionRange but still outside attackRange → chase
-        if (dist > attackRange)
         {
             boss.stateMachine.ChangeState(new WalkState(boss));
             return;
         }
 
-        // 3) Now we're within attackRange → face & attack
+        // if within detection but outside stoppingDistance, let WalkState handle it
+        if (dist > boss.agent.stoppingDistance)
+        {
+            boss.stateMachine.ChangeState(new WalkState(boss));
+            return;
+        }
+
+        // otherwise we're in attack range—face & attack
         boss.FacePlayer();
         if (!boss.CanAttack()) return;
-
-        int choice = Random.Range(0, 3);
-        switch (choice)
-        {
-            case 0: boss.stateMachine.ChangeState(new RoarState(boss));       break;
-            case 1: boss.stateMachine.ChangeState(new TailSwipeState(boss));  break;
-            case 2: boss.stateMachine.ChangeState(new ScratchState(boss));    break;
-        }
+        // … pick your attack …
     }
 
     public void Exit() { }
