@@ -126,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
   speed: 50
-  damage: 10
+  damage: 100
 --- !u!54 &1646728901569685251
 Rigidbody:
   m_ObjectHideFlags: 0
