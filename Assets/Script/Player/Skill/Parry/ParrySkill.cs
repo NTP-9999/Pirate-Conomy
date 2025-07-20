@@ -13,6 +13,9 @@ public class ParrySkill : ISkill
     float            _windowDuration; // ระยะเวลาที่รับ Parry
     float            _cooldown;
     string           _projTag;
+    GameObject _reflectEffectPrefab;
+    AudioClip  _reflectSfx;
+    float      _sfxVolume;
 
     public ParrySkill(
         PlayerController pc,
@@ -20,15 +23,22 @@ public class ParrySkill : ISkill
         float castDelay,
         float windowDuration,
         float cooldown,
-        string projTag
+        string projTag,
+        GameObject reflectEffectPrefab,
+        AudioClip  reflectSfx,
+        float      sfxVolume
     )
     {
-        _pc             = pc;
-        _hitbox         = hitbox;
-        _castDelay      = castDelay;
+        _pc = pc;
+        _hitbox = hitbox;
+        _castDelay = castDelay;
         _windowDuration = windowDuration;
-        _cooldown       = cooldown;
-        _projTag        = projTag;
+        _cooldown = cooldown;
+        _projTag = projTag;
+
+        _reflectEffectPrefab   = reflectEffectPrefab;
+        _reflectSfx            = reflectSfx;
+        _sfxVolume             = sfxVolume;
 
         _hitbox.parrySkill = this;
     }
@@ -58,6 +68,23 @@ public class ParrySkill : ISkill
     {
         // เปลี่ยนเจ้าของและสะท้อนกลับ
         proj.OnParried(_pc.transform, proj.owner);
-        // TODO: ถ้ามี VFX/เสียงเพิ่มเติมสำหรับ Parry Success ให้เรียกที่นี่
+        if (_reflectEffectPrefab != null)
+        {
+            Object.Instantiate(
+                _reflectEffectPrefab,
+                proj.transform.position,
+                Quaternion.identity
+            );
+        }
+
+        // 3) เล่น SFX (ถ้ามี)
+        if (_reflectSfx != null)
+        {
+            AudioSource.PlayClipAtPoint(
+                _reflectSfx,
+                proj.transform.position,
+                _sfxVolume
+            );
+        }
     }
 }

@@ -24,17 +24,15 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 425610aa594f3fc438275cd8bdbd4599, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _SURFACE_TYPE_TRANSPARENT
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
-    RenderType: Transparent
+    RenderType: Opaque
   disabledShaderPasses:
-  - DepthOnly
   - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
@@ -62,31 +60,31 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _CastShadows: 1
-    - _Cull: 2
+    - _Cull: 1
     - _DotsNoiseScale: 30
     - _DotsSize: 0.8
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _IntersectionDepth: 0.25
     - _MaskMultiplier: 0.54
-    - _MaskPower: 2.5
-    - _NoiseScale: 10
+    - _MaskPower: 8.31
+    - _NoiseScale: 11.87
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SrcBlend: 5
-    - _Surface: 1
-    - _WaveAmp: 0.25
-    - _WaveLength: 0.5
-    - _WaveNoiseScale: 30
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _WaveAmp: 0.86
+    - _WaveLength: 0.14
+    - _WaveNoiseScale: 91.48
     - _ZTest: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BorderColor: {r: 0, g: 3.4736369, b: 13.149394, a: 1}
+    - _BorderColor: {r: 17.483795, g: 0.15975522, b: 0, a: 1}
     - _DotsColor: {r: 19.69831, g: 0, b: 0, a: 1}
     - _DotsTiling: {r: 25, g: 16, b: 0, a: 0}
-    - _IntersectionColor: {r: 0, g: 3.4736369, b: 13.149394, a: 1}
-    - _NoiseSpeed: {r: 0, g: 0.2, b: 0, a: 0}
-    - _WaveColor: {r: 33.89676, g: 0, b: 0, a: 1}
-    - _WaveTiling: {r: 2, g: 2, b: 0, a: 0}
+    - _IntersectionColor: {r: 8.900639, g: 0, b: 0.10595959, a: 1}
+    - _NoiseSpeed: {r: 1.16, g: 1.35, b: 0, a: 0}
+    - _WaveColor: {r: 65.429886, g: 1.8645715, b: 0, a: 1}
+    - _WaveTiling: {r: 8, g: 1.94, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

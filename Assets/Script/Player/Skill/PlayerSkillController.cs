@@ -33,6 +33,10 @@ public class PlayerSkillController : MonoBehaviour
     public float      parryCastDelay      = 0.2f;
     public float      parryWindowDuration = 0.4f;
     public float      parryCooldown       = 2f;
+    public GameObject parryEffectPrefab;   // ลาก Prefab เอฟเฟกต์ลง
+    public AudioClip  parrySfxClip;        // ลากไฟล์เสียง SFX ลง
+    [Range(0f,1f)]
+    public float      parrySfxVolume = 1f;
     // ใช้ tag เดิมจาก PunchSkill ถ้าต้องการให้ Parry สะท้อนเฉพาะ EnemyProjectile
     // public string   projectileTag;
 
@@ -76,7 +80,11 @@ public class PlayerSkillController : MonoBehaviour
                 parryCastDelay,
                 parryWindowDuration,
                 parryCooldown,
-                "EnemyProjectile"
+                "EnemyProjectile",
+                parryEffectPrefab,  // inject VFX
+                parrySfxClip,       // inject SFX
+                parrySfxVolume
+                
            )
         };
     }

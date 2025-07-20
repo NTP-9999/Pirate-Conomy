@@ -66,6 +66,12 @@ public class CharacterStats : Singleton<CharacterStats>
     private bool _isInvincible = false;
     public bool IsInvincible => _isInvincible;
     public void SetInvincibility(bool value) => _isInvincible = value;
+    [Header("Block Feedback")]
+    public GameObject blockVfxPrefab;        // ลาก Prefab VFX เอฟเฟกต์บล็อค
+    public Transform  blockVfxOrigin;
+    public AudioClip blockSfxClip;          // ลากไฟล์เสียง SFX บล็อค
+    [Range(0f,1f)]
+    public float      blockSfxVolume = 1f;
 
     private void Start()
     {
@@ -129,7 +135,28 @@ public class CharacterStats : Singleton<CharacterStats>
 
     public void TakeDamage(float amount)
     {
-        if (isDead  || _isInvincible) return;
+        if (isDead) return;
+        if (_isInvincible)
+        {
+            // ใช้จุดเกิด ถ้าไม่ได้เซ็ต ให้ใช้ตำแหน่งตัวเอง
+            Vector3 spawnPos = blockVfxOrigin != null
+                ? blockVfxOrigin.position
+                : transform.position;
+
+            Quaternion spawnRot = blockVfxOrigin != null
+                ? blockVfxOrigin.rotation
+                : Quaternion.identity;
+
+            // 1) Instantiate VFX ที่จุดที่กำหนด
+            if (blockVfxPrefab != null)
+                Instantiate(blockVfxPrefab, spawnPos, spawnRot);
+
+            // 2) เล่น SFX บล็อค
+            if (playerAudioSource != null && blockSfxClip != null)
+                playerAudioSource.PlayOneShot(blockSfxClip, blockSfxVolume);
+
+            return;
+        }
 
         currentHealth -= amount;
         Debug.Log("Player took " + amount + " damage. Current Health: " + currentHealth);
