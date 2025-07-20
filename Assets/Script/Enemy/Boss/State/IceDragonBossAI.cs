@@ -7,6 +7,13 @@ public class IceDragonBossAI : MonoBehaviour
     public float detectionRange = 15f;
     public float attackCooldown = 2f;
 
+    [Header("Damage Settings")]
+    public float tailRadius = 2f;
+    public float tailDamage = 15f;
+
+    public float slamRadius = 4f;
+    public float slamDamage = 25f;
+
     private Transform player;
     [HideInInspector] public Animator animator;
     [HideInInspector] public BossStateMachine stateMachine;
@@ -14,9 +21,9 @@ public class IceDragonBossAI : MonoBehaviour
 
     private void Awake()
     {
-        animator      = GetComponent<Animator>();
-        stateMachine  = new BossStateMachine();
-        player        = GameObject.FindGameObjectWithTag("Player").transform;
+        animator = GetComponent<Animator>();
+        stateMachine = new BossStateMachine();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         cooldownTimer = 0f;
     }
 
@@ -55,5 +62,21 @@ public class IceDragonBossAI : MonoBehaviour
             Quaternion look = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * 5f);
         }
+    }
+
+    public void OnTailSwipeHit()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, tailRadius);
+        foreach (var hit in hits)
+            if (hit.CompareTag("Player"))
+                hit.GetComponent<CharacterStats>()?.TakeDamage(tailDamage);
+    }
+
+    public void OnWingSlamHit()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, slamRadius);
+        foreach (var hit in hits)
+            if (hit.CompareTag("Player"))
+                hit.GetComponent<CharacterStats>()?.TakeDamage(slamDamage);
     }
 }

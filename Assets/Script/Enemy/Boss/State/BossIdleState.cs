@@ -12,7 +12,7 @@ public class BossIdleState : BossIState
 
     public void Enter()
     {
-        boss.animator.ResetTrigger("IceBreath");
+        boss.animator.ResetTrigger("Roar");
         boss.animator.ResetTrigger("TailSwipe");
         boss.animator.ResetTrigger("WingSlam");
         boss.animator.Play("Idle");
@@ -28,7 +28,7 @@ public class BossIdleState : BossIState
         switch (choice)
         {
             case 0:
-                boss.stateMachine.ChangeState(new IceBreathState(boss));
+                boss.stateMachine.ChangeState(new RoarState(boss));
                 break;
             case 1:
                 boss.stateMachine.ChangeState(new TailSwipeState(boss));
