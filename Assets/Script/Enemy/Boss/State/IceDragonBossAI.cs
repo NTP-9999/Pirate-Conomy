@@ -9,16 +9,16 @@ public class IceDragonBossAI : MonoBehaviour
     public float attackCooldown = 2f;
 
     [Header("Damage Settings")]
-    public float tailRadius    = 2f;
-    public float tailDamage    = 15f;
+    public float tailRadius = 2f;
+    public float tailDamage = 15f;
     public float scratchRadius = 4f;
     public float scratchDamage = 25f;
     [Header("Attack Settings")]
     public float attackRange = 25f;
-    
-    [HideInInspector] public Transform       player;
-    [HideInInspector] public Animator        animator;
-    [HideInInspector] public NavMeshAgent    agent;
+
+    [HideInInspector] public Transform player;
+    [HideInInspector] public Animator animator;
+    [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public BossStateMachine stateMachine;
     private float cooldownTimer;
 
@@ -80,5 +80,12 @@ public class IceDragonBossAI : MonoBehaviour
         foreach (var hit in hits)
             if (hit.CompareTag("Player"))
                 hit.GetComponent<CharacterStats>()?.TakeDamage(scratchDamage);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, agent.stoppingDistance);
     }
 }

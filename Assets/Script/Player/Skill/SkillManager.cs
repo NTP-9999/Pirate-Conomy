@@ -13,6 +13,7 @@ public class SkillManager : MonoBehaviour
         public string skillName;
     }
     public Condition[] unlockConditions;
+    public event Action<string> OnSkillUnlocked;
 
     private HashSet<string> unlockedSkills = new HashSet<string>();
 
@@ -37,7 +38,7 @@ public class SkillManager : MonoBehaviour
     private void Unlock(string skillName) {
         unlockedSkills.Add(skillName);
         Debug.Log($"<color=yellow>Skill Unlocked:</color> {skillName}");
-        // TODO: ส่ง event ให้ UI แสดง popup
+        OnSkillUnlocked?.Invoke(skillName);
     }
 
     public bool IsUnlocked(string skillName)

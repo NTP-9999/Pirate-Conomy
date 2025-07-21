@@ -28,27 +28,29 @@ public class BossIdleState : BossIState
 
     public void Tick()
     {
-        float dist = Vector3.Distance(boss.transform.position, boss.player.position);
+        float dist = Vector3.Distance(
+            boss.transform.position,
+            boss.player.position
+        );
 
-        // only chase if too far away
+        // ถ้าไกลเกิน detectionRange → ไม่ทำอะไร
         if (dist > boss.detectionRange)
-        {
-            boss.stateMachine.ChangeState(new WalkState(boss));
             return;
-        }
 
-        // if within detection but outside stoppingDistance, let WalkState handle it
+        // ถ้ายังไกลกว่า stoppingDistance → เปลี่ยนไป WalkState
         if (dist > boss.agent.stoppingDistance)
         {
             boss.stateMachine.ChangeState(new WalkState(boss));
             return;
         }
 
-        // otherwise we're in attack range—face & attack
+        // ถ้าเข้าใกล้พอแล้ว (<= stoppingDistance) → โจมตี
         boss.FacePlayer();
         if (!boss.CanAttack()) return;
-        // … pick your attack …
+
+        // … เลือกท่าโจมตี แล้ว ChangeState ไปเลย …
     }
+
 
     public void Exit() { }
 }
