@@ -24,6 +24,14 @@ public class ShipController : Singleton<ShipController>
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            // มีตัวแรกอยู่แล้ว → ฆ่าตัวนี้ทิ้ง
+            Destroy(gameObject);
+            return;
+        }
+
+        // ไม่เคยมีตัวไหนเลย → บันทึกตัวนี้ไว้, และไม่ทำลายข้ามซีน
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
