@@ -58,51 +58,19 @@ public class DialogueManager : MonoBehaviour
         // หา DialoguePanel แม้จะ inactive
         if (dialoguePanel == null)
         {
-            var allPanels = Resources.FindObjectsOfTypeAll<GameObject>();
-            foreach (var go in allPanels)
-            {
-                if (go.name == "DialoguePanel")
-                {
-                    dialoguePanel = go;
-                    break;
-                }
-            }
+            dialoguePanel = GameObject.Find("DialoguePanel");
         }
         if (dialogueText == null)
         {
-            var allTexts = Resources.FindObjectsOfTypeAll<TMPro.TextMeshProUGUI>();
-            foreach (var t in allTexts)
-            {
-                if (t.name == "DialogueText")
-                {
-                    dialogueText = t;
-                    break;
-                }
-            }
+            dialogueText = GameObject.Find("DialogueText")?.GetComponent<TextMeshProUGUI>();
         }
         if (acceptButton == null)
         {
-            var allButtons = Resources.FindObjectsOfTypeAll<Button>();
-            foreach (var b in allButtons)
-            {
-                if (b.name == "AcceptButton")
-                {
-                    acceptButton = b;
-                    break;
-                }
-            }
+            acceptButton = GameObject.Find("AcceptButton")?.GetComponent<Button>();
         }
         if (declineButton == null)
         {
-            var allButtons = Resources.FindObjectsOfTypeAll<Button>();
-            foreach (var b in allButtons)
-            {
-                if (b.name == "DeclineButton")
-                {
-                    declineButton = b;
-                    break;
-                }
-            }
+            declineButton = GameObject.Find("DeclineButton")?.GetComponent<Button>();
         }
     }
     private void FindPlayerController()

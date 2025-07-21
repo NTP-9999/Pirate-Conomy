@@ -127,13 +127,13 @@ public class QuestGiver : MonoBehaviour
         QuestManager.Instance.StartQuest(nextQuest);
 
         nextQuestStarted = true;
-        shopKeeper.EnableShop();
+        playerCameraController?.ResetCameraElevation(20f);
     }
 
     void OnDecline()
     {
         // player declined
         playerController.canMove = true;
-        playerCameraController?.ResetCameraElevation(0.5f);
+        playerCameraController?.ResetCameraElevation(20f);
     }
 }

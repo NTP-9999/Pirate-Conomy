@@ -5,6 +5,10 @@ public class InteractableUIManager : Singleton<InteractableUIManager>
 {
     public GameObject resourceInteractUI;
     public GameObject otherInteractUI;
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     public GameObject CreateResourceInteractUI(Transform interactPoint)
     {
