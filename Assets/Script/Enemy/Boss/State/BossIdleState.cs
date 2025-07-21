@@ -32,15 +32,15 @@ public class BossIdleState : BossIState
 
         if (!boss.CanAttack()) return;
 
-        if (dist <= 3f) {
+        if (dist <= 22f) {
             // ระยะใกล้มาก: ใช้ Scratch (กรงเล็บเขี่ย)
             boss.stateMachine.ChangeState(new ScratchState(boss));
         }
-        else if (dist <= 6f) {
+        else if (dist <= 35f) {
             // ระยะใกล้ปานกลาง: ใช้ TailSwipe
             boss.stateMachine.ChangeState(new TailSwipeState(boss));
         }
-        else if (dist <= 12f) {
+        else if (dist <= 40f) {
             // ระยะกลาง: ใช้ Roar (ดึง aggro, แต่ไม่มีดาเมจ)
             boss.stateMachine.ChangeState(new RoarState(boss));
         }

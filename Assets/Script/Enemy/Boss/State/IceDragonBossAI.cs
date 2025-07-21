@@ -7,14 +7,12 @@ public class IceDragonBossAI : MonoBehaviour
     [Header("Detection & Cooldowns")]
     public float detectionRange = 15f;
     public float attackCooldown = 2f;
-
-    [Header("Damage Settings")]
-    public float tailRadius = 2f;
-    public float tailDamage = 15f;
-    public float scratchRadius = 4f;
-    public float scratchDamage = 25f;
     [Header("Attack Settings")]
     public float attackRange = 25f;
+
+    [Header("HitBoxes")]
+    public HitBox scratchHitBoxL;
+    public HitBox scratchHitBoxR;
 
     [HideInInspector] public Transform player;
     [HideInInspector] public Animator animator;
@@ -65,27 +63,32 @@ public class IceDragonBossAI : MonoBehaviour
             );
         }
     }
-
-    public void OnTailSwipeHit()
-    {
-        var hits = Physics.OverlapSphere(transform.position, tailRadius);
-        foreach (var hit in hits)
-            if (hit.CompareTag("Player"))
-                hit.GetComponent<CharacterStats>()?.TakeDamage(tailDamage);
-    }
-
-    public void OnScratchHit()
-    {
-        var hits = Physics.OverlapSphere(transform.position, scratchRadius);
-        foreach (var hit in hits)
-            if (hit.CompareTag("Player"))
-                hit.GetComponent<CharacterStats>()?.TakeDamage(scratchDamage);
-    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, agent.stoppingDistance);
+    }
+    public void EnableScratchL()
+    {
+        scratchHitBoxL.SetActive(true);
+    }
+
+    public void DisableScratchL()
+    {
+        scratchHitBoxL.SetActive(false);
+        scratchHitBoxL.alreadyHit = false;
+    }
+
+    public void EnableScratchR()
+    {
+        scratchHitBoxR.SetActive(true);
+    }
+
+    public void DisableScratchR()
+    {
+        scratchHitBoxR.SetActive(false);
+        scratchHitBoxR.alreadyHit = false;
     }
 }
