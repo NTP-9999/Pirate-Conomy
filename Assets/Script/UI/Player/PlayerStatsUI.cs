@@ -1,35 +1,32 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;       // ต้องมี
+// using TMPro;             // ถ้าไม่ใช้ตัวเลขก็ไม่ต้องใส่
 
 public class PlayerStatsUI : MonoBehaviour
 {
-    public TextMeshProUGUI HPValue;
-    public TextMeshProUGUI STAValue;
-    public TextMeshProUGUI HUNValue;
-    public TextMeshProUGUI SPValue;
+    [Header("Bar Images (Fill)")]
+    [SerializeField] private Image HP_Fill;
+    [SerializeField] private Image STA_Fill;
 
     private CharacterStats characterStats;
 
     void Start()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-        {
             characterStats = player.GetComponent<CharacterStats>();
-        }
         else
-        {
-            Debug.LogError("Player not found! Make sure the Player has tag 'Player'");
-        }
+            Debug.LogError("Player not found! ติด Tag 'Player' ให้ถูกต้อง");
     }
 
     void Update()
     {
         if (characterStats == null) return;
 
-        HPValue.text  = $"{characterStats.currentHealth:0}";
-        STAValue.text = $"{characterStats.currentStamina:0}";
-        HUNValue.text  = $"{characterStats.currentHunger:0}";
-        SPValue.text  = $"{characterStats.currentStress:0}";
+        // ถ้า CharacterStats ยังไม่มี maxHealth / maxStamina ให้เพิ่มเข้าไปด้วยนะ
+        HP_Fill.fillAmount = characterStats.currentHealth 
+                           / characterStats.maxHealth;
+        STA_Fill.fillAmount = characterStats.currentStamina 
+                            / characterStats.maxStamina;
     }
 }
