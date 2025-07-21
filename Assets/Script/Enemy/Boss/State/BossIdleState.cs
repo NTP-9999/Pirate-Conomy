@@ -28,25 +28,26 @@ public class BossIdleState : BossIState
 
     public void Tick()
     {
-        float dist = Vector3.Distance(
-            boss.transform.position,
-            boss.player.position
-        );
+        float dist = Vector3.Distance(boss.transform.position, boss.player.position);
 
-        // ถ้าไกลเกิน detectionRange → ไม่ทำอะไร
-        if (dist > boss.detectionRange)
-            return;
-
-        // ถ้ายังไกลกว่า stoppingDistance → เปลี่ยนไป WalkState
-        if (dist > boss.agent.stoppingDistance)
-        {
-            boss.stateMachine.ChangeState(new WalkState(boss));
-            return;
-        }
-
-        // ถ้าเข้าใกล้พอแล้ว (<= stoppingDistance) → โจมตี
-        boss.FacePlayer();
         if (!boss.CanAttack()) return;
+
+        if (dist <= 3f) {
+            // ระยะใกล้มาก: ใช้ Scratch (กรงเล็บเขี่ย)
+            boss.stateMachine.ChangeState(new ScratchState(boss));
+        }
+        else if (dist <= 6f) {
+            // ระยะใกล้ปานกลาง: ใช้ TailSwipe
+            boss.stateMachine.ChangeState(new TailSwipeState(boss));
+        }
+        else if (dist <= 12f) {
+            // ระยะกลาง: ใช้ Roar (ดึง aggro, แต่ไม่มีดาเมจ)
+            boss.stateMachine.ChangeState(new RoarState(boss));
+        }
+        else {
+            // ระยะไกล: เดินเข้าไปหรือเป่าลมแข็ง (IceBreath) ถ้ามี
+            boss.stateMachine.ChangeState(new WalkState(boss));
+        }
 
         // … เลือกท่าโจมตี แล้ว ChangeState ไปเลย …
     }

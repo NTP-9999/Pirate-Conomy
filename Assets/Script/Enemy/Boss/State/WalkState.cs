@@ -19,7 +19,14 @@ public class WalkState : BossIState
 
     public void Tick()
     {
-        // 1) คำนวณระยะตรง ๆ
+        Vector3 offset = Vector3.zero;
+        if (Time.frameCount % 120 == 0) {
+            float angle = Random.Range(-45f, +45f);
+            offset = Quaternion.Euler(0, angle, 0) * (boss.player.position - boss.transform.position).normalized;
+        }
+        Vector3 target = boss.player.position + offset * 2f;
+        boss.agent.SetDestination(target);
+            // 1) คำนวณระยะตรง ๆ
         float dist = Vector3.Distance(boss.transform.position, boss.player.position);
 
         // 2) ถ้าออกนอก detectionRange → หยุดเดิน แล้วกลับ Idle
