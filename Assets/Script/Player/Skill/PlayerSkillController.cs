@@ -37,9 +37,12 @@ public class PlayerSkillController : MonoBehaviour
     public AudioClip  parrySfxClip;        // ลากไฟล์เสียง SFX ลง
     [Range(0f,1f)]
     public float      parrySfxVolume = 1f;
-    // ใช้ tag เดิมจาก PunchSkill ถ้าต้องการให้ Parry สะท้อนเฉพาะ EnemyProjectile
-    // public string   projectileTag;
 
+    [Header("UI Icon")]
+    public Sprite firewallIcon;
+    public Sprite punchIcon;
+    public Sprite blockIcon;
+    public Sprite parryIcon;
     void Awake()
     {
         var pc = GetComponent<PlayerController>();
@@ -96,24 +99,28 @@ public class PlayerSkillController : MonoBehaviour
             && SkillManager.Instance.IsUnlocked("Firewall"))
         {
             StartCoroutine(_skills["Firewall"].Activate());
+            CooldownUIManager.Instance.ShowCooldown(firewallIcon, cooldownTime);
         }
         if (Input.GetKeyDown(KeyCode.G)
             && !_skills["Punch"].IsOnCooldown
             && SkillManager.Instance.IsUnlocked("Punch"))
         {
             StartCoroutine(_skills["Punch"].Activate());
+            CooldownUIManager.Instance.ShowCooldown(punchIcon, punchCooldown);
         }
         if (Input.GetKeyDown(KeyCode.T)
             && !_skills["Block"].IsOnCooldown
             && SkillManager.Instance.IsUnlocked("Block"))
         {
             StartCoroutine(_skills["Block"].Activate());
+            CooldownUIManager.Instance.ShowCooldown(blockIcon, blockCooldown);
         }
         if (Input.GetKeyDown(KeyCode.R) // หรือปุ่มที่คุณเลือกสำหรับ Parry
             && !_skills["Parry"].IsOnCooldown
             && SkillManager.Instance.IsUnlocked("Parry"))
         {
             StartCoroutine(_skills["Parry"].Activate());
+            CooldownUIManager.Instance.ShowCooldown(parryIcon, parryCooldown);
         }
     }
 }

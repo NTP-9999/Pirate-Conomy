@@ -37,6 +37,8 @@ public class CharacterMovement : MonoBehaviour
     private bool isRunning = false;
     private float nextRollTime = 0f;
     public static CharacterMovement Instance;
+    [Header("Ground Checking")]
+    [SerializeField] private LayerMask groundLayers = ~0;
 
     void Start()
     {
@@ -151,18 +153,24 @@ public class CharacterMovement : MonoBehaviour
     }
     void SnapToGround()
     {
-        // ยิง Raycast ลงมาจากหัวตัวละครลงพื้น
+        // ยิงลงมาจากหัว ลดการกระโดดไปยืนบน trigger
         Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
-        if (Physics.Raycast(ray, out var hit, 1.5f))
+
+        // QueryTriggerInteraction.Ignore → ข้ามไม่ชน trigger
+        if (Physics.Raycast(
+                ray,
+                out var hit,
+                1.5f,
+                groundLayers,                      // ยิงแค่เลเยอร์พื้น
+                QueryTriggerInteraction.Ignore    // อย่าโดน trigger
+            ))
         {
-            // ถ้าพื้นต่ำกว่าหรือตื้นกว่าตัวละคร ให้สแน็ปลงไป
             float targetY = hit.point.y;
             Vector3 pos = transform.position;
             pos.y = Mathf.Lerp(pos.y, targetY, 20f * Time.deltaTime);
             transform.position = pos;
         }
     }
-
     void StopMovementAnimation()
     {
         animator.SetFloat("InputX", 0f);
