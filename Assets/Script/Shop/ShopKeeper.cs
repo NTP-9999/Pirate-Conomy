@@ -16,12 +16,11 @@ public class ShopKeeper : MonoBehaviour
     private bool canOpenShop = false;              // ← new
 
     [Header("Ranges")]
-    [Tooltip("How far away to show the UI at all")]
-    public float showRange = 8f;
     [Tooltip("How close before the UI goes 'press to open'")]
-    public float interactableRange = 5f;
+    private float interactableRange => maxDistance * 0.75f;
+    public float maxDistance = 0;
 
-    private PlayerController      playerController;
+    private PlayerController playerController;
     private PlayerSkillController playerSkillController;
 
     void Awake()
@@ -87,30 +86,33 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!canOpenShop || !other.CompareTag("Player")) return;
         playerInRange = true;
-        interactUI = InteractableUIManager
-                       .Instance
-                       .CreateResourceInteractUI(interactPoint)
-                       .GetComponent<ResourceInteractUI>();
-        interactUI.SetUp("Talk");
+        canOpenShop = true; // Enable shop when player enters the trigger
+        if (other.CompareTag("Player"))
+        {
+            if (maxDistance == 0)
+            {
+                maxDistance = //Distance from ship to player
+                    Vector3.Distance(interactPoint.transform.position, other.transform.position);
+            }
+            interactUI = InteractableUIManager.Instance.CreateResourceInteractUI(interactPoint).GetComponent<ResourceInteractUI>();
+            interactUI.SetUp("Talk");
+        }
     }
 
     void OnTriggerStay(Collider other)
     {
-        if (!canOpenShop || !playerInRange || !other.CompareTag("Player") || interactUI == null)
-            return;
-
-        float dist = Vector3.Distance(other.transform.position, interactPoint.position);
-        if (dist <= interactableRange)
-            interactUI.Interactable();
-        else if (dist <= showRange)
-            interactUI.ReturnToShowInteractable();
-        else
+        if (other.CompareTag("Player") && playerInRange && interactUI != null)
         {
-            interactUI.HideUI();
-            interactUI = null;
-            playerInRange = false;
+            float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
+            if (distance > interactableRange && interactUI.interactUIState != InteractUIState.ShowInteractable)
+            {
+                interactUI.ReturnToShowInteractable();
+            }
+            else if (distance <= interactableRange && interactUI.interactUIState != InteractUIState.Interactable)
+            {
+                interactUI.Interactable();
+            }
         }
     }
 
@@ -118,6 +120,7 @@ public class ShopKeeper : MonoBehaviour
     {
         if (!canOpenShop || !other.CompareTag("Player")) return;
         playerInRange = false;
+        canOpenShop = false; // Disable shop when player exits the trigger
         if (interactUI != null)
         {
             interactUI.HideUI();

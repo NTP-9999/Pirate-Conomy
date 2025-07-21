@@ -21,7 +21,6 @@ public class QuestGiver : MonoBehaviour
     private bool playerInRange = false;
 
     [Header("Ranges")]
-    public float showRange         = 8f;
     private float interactableRange => maxDistance * 0.75f;
 
     [Header("References")]

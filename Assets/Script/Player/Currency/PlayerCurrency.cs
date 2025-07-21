@@ -9,7 +9,7 @@ public class PlayerCurrency : MonoBehaviour
     public int currentNova = 0;
 
     [Header("UI")]
-    public List<TextMeshProUGUI> novaTexts;  // List ของ Text ทุกอันที่จะแสดงจำนวนเงิน
+    public List<TextMeshProUGUI> novaTexts = new List<TextMeshProUGUI>();  // List ของ Text ทุกอันที่จะแสดงจำนวนเงิน
 
     private void Awake()
     {
@@ -50,5 +50,25 @@ public class PlayerCurrency : MonoBehaviour
                 text.text = currentNova.ToString();
             }
         }
+    }
+    /// <summary>
+    /// เรียกเมื่อ NovaTextRegister.OnEnable()  
+    /// </summary>
+    public void RegisterNovaText(TextMeshProUGUI txt)
+    {
+        if (!novaTexts.Contains(txt))
+        {
+            novaTexts.Add(txt);
+            // ตั้งค่าทันทีให้ตรงกับยอดปัจจุบัน
+            txt.text = currentNova.ToString();
+        }
+    }
+
+    /// <summary>
+    /// เรียกเมื่อ NovaTextRegister.OnDisable()
+    /// </summary>
+    public void UnregisterNovaText(TextMeshProUGUI txt)
+    {
+        novaTexts.Remove(txt);
     }
 }
