@@ -20,6 +20,10 @@ public class SnakeNagaAI : MonoBehaviour
     public float chaseRange = 15f;
     public float attackRange = 3f;
     public float timeBetweenAttacks = 2f;
+    [HideInInspector] public Vector3 patrolCenter;
+    [Header("Attack Damage")]
+    public float[] attackDamages = new float[3] { 10f, 15f, 20f };
+
 
     public Vector3 Position => transform.position;
     public Vector3 PlayerPosition => Player.position;
@@ -33,6 +37,8 @@ public class SnakeNagaAI : MonoBehaviour
 
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        patrolCenter = transform.position;
     }
 
     void Start()
@@ -66,18 +72,30 @@ public class SnakeNagaAI : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         // ตำแหน่งต้นกำเนิด
-        Vector3 pos = transform.position;
+        Vector3 center = Application.isPlaying ? patrolCenter : transform.position;
 
-        // Patrol Radius
+        // Patrol area (คงที่)
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(pos, patrolRadius);
+        Gizmos.DrawWireSphere(center, patrolRadius);
 
-        // Chase Range
+        // Chase & Attack (ติดตามงู)
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(pos, chaseRange);
-
-        // Attack Range
+        Gizmos.DrawWireSphere(transform.position, chaseRange);
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(pos, attackRange);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+    public void DealDamage(int atkIndex)
+    {
+        // ตรวจระยะอีกทีให้แน่ใจ
+        if (!IsPlayerInAttackRange()) return;
+
+        // ดึงสคริปต์ CharacterStats จาก Player แล้วเรียก TakeDamage
+        var stats = Player.GetComponent<CharacterStats>();
+        if (stats != null)
+        {
+            // atkIndex-1 เพราะ array เริ่มที่ 0
+            float dmg = attackDamages[Mathf.Clamp(atkIndex-1, 0, attackDamages.Length-1)];
+            stats.TakeDamage(dmg);
+        }
     }
 }

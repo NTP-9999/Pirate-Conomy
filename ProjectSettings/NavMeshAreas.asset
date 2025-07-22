@@ -109,8 +109,8 @@ NavMeshProjectSettings:
       m_Flags: 0
   - serializedVersion: 3
     agentTypeID: -334000983
-    agentRadius: 1.83
-    agentHeight: 2.92
+    agentRadius: 1.67
+    agentHeight: 2.88
     agentSlope: 49.1
     agentClimb: 2.29
     ledgeDropHeight: 0

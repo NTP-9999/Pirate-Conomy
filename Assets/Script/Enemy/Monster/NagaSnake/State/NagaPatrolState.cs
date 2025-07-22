@@ -1,4 +1,3 @@
-// PatrolState.cs
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,9 +9,9 @@ public class NagaPatrolState : NagaIState {
     bool pointSet;
 
     public NagaPatrolState(SnakeNagaAI context) {
-        ctx = context;
-        agent = ctx.Agent;
-        radius = ctx.patrolRadius;
+        ctx            = context;
+        agent          = ctx.Agent;
+        radius         = ctx.patrolRadius;
         pointThreshold = ctx.patrolPointReachThreshold;
     }
 
@@ -34,10 +33,15 @@ public class NagaPatrolState : NagaIState {
     }
 
     public void Exit() { }
-    
-    void SearchPoint() {
-        Vector3 rnd = Random.insideUnitSphere * radius + ctx.Position;
-        if (NavMesh.SamplePosition(rnd, out var hit, radius, NavMesh.AllAreas)) {
+
+    private void SearchPoint()
+    {
+        // สุ่มตำแหน่งรอบ ๆ patrolCenter (คงที่)
+        Vector3 randomDir = Random.insideUnitSphere * radius + ctx.patrolCenter;
+        randomDir.y = ctx.patrolCenter.y;
+
+        if (NavMesh.SamplePosition(randomDir, out var hit, radius, NavMesh.AllAreas))
+        {
             patrolPoint = hit.position;
             pointSet = true;
         }
