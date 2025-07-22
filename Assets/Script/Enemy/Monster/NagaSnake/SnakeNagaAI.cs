@@ -3,12 +3,14 @@ using UnityEngine;
 using UnityEngine.AI;
 #endif
 
-public class SnakeNagaAI : MonoBehaviour
+public class SnakeNagaAI : LivingThing
 {
     [HideInInspector] public NagaStateMachine StateMachine;
     [HideInInspector] public NagaPatrolState patrolState;
     [HideInInspector] public NagaChaseState chaseState;
     [HideInInspector] public NagaAttackState attackState;
+    [HideInInspector] public NagaHurtState hurtState;
+    [HideInInspector] public NagaPoisonState poisonState;
 
     public NavMeshAgent Agent;
     public Animator Animator;
@@ -24,16 +26,28 @@ public class SnakeNagaAI : MonoBehaviour
     [Header("Attack Damage")]
     public float[] attackDamages = new float[3] { 10f, 15f, 20f };
 
+    [Header("Hurt Settings")]
+    public float hurtDuration = 0.5f;
+    [Header("Poison Skill")]
+    public GameObject poisonVFXPrefab;        // Prefab พิษ
+    public Transform  poisonSpawnPoint;       // ตำแหน่งยิงพิษ
+    public float      poisonSpawnDelay   = 0.6f;  // หน่วงก่อนปล่อย VFX (s)
+    public float      poisonStateDuration= 1.5f;
+    private GameObject poisonInstance;
+
 
     public Vector3 Position => transform.position;
     public Vector3 PlayerPosition => Player.position;
 
     void Awake()
     {
+        base.Awake();
         StateMachine = new NagaStateMachine();
         patrolState = new NagaPatrolState(this);
         chaseState = new NagaChaseState(this);
         attackState = new NagaAttackState(this);
+        hurtState = new NagaHurtState(this);
+        poisonState = new NagaPoisonState(this);
 
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -69,6 +83,22 @@ public class SnakeNagaAI : MonoBehaviour
         if (dir != Vector3.zero)
             transform.rotation = Quaternion.LookRotation(dir);
     }
+    public void SpawnPoisonVFX()
+    {
+        if (poisonVFXPrefab == null || poisonSpawnPoint == null) return;
+        poisonInstance = Instantiate(
+            poisonVFXPrefab,
+            poisonSpawnPoint.position,
+            poisonSpawnPoint.rotation
+        );
+    }
+
+    // เรียกจาก State เพื่อทำลาย VFX ตอนจบ
+    public void DestroyPoisonVFX()
+    {
+        if (poisonInstance != null)
+            Destroy(poisonInstance);
+    }
     void OnDrawGizmosSelected()
     {
         // ตำแหน่งต้นกำเนิด
@@ -94,8 +124,15 @@ public class SnakeNagaAI : MonoBehaviour
         if (stats != null)
         {
             // atkIndex-1 เพราะ array เริ่มที่ 0
-            float dmg = attackDamages[Mathf.Clamp(atkIndex-1, 0, attackDamages.Length-1)];
+            float dmg = attackDamages[Mathf.Clamp(atkIndex - 1, 0, attackDamages.Length - 1)];
             stats.TakeDamage(dmg);
         }
+    }
+    protected override void OnDamageTaken(float damage)
+    {
+        base.OnDamageTaken(damage);
+        // ถ้ายังไม่ตาย ให้เข้า Hurt state
+        if (!IsDead)
+            StateMachine.ChangeState(hurtState);
     }
 }

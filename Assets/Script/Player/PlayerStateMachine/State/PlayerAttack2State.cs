@@ -13,7 +13,6 @@ public class PlayerAttack2State : IState
         timer = 0f;
         sm.comboInputBuffered = false;
         sm.playerController.animator.SetTrigger("Attack2");
-        sm.playerController.DealDamage();
     }
 
     public void Execute()
