@@ -82,12 +82,23 @@ public class PunchSkill : ISkill
         );
         foreach (var c in hits)
         {
-            // มองหา LivingThing บนตัว collider นั้น
-            var living = c.GetComponent<Monster>();
-            if (living != null)
+            if (c.CompareTag("Enemy"))
             {
-                living.TakeDamage(_damage);
-                Debug.Log($"Hit {c.name}: dealt {_damage} damage");
+                var living = c.GetComponent<Stats>();
+                if (living != null)
+                {
+                    living.TakeDamage(_damage);
+                    Debug.Log($"Hit {c.name}: dealt {_damage} damage");
+                }
+            }
+            if (c.CompareTag("Boss"))
+            {
+                var living = c.GetComponent<BossStat>();
+                if (living != null)
+                {
+                    living.TakeDamage(_damage);
+                    Debug.Log($"Hit {c.name}: dealt {_damage} damage");
+                }
             }
         }
     }
