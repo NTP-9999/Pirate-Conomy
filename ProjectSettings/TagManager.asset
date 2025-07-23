@@ -15,6 +15,7 @@ TagManager:
   - EnemyProjectile
   - Boss
   - Bullet
+  - ShipSpawnPoint
   layers:
   - Default
   - TransparentFX
