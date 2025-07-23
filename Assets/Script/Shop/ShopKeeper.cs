@@ -18,7 +18,7 @@ public class ShopKeeper : MonoBehaviour
     [Header("Ranges")]
     [Tooltip("How close before the UI goes 'press to open'")]
     private float interactableRange => maxDistance * 0.75f;
-    public float maxDistance = 0;
+    public float maxDistance;
 
     private PlayerController playerController;
     private PlayerSkillController playerSkillController;
@@ -86,9 +86,9 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!canOpenShop || !other.CompareTag("Player")) return;
+        if (!canOpenShop) return;
+
         playerInRange = true;
-        canOpenShop = true; // Enable shop when player enters the trigger
         if (other.CompareTag("Player"))
         {
             if (maxDistance == 0)
@@ -103,7 +103,7 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (!canOpenShop || !other.CompareTag("Player")) return;
+        if (!canOpenShop) return;
         if (other.CompareTag("Player") && playerInRange && interactUI != null)
         {
             float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
@@ -120,9 +120,8 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (!canOpenShop || !other.CompareTag("Player")) return;
+        if (!canOpenShop) return;
         playerInRange = false;
-        canOpenShop = false; // Disable shop when player exits the trigger
         if (interactUI != null)
         {
             interactUI.HideUI();

@@ -2,11 +2,15 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
+using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
     public static bool IsInDialogue { get; private set; }
+
+    // จะหาให้เองจากในฉาก
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
     public Button acceptButton;
@@ -14,29 +18,28 @@ public class DialogueManager : MonoBehaviour
 
     private string[] dialogueLines;
     private int currentLine;
-    private System.Action onAccept;
-    private System.Action onDecline;
-
+    private Action onAccept;
+    private Action onDecline;
     private PlayerController playerController;
 
     private void Awake()
     {
-        Debug.Log("DialogueManager Awake called!");
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            // ลงทะเบียน callback เมื่อลากฉากใหม่เสร็จ
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            // หา reference ครั้งแรก
+            AssignReferences();
+            FindPlayerController();
+            HideDialogueUI();
         }
         else
         {
             Destroy(gameObject);
-            return;
         }
-
-        AssignReferences();
-        FindPlayerController();
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
     }
 
     private void OnDestroy()
@@ -45,34 +48,80 @@ public class DialogueManager : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // ถูกเรียกอัตโนมัติเมื่อ Scene ใหม่ถูกโหลด
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("DialogueManager: Scene loaded, re-assigning references.");
         AssignReferences();
         FindPlayerController();
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+        HideDialogueUI();
     }
 
+    // ปิด Panel ก่อนเริ่ม
+    private void HideDialogueUI()
+    {
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
+    }
+
+    // หา GameObject และ Component ในฉาก โดยอาศัยชื่อ
     private void AssignReferences()
     {
-        // หา DialoguePanel แม้จะ inactive
+        dialoguePanel   = null;
+        dialogueText    = null;
+        acceptButton    = null;
+        declineButton   = null;
+
+        var activeScene = SceneManager.GetActiveScene();
+        var roots       = activeScene.GetRootGameObjects();
+
+        // 1) หา DialoguePanel
+        foreach (var go in roots)
+        {
+            var panelT = FindInChildren(go.transform, "DialoguePanel");
+            if (panelT != null)
+            {
+                dialoguePanel = panelT.gameObject;
+                break;
+            }
+        }
+
         if (dialoguePanel == null)
         {
-            dialoguePanel = GameObject.Find("DialoguePanel");
+            Debug.LogWarning($"[DialogueManager] ไม่พบ DialoguePanel ในฉาก \"{activeScene.name}\"");
+            return;
         }
-        if (dialogueText == null)
-        {
-            dialogueText = GameObject.Find("DialogueText")?.GetComponent<TextMeshProUGUI>();
-        }
-        if (acceptButton == null)
-        {
-            acceptButton = GameObject.Find("AcceptButton")?.GetComponent<Button>();
-        }
-        if (declineButton == null)
-        {
-            declineButton = GameObject.Find("DeclineButton")?.GetComponent<Button>();
-        }
+
+        // 2) หา DialogueText, AcceptButton, DeclineButton จากใต้ Panel
+        var panelTransform = dialoguePanel.transform;
+
+        var textT = FindInChildren(panelTransform, "DialogueText");
+        if (textT != null)
+            dialogueText = textT.GetComponent<TextMeshProUGUI>();
+
+        var acceptT = FindInChildren(panelTransform, "AcceptButton");
+        if (acceptT != null)
+            acceptButton = acceptT.GetComponent<Button>();
+
+        var declineT = FindInChildren(panelTransform, "DeclineButton");
+        if (declineT != null)
+            declineButton = declineT.GetComponent<Button>();
     }
+
+    // ค้นหา Transform ชื่อตามต้องการ (รวม inactive ได้) ในบรรดา children ทั้งหมด
+    private Transform FindInChildren(Transform parent, string childName)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == childName)
+                return child;
+
+            var result = FindInChildren(child, childName);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+
     private void FindPlayerController()
     {
         var player = GameObject.FindGameObjectWithTag("Player");
@@ -80,76 +129,48 @@ public class DialogueManager : MonoBehaviour
         {
             playerController = player.GetComponent<PlayerController>();
             if (playerController == null)
-                Debug.LogWarning("DialogueManager: ไม่พบ PlayerController บน Player");
-        }
-        else
-        {
-            Debug.LogWarning("DialogueManager: ไม่พบ GameObject Tag \"Player\"");
+                Debug.LogWarning("[DialogueManager] ไม่พบ PlayerController บน GameObject 'Player'");
         }
     }
 
-    public void StartDialogue(string[] lines, System.Action acceptCallback, System.Action declineCallback)
+    public void StartDialogue(string[] lines, Action acceptCallback, Action declineCallback)
     {
-        IsInDialogue = true;
-        if (playerController != null)
-        {
-            playerController.canMove = false;
-            playerController.enabled = false;
-        }
-        dialogueLines = lines;
-        currentLine = 0;
-        onAccept = acceptCallback;
-        onDecline = declineCallback;
+        if (dialoguePanel == null) AssignReferences(); // กันพลาด
+        if (dialoguePanel == null) return;
+
+        IsInDialogue    = true;
+        dialogueLines   = lines;
+        currentLine     = 0;
+        onAccept        = acceptCallback;
+        onDecline       = declineCallback;
 
         dialoguePanel.SetActive(true);
         acceptButton.gameObject.SetActive(false);
         declineButton.gameObject.SetActive(false);
         ShowLine();
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        // ✂ ตรงนี้เปลี่ยนเป็น PlayerController
+        // บล็อคการเคลื่อนที่ผู้เล่น
         if (playerController != null)
+        {
+            playerController.enabled = false;
             playerController.canMove = false;
-
-        var player = GameObject.FindGameObjectWithTag("Player");
-        HideAllChildrenExceptCamera(player);
-    }
-    void HideAllChildrenExceptCamera(GameObject player)
-    {
-        foreach (Transform child in player.transform)
-        {
-            if (child.GetComponentInChildren<Camera>() != null)
-                continue;
-
-            child.gameObject.SetActive(false);
         }
-    }
 
-    void ShowAllChildren(GameObject player)
-    {
-        foreach (Transform child in player.transform)
-        {
-            child.gameObject.SetActive(true);
-        }
-    }
+        // วาง Cursor
+        Cursor.lockState  = CursorLockMode.None;
+        Cursor.visible    = true;
 
-    void ShowLine()
-    {
-        dialogueText.text = dialogueLines[currentLine];
+        // ซ่อน model player ชั่วคราว
+        HideAllChildrenExceptCamera(GameObject.FindGameObjectWithTag("Player"));
     }
 
     public void NextLine()
     {
         currentLine++;
         if (currentLine < dialogueLines.Length)
-        {
             ShowLine();
-        }
         else
         {
-            // แสดงปุ่ม Accept / Decline
             acceptButton.gameObject.SetActive(true);
             declineButton.gameObject.SetActive(true);
         }
@@ -170,30 +191,44 @@ public class DialogueManager : MonoBehaviour
     private void EndDialogue()
     {
         IsInDialogue = false;
+        dialoguePanel.SetActive(false);
+
+        // คืนสิทธิ์ผู้เล่น
         if (playerController != null)
         {
             playerController.enabled = true;
             playerController.canMove = true;
         }
-        dialoguePanel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
 
-        // ✂ ตรงนี้ก็เช่นกัน
-        if (playerController != null)
-            playerController.canMove = true;
+        Cursor.lockState  = CursorLockMode.Locked;
+        Cursor.visible    = false;
 
-        var player = GameObject.FindGameObjectWithTag("Player");
-        ShowAllChildren(player);
+        ShowAllChildren(GameObject.FindGameObjectWithTag("Player"));
+    }
+
+    private void ShowLine()
+    {
+        dialogueText.text = dialogueLines[currentLine];
+    }
+
+    private void HideAllChildrenExceptCamera(GameObject player)
+    {
+        if (player == null) return;
+        foreach (Transform c in player.transform)
+            if (c.GetComponentInChildren<Camera>() == null)
+                c.gameObject.SetActive(false);
+    }
+
+    private void ShowAllChildren(GameObject player)
+    {
+        if (player == null) return;
+        foreach (Transform c in player.transform)
+            c.gameObject.SetActive(true);
     }
 
     private void Update()
     {
-        Debug.Log("DialogueManager Update running...");
-        if (dialoguePanel.activeSelf && Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Spacebar pressed, advancing dialogue...");
+        if (dialoguePanel != null && dialoguePanel.activeSelf && Input.GetKeyDown(KeyCode.Space))
             NextLine();
-        }
     }
 }
