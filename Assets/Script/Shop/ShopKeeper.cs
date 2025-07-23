@@ -86,6 +86,7 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (!canOpenShop || !other.CompareTag("Player")) return;
         playerInRange = true;
         canOpenShop = true; // Enable shop when player enters the trigger
         if (other.CompareTag("Player"))
@@ -102,6 +103,7 @@ public class ShopKeeper : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
+        if (!canOpenShop || !other.CompareTag("Player")) return;
         if (other.CompareTag("Player") && playerInRange && interactUI != null)
         {
             float distance = Vector3.Distance(other.transform.position, interactPoint.transform.position);
