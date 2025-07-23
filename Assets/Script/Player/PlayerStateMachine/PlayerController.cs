@@ -96,6 +96,8 @@ public class PlayerController : MonoBehaviour
                 if (snake != null) snake.TakeDamage(attackDamage);
                 var wolf = col.GetComponent<WolfAI>();
                 if (wolf != null) wolf.TakeDamage(attackDamage);
+                var crab = col.GetComponent<CrabAI>();
+                if (crab != null) crab.TakeDamage(attackDamage);
             }
             else if (col.CompareTag("Boss"))
             {

@@ -14,7 +14,7 @@ public class CrabHideState : CrabIState
     {
         // หยุดทุกอย่าง แล้วสั่งเล่นแอนิเมชัน Hide
         ctx.Agent.isStopped = true;
-        ctx.Animator.SetTrigger("Hide1");  // ชื่อ Trigger ตามใน Animator ของคุณ
+        ctx.Animator.SetTrigger("Hide");  // ชื่อ Trigger ตามใน Animator ของคุณ
     }
 
     public void Execute()

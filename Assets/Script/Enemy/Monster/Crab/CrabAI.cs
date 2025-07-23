@@ -1,6 +1,7 @@
 // CrabAI.cs
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class CrabAI : LivingThing
 {

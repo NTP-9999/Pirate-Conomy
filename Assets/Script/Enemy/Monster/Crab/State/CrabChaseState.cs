@@ -1,6 +1,7 @@
 // CrabChaseState.cs
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class CrabChaseState : CrabIState
 {
@@ -9,12 +10,14 @@ public class CrabChaseState : CrabIState
 
     public CrabChaseState(CrabAI context)
     {
-        ctx   = context;
+        ctx = context;
         agent = ctx.Agent;
     }
 
     public void Enter()
     {
+        ctx.Animator.SetTrigger("Chasing"); // ตั้ง Trigger ตามที่คุณตั้งไว้ใน Animator
+        ctx.StartCoroutine(StartChaseAfterDelay());
         agent.isStopped = false;
     }
 
@@ -31,5 +34,11 @@ public class CrabChaseState : CrabIState
             ctx.StateMachine.ChangeState(ctx.hideState);
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+    }
+    private IEnumerator StartChaseAfterDelay()
+    {
+        yield return new WaitForSeconds(1f);
+    }
 }
