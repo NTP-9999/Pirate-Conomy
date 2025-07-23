@@ -30,9 +30,9 @@ public class SnakeNagaAI : LivingThing
     public float hurtDuration = 0.5f;
     [Header("Poison Skill")]
     public GameObject poisonVFXPrefab;        // Prefab พิษ
-    public Transform  poisonSpawnPoint;       // ตำแหน่งยิงพิษ
-    public float      poisonSpawnDelay   = 0.6f;  // หน่วงก่อนปล่อย VFX (s)
-    public float      poisonStateDuration= 1.5f;
+    public Transform poisonSpawnPoint;       // ตำแหน่งยิงพิษ
+    public float poisonSpawnDelay = 0.6f;  // หน่วงก่อนปล่อย VFX (s)
+    public float poisonStateDuration = 1.5f;
     private GameObject poisonInstance;
 
 
@@ -134,5 +134,11 @@ public class SnakeNagaAI : LivingThing
         // ถ้ายังไม่ตาย ให้เข้า Hurt state
         if (!IsDead)
             StateMachine.ChangeState(hurtState);
+    }
+    public override void OnDeath()
+    {
+        Agent.isStopped = true;
+        Animator.SetTrigger("Die");
+        Destroy(gameObject, 2f); // ทำลายหลังจาก 2 วินาทีเพื่อให้อนิเมชั่นตายเล่นจบ
     }
 }

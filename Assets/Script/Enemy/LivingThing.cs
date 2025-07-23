@@ -68,7 +68,7 @@ public abstract class LivingThing : MonoBehaviour
     }
 
     // ฟังก์ชันเรียกตอนตาย (ให้ override)
-    protected virtual void OnDeath()
+    public virtual void OnDeath()
     {
         // ตัวอย่าง: ปิด gameobject
         Destroy(gameObject);
