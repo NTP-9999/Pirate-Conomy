@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6d506168207501342ab5a95e049f4cdb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - sun: {instanceID: 0}
+  - causticMat: {fileID: 2100000, guid: 1dae41406426b32459b6e7fab0d5dff0, type: 2}
+  - lightA: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
