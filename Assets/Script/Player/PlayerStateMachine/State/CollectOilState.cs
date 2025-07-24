@@ -10,11 +10,28 @@ public class CollectOilState : IState
         => sm.StartCoroutine(Routine());
     IEnumerator Routine()
     {
-        yield return sm.oilCollector.StartCollectFromExternal(sm.currentOil);
-        // ถ้าหมดแล้ว clear เป้า
-        if (sm.currentOil.currentCollects >= sm.currentOil.maxCollects)
+        if (sm == null || sm.oilCollector == null || sm.currentOil == null)
+        {
+            Debug.LogError("Initial null check failed");
+            yield break;
+        }
+
+        // 🔒 เก็บ currentOil ไว้ในตัวแปร local
+        OilResource oil = sm.currentOil;
+
+        yield return sm.oilCollector.StartCollectFromExternal(oil);
+
+        if (oil == null)
+        {
+            Debug.LogWarning("oil is null after collection");
+            yield break;
+        }
+
+        if (oil.currentCollects >= oil.maxCollects)
             sm.currentOil = null;
+
         sm.fsm.ChangeState(sm.idleState);
     }
+
     public void Execute(){} public void Exit(){}
 }

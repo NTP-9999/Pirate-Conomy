@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class OilResource : MonoBehaviour
 {
     public string displayName = "Oil";
@@ -12,14 +12,16 @@ public class OilResource : MonoBehaviour
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;
-    private float interactableRange => maxDistance * .75f;
+    private float interactableRange => maxDistance * 0.9f;
     private float maxDistance = 0;
 
+    MeshRenderer meshRenderer;
     bool playerInRange;
 
     void Awake()
     {
         sphereCollider = GetComponent<SphereCollider>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
     void Start()
     {
@@ -34,10 +36,10 @@ public class OilResource : MonoBehaviour
         currentCollects++;
         if (currentCollects >= maxCollects)
         {
+            meshRenderer.enabled = false;
             StartCoroutine(Respawn());
             interactUI.HideUI();
             interactUI = null;
-            gameObject.SetActive(false); // Disable the oil object instead of destroying it
         }
     }
 
@@ -45,6 +47,7 @@ public class OilResource : MonoBehaviour
     {
         yield return new WaitForSeconds(respawnDelay);
         currentCollects = 0;
+        meshRenderer.enabled = true;
     }
 
     void OnTriggerEnter(Collider other)
