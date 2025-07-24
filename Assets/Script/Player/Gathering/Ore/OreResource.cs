@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider), typeof(MeshRenderer))]
+[RequireComponent(typeof(Collider))]
 public class OreResource : MonoBehaviour
 {
     public string displayName = "Ore";
@@ -15,13 +15,10 @@ public class OreResource : MonoBehaviour
     private float interactShowRange => oreCollider.radius;
     private float interactableRange => maxDistance * .75f;
     private float maxDistance = 0;
-
-    MeshRenderer meshRenderer;
     bool playerInRange;
 
     void Start()
     {
-        meshRenderer  = GetComponent<MeshRenderer>();
         oreCollider   = GetComponent<SphereCollider>();
     }
 
@@ -30,10 +27,10 @@ public class OreResource : MonoBehaviour
         currentHits++;
         if (currentHits >= maxHits)
         {
-            meshRenderer.enabled = false;
             StartCoroutine(Respawn());
             interactUI.HideUI();
             interactUI = null;
+            gameObject.SetActive(false); // Disable the ore object instead of destroying it
         }
     }
 
@@ -41,7 +38,6 @@ public class OreResource : MonoBehaviour
     {
         yield return new WaitForSeconds(respawnDelay);
         currentHits = 0;
-        meshRenderer.enabled  = true;
     }
 
     void OnTriggerEnter(Collider other)

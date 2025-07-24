@@ -87,7 +87,7 @@ public class ResourceInteractUI : MonoBehaviour
         progressBar.value = 0f;
         progressBar.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 
-        progressBar.DOValue(1f, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+        progressBar.DOValue(1f, 1.6f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             progressBar.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack).OnComplete(() =>
             {

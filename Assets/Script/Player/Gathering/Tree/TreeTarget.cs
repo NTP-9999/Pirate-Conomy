@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider), typeof(MeshRenderer))]
+[RequireComponent(typeof(Collider))]
 public class TreeTarget : MonoBehaviour
 {
     [Header("Settings")]
@@ -20,14 +20,11 @@ public class TreeTarget : MonoBehaviour
     private float interactShowRange => sphereCollider.radius;
     private float interactableRange => maxDistance * .75f;
     private float maxDistance = 0;
-
-    MeshRenderer meshRenderer;
     bool playerInRange;
 
     void Awake()
     {
         TreeCollider = GetComponent<CapsuleCollider>();
-        meshRenderer  = GetComponentInChildren<MeshRenderer>();
         sphereCollider   = GetComponent<SphereCollider>();
     }
     void Start()
@@ -48,10 +45,10 @@ public class TreeTarget : MonoBehaviour
         if (currentChops >= maxChops)
         {
             TreeCollider.enabled = false;
-            meshRenderer.enabled = false;
             StartCoroutine(RespawnTree());
             interactUI.HideUI();
             interactUI = null;
+            gameObject.SetActive(false); // Disable the tree object instead of destroying it
         }
     }
 
@@ -60,7 +57,6 @@ public class TreeTarget : MonoBehaviour
         yield return new WaitForSeconds(respawnDelay);
         currentChops = 0;
         TreeCollider.enabled = true;
-        meshRenderer.enabled = true;
     }
 
     void OnTriggerEnter(Collider other)

@@ -27,7 +27,7 @@ public class TreeChopper : MonoBehaviour
         animator.SetTrigger("Chop");
         tree.interactUI.Interacting();  // เรียก UI ให้แสดงว่าเริ่มฟัน
         // รอให้แอนิเมชันเล่นจนจบ (1.5 วิ ตามตัวอย่าง)
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
 
         // ทำงานจริง: เรียก Chop บนต้นไม้ + เก็บของ
         tree.Chop();  // TreeTarget จะอัปเดต currentChops + UI + respawn
