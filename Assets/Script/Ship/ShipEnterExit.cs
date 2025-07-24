@@ -32,6 +32,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     private Transform  originalShipCamParent;
     private Vector3 originalShipCamLocalPos;
     private Quaternion originalShipCamLocalRot;
+    public GameObject playerHUD;
 
     private bool nearHelm = false;
     public bool isControlling = false;
@@ -103,6 +104,8 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
         // 3) เริ่ม transition ไปกล้องเรือ
         StartCoroutine(SmoothSwitchToShipCam());
+
+        
     }
 
     IEnumerator SmoothSwitchToShipCam()
@@ -155,6 +158,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
         // เริ่มควบคุมเรือ
         isControlling = true;
         GetComponent<ShipController>().enabled = !shipAnchorSystem.anchorDeployed;
+        playerHUD.SetActive(false);
     }
 
     public void ExitControlShip()
@@ -164,6 +168,8 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
         WaypointUI.Instance.SetCamera(playerCamera);
 
         StartCoroutine(SmoothSwitchToPlayerCam());
+
+        
     }
 
     IEnumerator SmoothSwitchToPlayerCam()
@@ -231,5 +237,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
         // ปิดระบบขับเรือ
         isControlling = false;
         GetComponent<ShipController>().enabled = false;
+
+        playerHUD.SetActive(true);
     }
 }

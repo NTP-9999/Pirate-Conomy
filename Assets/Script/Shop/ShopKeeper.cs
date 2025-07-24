@@ -22,6 +22,7 @@ public class ShopKeeper : MonoBehaviour
 
     private PlayerController playerController;
     private PlayerSkillController playerSkillController;
+    private PlayerStateMachine playerStateMachine;
 
     void Awake()
     {
@@ -29,8 +30,9 @@ public class ShopKeeper : MonoBehaviour
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            if (playerController      == null) playerController      = player.GetComponent<PlayerController>();
+            if (playerController == null) playerController = player.GetComponent<PlayerController>();
             if (playerSkillController == null) playerSkillController = player.GetComponent<PlayerSkillController>();
+            if (playerStateMachine == null) playerStateMachine = player.GetComponent<PlayerStateMachine>();
         }
 
         if (interactPoint == null) interactPoint = transform;
@@ -60,6 +62,7 @@ public class ShopKeeper : MonoBehaviour
 
         if (playerController      != null) { playerController.enabled = false; playerController.canMove = false; }
         if (playerSkillController != null) playerSkillController.enabled = false;
+        if (playerStateMachine    != null) playerStateMachine.enabled = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
@@ -73,6 +76,7 @@ public class ShopKeeper : MonoBehaviour
 
         if (playerController      != null) { playerController.enabled = true;  playerController.canMove = true; }
         if (playerSkillController != null) playerSkillController.enabled = true;
+        if (playerStateMachine    != null) playerStateMachine.enabled = true;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible   = false;

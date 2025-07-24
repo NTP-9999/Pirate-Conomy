@@ -27,6 +27,7 @@ public class QuestGiver : MonoBehaviour
     public ShopKeeper shopKeeper;      // to open shop after quest
     private PlayerController      playerController;
     private FirstPersonCamera     playerCameraController;
+    private PlayerStateMachine    playerStateMachine;
 
     private bool nextQuestStarted = false;
     public float maxDistance = 0;
@@ -37,8 +38,9 @@ public class QuestGiver : MonoBehaviour
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            if (playerController      == null) playerController      = player.GetComponent<PlayerController>();
+            if (playerController == null) playerController = player.GetComponent<PlayerController>();
             if (playerCameraController == null) playerCameraController = player.GetComponentInChildren<FirstPersonCamera>(true);
+            if (playerStateMachine == null) playerStateMachine = player.GetComponent<PlayerStateMachine>();
         }
 
         if (interactPoint == null) interactPoint = transform;
@@ -57,6 +59,7 @@ public class QuestGiver : MonoBehaviour
                 playerController.canMove = false;
                 DialogueManager.Instance.StartDialogue(dialogueLines, OnAccept, OnDecline);
                 interactUI.HideUI();
+                playerStateMachine.enabled = false;
 
                 // optionally elevate camera
                 playerCameraController?.StartCameraElevation(100f, 14f);
@@ -127,11 +130,12 @@ public class QuestGiver : MonoBehaviour
 
         nextQuestStarted = true;
         playerCameraController?.ResetCameraElevation(20f);
+        playerStateMachine.enabled = true;
     }
 
     void OnDecline()
     {
-        // player declined
+        playerStateMachine.enabled = true;
         playerController.canMove = true;
         playerCameraController?.ResetCameraElevation(20f);
     }
