@@ -10,9 +10,19 @@ public class CollectOreState : IState
         => sm.StartCoroutine(Routine());
     IEnumerator Routine()
     {
-        yield return sm.oreCollector.StartMineFromExternal(sm.currentOre);
-        if (sm.currentOre.currentHits >= sm.currentOre.maxHits)
+        OreResource ore = sm.currentOre; // 🔒 ล็อกไว้กันโดนเปลี่ยนจากภายนอก
+
+        if (ore == null || sm.oreCollector == null)
+        {
+            Debug.LogError("Ore or OreCollector is null.");
+            yield break;
+        }
+
+        yield return sm.oreCollector.StartMineFromExternal(ore);
+
+        if (ore.currentHits >= ore.maxHits)
             sm.currentOre = null;
+
         sm.fsm.ChangeState(sm.idleState);
     }
     public void Execute(){} public void Exit(){}

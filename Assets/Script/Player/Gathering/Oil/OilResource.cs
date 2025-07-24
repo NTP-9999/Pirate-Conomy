@@ -12,7 +12,7 @@ public class OilResource : MonoBehaviour
     public Transform interactPoint;
     private SphereCollider sphereCollider;
     private float interactShowRange => sphereCollider.radius;
-    private float interactableRange => maxDistance * 0.9f;
+    private float interactableRange => maxDistance * .999f;
     private float maxDistance = 0;
 
     MeshRenderer meshRenderer;

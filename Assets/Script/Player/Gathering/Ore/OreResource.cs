@@ -27,17 +27,23 @@ public class OreResource : MonoBehaviour
         currentHits++;
         if (currentHits >= maxHits)
         {
+            oreCollider.enabled = false;
             StartCoroutine(Respawn());
-            interactUI.HideUI();
+
+            if (interactUI != null)
+                interactUI.HideUI();  // ✅ ป้องกัน null ที่อาจพังได้
+
             interactUI = null;
-            gameObject.SetActive(false); // Disable the ore object instead of destroying it
+            gameObject.SetActive(false);
         }
     }
+
 
     IEnumerator Respawn()
     {
         yield return new WaitForSeconds(respawnDelay);
         currentHits = 0;
+        oreCollider.enabled = true;
     }
 
     void OnTriggerEnter(Collider other)
