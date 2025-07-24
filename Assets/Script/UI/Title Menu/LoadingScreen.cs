@@ -5,7 +5,7 @@ using System.Collections;
 
 public class LoadingScreen : MonoBehaviour
 {
-    public Slider progressBar; // ใส่ Slider UI ใน Inspector
+    public Image progressImage; // ลาก Image ที่ตั้งค่าเป็น Filled มาใส่ใน Inspector
 
     void Start()
     {
@@ -21,13 +21,13 @@ public class LoadingScreen : MonoBehaviour
         {
             // คำนวณ progress ระหว่าง 0 - 1
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            if (progressBar != null)
-                progressBar.value = progress;
 
-            // เมื่อโหลดถึง 90% (Unity จะหยุดรอให้ allowSceneActivation เป็น true)
+            if (progressImage != null)
+                progressImage.fillAmount = progress;
+
+            // เมื่อโหลดถึง 90%
             if (operation.progress >= 0.9f)
             {
-                // หน่วงเวลาเล็กน้อยให้ผู้เล่นเห็น progress 100%
                 yield return new WaitForSeconds(0.5f);
                 operation.allowSceneActivation = true;
             }

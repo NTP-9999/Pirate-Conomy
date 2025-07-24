@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayButton : MonoBehaviour
 {
@@ -7,6 +8,11 @@ public class PlayButton : MonoBehaviour
 
     public void Playgame()
     {
+        StartCoroutine(WaitForCutScene());
+    }
+    IEnumerator WaitForCutScene()
+    {
+        yield return new WaitForSeconds(5f); 
         SceneManager.LoadScene("Loading_screen");
     }
 }

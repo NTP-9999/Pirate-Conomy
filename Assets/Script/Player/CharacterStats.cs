@@ -61,6 +61,7 @@ public class CharacterStats : Singleton<CharacterStats>
     [Header("Audio")]
     public AudioSource playerAudioSource;
     public AudioClip damageSFX;
+    public GameObject diepanel;
 
     public event Action<float> OnPlayerDamaged;
     private bool _isInvincible = false;
@@ -296,6 +297,7 @@ public class CharacterStats : Singleton<CharacterStats>
         var deathCam = Camera.main.GetComponent<DeathCameraTransition>();
         if (deathCam != null)
            deathCam.StartTransition();
+           diepanel.SetActive(true);
 
         isDead = true;
         Debug.Log("Player has died!");
