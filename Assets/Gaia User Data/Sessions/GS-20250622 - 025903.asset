@@ -165,7 +165,7 @@ MonoBehaviour:
   m_terrainMinMaxCache:
   - guid: a820768528b4dd947a5e9dc320ecf6bc
     isWorldmap: 0
-    recalculate: 1
+    recalculate: 0
     min: 0
     max: 32.469246
   m_bakedMaskCacheEntries: []
