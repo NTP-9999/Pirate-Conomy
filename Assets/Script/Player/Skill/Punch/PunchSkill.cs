@@ -57,7 +57,7 @@ public class PunchSkill : ISkill
         // ── รอจบ Animation (castDelay) ───────────────
         yield return new WaitForSeconds(_castDelay);
 
-        // ── เปิดอาวุธกลับมา ─────────────────────────
+        CameraShake.Instance.Shake(0.3f, 1f);
         
 
         // ── ปล่อย VFX + ทำลาย projectile ───────────
