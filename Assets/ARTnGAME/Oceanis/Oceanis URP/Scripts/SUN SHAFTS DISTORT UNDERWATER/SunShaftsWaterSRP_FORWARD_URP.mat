@@ -124,11 +124,12 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _BlurRadius4: {r: 0.090625, g: 0.090625, b: 0, a: 0}
+    - _BlurRadius4: {r: 0.19625, g: 0.19625, b: 0, a: 0}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _SunColor: {r: 1.0269057, g: 0.7060604, b: 0.5173279, a: 1.41}
-    - _SunPosition: {r: 0.5751405, g: 1.0819194, b: 616.61975, a: 2}
-    - _SunThreshold: {r: 0.19999999, g: 0.13078299, b: 0.07962262, a: 1}
+    - _SunColor: {r: 0.5999999, g: 0.44655448, b: 0.35660368, a: 1}
+    - _SunPosition: {r: 0.702817, g: 0.79720724, b: 1105.3683, a: 3.67}
+    - _SunThreshold: {r: 0.90188676, g: 0.86335206, b: 0.83552146, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

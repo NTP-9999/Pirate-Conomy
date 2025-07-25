@@ -9,6 +9,8 @@ public class SnakeNagaAI : LivingThing
     [HideInInspector] public NagaAttackState attackState;
     [HideInInspector] public NagaHurtState hurtState;
     [HideInInspector] public NagaPoisonState poisonState;
+    [HideInInspector] public NagaMeteorState meteorState;
+
 
     public NavMeshAgent Agent;
     public Animator Animator;
@@ -32,7 +34,16 @@ public class SnakeNagaAI : LivingThing
     public float poisonSpawnDelay = 0.6f;  // หน่วงก่อนปล่อย VFX (s)
     public float poisonStateDuration = 1.5f;
     private GameObject poisonInstance;
-
+    [Header("Meteor Settings")]
+    public GameObject meteorWarningPrefab;
+    public GameObject meteorPrefab;
+    public float meteorDamageRadius = 2f;
+    public float meteorDamage = 25f;
+    public float meteorDelay = 1.5f;        // หน่วงก่อนทำดาเมจ
+    public float meteorCooldown = 8f;
+    public float meteorRangeMin = 10f;
+    public float meteorRangeMax = 25f;
+    [HideInInspector] public float lastMeteorTime = -Mathf.Infinity;
 
     public Vector3 Position => transform.position;
     public Vector3 PlayerPosition => Player.position;
@@ -46,6 +57,7 @@ public class SnakeNagaAI : LivingThing
         attackState = new NagaAttackState(this);
         hurtState = new NagaHurtState(this);
         poisonState = new NagaPoisonState(this);
+        meteorState = new NagaMeteorState(this);
 
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -61,6 +73,7 @@ public class SnakeNagaAI : LivingThing
     void Update()
     {
         StateMachine.Update();
+        TryCastMeteor();
         Animator.SetFloat("Speed", Agent.velocity.magnitude);
     }
 
@@ -90,6 +103,25 @@ public class SnakeNagaAI : LivingThing
             poisonSpawnPoint.rotation
         );
     }
+    public bool CanUseMeteor()
+    {
+        float dist = Vector3.Distance(Position, PlayerPosition);
+        return Time.time >= lastMeteorTime + meteorCooldown &&
+            dist >= meteorRangeMin && dist <= meteorRangeMax;
+    }
+
+    private void TryCastMeteor()
+    {
+        if (IsDead || StateMachine.CurrentState == hurtState)
+            return;
+
+        if (CanUseMeteor() && StateMachine.CurrentState != meteorState)
+        {
+            lastMeteorTime = Time.time;
+            StateMachine.ChangeState(meteorState);
+        }
+    }
+
 
     // เรียกจาก State เพื่อทำลาย VFX ตอนจบ
     public void DestroyPoisonVFX()

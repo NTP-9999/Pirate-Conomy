@@ -24,7 +24,7 @@ public abstract class Quest
         if (WaypointUI.Instance != null)
             WaypointUI.Instance.SetTarget(target, this);
         if (UIObjectiveText.Instance != null)
-            UIObjectiveText.Instance.SetText(questName + " " + description);
+            UIObjectiveText.Instance.SetText(questName , description);
     }
 
     public virtual void CompleteQuest()

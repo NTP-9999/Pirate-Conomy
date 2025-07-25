@@ -22,14 +22,17 @@ public class NagaAttackState : NagaIState {
             // สุ่ม 1–4 (1,2,3 = ท่าโจมตี; 4 = สกิลงูปล่อยพิษ)
             int choice = Random.Range(1, 5);
 
-            if (choice <= 3) {
+            if (choice <= 3)
+            {
                 // โยน trigger Attack1, Attack2, Attack3
                 ctx.Animator.SetTrigger("Attack" + choice);
                 lastAtkTime = Time.time;
             }
-            else {
+            else
+            {
                 // เปลี่ยนไปสกิลพิษแทน
                 ctx.StateMachine.ChangeState(ctx.poisonState);
+                lastAtkTime = Time.time;
             }
         }
 

@@ -1,12 +1,34 @@
 using UnityEngine;
+using TMPro;
 
 public class UIObjectiveText : MonoBehaviour
 {
     public static UIObjectiveText Instance;
-    public TMPro.TextMeshProUGUI text;
 
-    void Awake() { Instance = this; }
+    [Header("Quest Text")]
+    public TextMeshProUGUI questNameText;
+    public TextMeshProUGUI descriptionText;
 
-    public void SetText(string t) { text.text = t; }
-    public void Clear() { text.text = ""; }
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    public void SetText(string questName, string description)
+    {
+        if (questNameText != null)
+            questNameText.text = questName;
+
+        if (descriptionText != null)
+            descriptionText.text = "ห  " + description;
+    }
+
+    public void Clear()
+    {
+        if (questNameText != null)
+            questNameText.text = "";
+
+        if (descriptionText != null)
+            descriptionText.text = "";
+    }
 }
