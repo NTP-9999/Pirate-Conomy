@@ -34,8 +34,6 @@ public class NagaPoisonState : NagaIState
         // พอหมดระยะเวลาของ State ให้ลบ VFX แล้วกลับ State เหมาะสม
         if (elapsed >= ctx.poisonStateDuration)
         {
-            ctx.DestroyPoisonVFX();
-
             // กลับไป Chase/Attack/Patrol ตามระยะผู้เล่น
             if (ctx.IsPlayerInAttackRange())
                 ctx.StateMachine.ChangeState(ctx.attackState);
@@ -48,6 +46,6 @@ public class NagaPoisonState : NagaIState
 
     public void Exit()
     {
-        // ถ้ามีอะไรต้องเคลียร์เพิ่มเติมก็ทำที่นี่
+        ctx.DestroyPoisonVFX();
     }
 }

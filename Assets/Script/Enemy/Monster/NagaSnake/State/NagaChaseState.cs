@@ -16,7 +16,7 @@ public class NagaChaseState : NagaIState {
         agent.SetDestination(ctx.PlayerPosition);
 
         if (ctx.IsPlayerInAttackRange())
-            ctx.StateMachine.ChangeState(ctx.attackState);
+            ctx.StateMachine.ChangeState(ctx.attackIdleState);
         else if (!ctx.IsPlayerInChaseRange())
             ctx.StateMachine.ChangeState(ctx.patrolState);
     }

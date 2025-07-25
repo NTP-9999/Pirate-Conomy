@@ -112,6 +112,10 @@ public class CharacterStats : Singleton<CharacterStats>
     private void Update()
     {
         if (isDead) return;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
 
         if (isRunningStaminaDrain && currentStamina > 0)
         {
@@ -124,6 +128,7 @@ public class CharacterStats : Singleton<CharacterStats>
                 staminaRegenCoroutine = null;
             }
         }
+        
 
         if (!isRunningStaminaDrain && currentStamina < maxStamina && Time.time >= lastStaminaUseTime + staminaRegenDelay)
         {
@@ -180,11 +185,6 @@ public class CharacterStats : Singleton<CharacterStats>
         }
         
         OnPlayerDamaged?.Invoke(amount);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
     public void StartStaminaDrain()
     {
@@ -216,6 +216,16 @@ public class CharacterStats : Singleton<CharacterStats>
             StopCoroutine(staminaRegenCoroutine);
             staminaRegenCoroutine = null;
         }
+    }
+    public void Heal(float amount)
+    {
+        if (isDead) return;
+
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
+        Debug.Log($"Healed {amount}. Current Health: {currentHealth}");
     }
 
     private IEnumerator RegenStaminaRoutine()

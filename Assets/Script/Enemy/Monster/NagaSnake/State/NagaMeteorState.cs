@@ -41,7 +41,7 @@ public class NagaMeteorState : NagaIState
                 targetPosition,
                 Quaternion.identity
             );
-            CameraShake.Instance.Shake(6f, 0.7f);
+            CameraShake.Instance.Shake(5f, 0.8f);
         }
     }
 
@@ -64,14 +64,16 @@ public class NagaMeteorState : NagaIState
                 if (stats != null)
                     stats.TakeDamage(ctx.meteorDamage);
             }
-
-            // กลับ state ตามสถานการณ์
+        }
+        if (damageApplied)
+        {
+  
             if (ctx.IsPlayerInAttackRange())
-                ctx.StateMachine.ChangeState(ctx.attackState);
+                    ctx.StateMachine.ChangeState(ctx.attackState);
             else if (ctx.IsPlayerInChaseRange())
-                ctx.StateMachine.ChangeState(ctx.chaseState);
+                    ctx.StateMachine.ChangeState(ctx.chaseState);
             else
-                ctx.StateMachine.ChangeState(ctx.patrolState);
+                    ctx.StateMachine.ChangeState(ctx.patrolState);
         }
     }
 

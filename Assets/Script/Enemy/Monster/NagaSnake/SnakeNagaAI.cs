@@ -10,6 +10,7 @@ public class SnakeNagaAI : LivingThing
     [HideInInspector] public NagaHurtState hurtState;
     [HideInInspector] public NagaPoisonState poisonState;
     [HideInInspector] public NagaMeteorState meteorState;
+    [HideInInspector] public NagaAttackIdleState attackIdleState;
 
 
     public NavMeshAgent Agent;
@@ -58,6 +59,7 @@ public class SnakeNagaAI : LivingThing
         hurtState = new NagaHurtState(this);
         poisonState = new NagaPoisonState(this);
         meteorState = new NagaMeteorState(this);
+        attackIdleState = new NagaAttackIdleState(this);
 
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;

@@ -166,32 +166,32 @@ public class InventoryManager : MonoBehaviour
             // ตรงนี้เป็น logic consume: สมมติว่าเราจะ hardcode ไปก่อนว่า item อะไรทำอะไร
             if (itemName == "Fried Chicken") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(20);
+                CharacterStats.Instance.Heal(20);
                 Debug.Log("Used food item: " + itemName);
             }
-            else if (itemName == "Grilled Meat") // เป็นอาหาร
+            else if (itemName == "Grilled MHeal") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(10);
+                CharacterStats.Instance.Heal(10);
                 Debug.Log("Used food item: " + itemName);
             }
             else if (itemName == "Grilled Squid") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(5);
+                CharacterStats.Instance.Heal(5);
                 Debug.Log("Used food item: " + itemName);
             }
             else if (itemName == "Hard Bread") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(30);
+                CharacterStats.Instance.Heal(30);
                 Debug.Log("Used food item: " + itemName);
             }
             else if (itemName == "Salted Fish") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(15);
+                CharacterStats.Instance.Heal(15);
                 Debug.Log("Used food item: " + itemName);
             }
             else if (itemName == "Sashimi Salmon") // เป็นอาหาร
             {
-                CharacterStats.Instance.Eat(40);
+                CharacterStats.Instance.Heal(40);
                 Debug.Log("Used food item: " + itemName);
             }
             else if (itemName == "Rum") // ลด stress
