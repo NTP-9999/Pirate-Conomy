@@ -1,7 +1,5 @@
-#if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.AI;
-#endif
 
 public class SnakeNagaAI : LivingThing
 {
