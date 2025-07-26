@@ -19,6 +19,7 @@ public class ThirdPersonCamera : MonoBehaviour
     private float currentX = 0f;
     private float currentY = 10f;
     private float distance;
+    public float Yaw => currentX;
 
     void Start()
     {

@@ -10,6 +10,7 @@ public class CameraModeSwitcher : MonoBehaviour
     public Transform tpsCamPosition;          // ตำแหน่งกล้อง TPS
 
     private bool isFirstPerson = true;
+    public PlayerController pc;
 
     void Start()
     {
@@ -29,7 +30,9 @@ public class CameraModeSwitcher : MonoBehaviour
 
     void SetToFirstPerson()
     {
+        pc.RefreshCamera(); // อัพเดตกล้องหลักก่อนเปลี่ยนมุมมอง
         isFirstPerson = true;
+        pc.isFPS = true; // อัพเดตสถานะ PlayerController
         fpsCamObject.SetActive(true);
         tpsCamObject.SetActive(false);
 
@@ -47,7 +50,9 @@ public class CameraModeSwitcher : MonoBehaviour
 
     void SetToThirdPerson()
     {
+        pc.RefreshCamera(); // อัพเดตกล้องหลักก่อนเปลี่ยนมุมมอง
         isFirstPerson = false;
+        pc.isFPS = false; // อัพเดตสถานะ PlayerController
         tpsCamObject.SetActive(true);
         fpsCamObject.SetActive(false);
 
