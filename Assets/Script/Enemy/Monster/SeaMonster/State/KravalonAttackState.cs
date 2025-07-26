@@ -11,7 +11,7 @@ public class KravalonAttackState : IKravalonState
 
     public void Enter()
     {
-        ctx.DealDamageToShip();
+        ctx.animator.SetTrigger("Attack");
         ctx.SetAttackCooldown();
     }
 

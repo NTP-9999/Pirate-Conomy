@@ -46,8 +46,11 @@ public class SeaEncounterManager : MonoBehaviour
         // สุ่มซ้าย/ขวาเรือ
         Vector3 spawnDir = (Random.value < 0.5f) ? shipTransform.right : -shipTransform.right;
         Vector3 spawnPos = shipTransform.position + spawnDir * spawnDistanceFromShip;
-
-        Instantiate(seaMonsterPrefab, spawnPos, Quaternion.identity);
+        if (UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out UnityEngine.AI.NavMeshHit hit, 10f, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            GameObject kravalon = Instantiate(seaMonsterPrefab, hit.position, Quaternion.identity);
+        }
+        
         Debug.Log("🌊 Sea monster spawned!");
     }
 }

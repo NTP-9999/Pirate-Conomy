@@ -40,10 +40,6 @@ public class CameraModeSwitcher : MonoBehaviour
         fpsCamObject.GetComponent<FirstPersonCamera>().enabled = true;
         tpsCamObject.GetComponent<ThirdPersonCamera>().enabled = false;
 
-        // ✅ ย้ายกล้องหลักไปตำแหน่ง FPS
-        fpsCamObject.transform.position = fpsCamPosition.position;
-        fpsCamObject.transform.rotation = fpsCamPosition.rotation;
-
         // ✅ Sync UI กล้องด้วยถ้าต้องการ
         SyncUICamera(fpsCamObject.transform);
     }
@@ -59,10 +55,6 @@ public class CameraModeSwitcher : MonoBehaviour
         // ✅ เปิด TPS Script & ปิด FPS
         fpsCamObject.GetComponent<FirstPersonCamera>().enabled = false;
         tpsCamObject.GetComponent<ThirdPersonCamera>().enabled = true;
-
-        // ✅ ย้ายกล้องหลักไปตำแหน่ง TPS
-        tpsCamObject.transform.position = tpsCamPosition.position;
-        tpsCamObject.transform.rotation = tpsCamPosition.rotation;
 
         // ✅ Sync UI กล้องด้วยถ้าต้องการ
         SyncUICamera(tpsCamObject.transform);

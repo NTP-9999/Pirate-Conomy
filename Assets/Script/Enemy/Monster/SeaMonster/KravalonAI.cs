@@ -11,6 +11,7 @@ public class KravalonAI : MonoBehaviour
     [Header("Health")]
     public float maxHealth = 200f;
     private float currentHealth;
+    public Animator animator;
 
     public Transform shipTarget;
     public float moveSpeed = 5f;
@@ -66,6 +67,7 @@ public class KravalonAI : MonoBehaviour
             stats.TakeDamage(damage);
         }
     }
+
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
@@ -84,8 +86,6 @@ public class KravalonAI : MonoBehaviour
     void Die()
     {
         Debug.Log("💀 Kravalon ตายแล้ว!");
-
-        // TODO: เล่น animation ตาย, จม, ฯลฯ
-        Destroy(gameObject, 3f); // รอให้แอนิเมชันจบก่อนลบ
+        Destroy(gameObject, 3f);
     }
 }

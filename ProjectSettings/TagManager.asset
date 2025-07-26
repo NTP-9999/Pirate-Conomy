@@ -16,6 +16,7 @@ TagManager:
   - Boss
   - Bullet
   - ShipSpawnPoint
+  - SeaMonster
   layers:
   - Default
   - TransparentFX
