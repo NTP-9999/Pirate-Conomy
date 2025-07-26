@@ -9,24 +9,29 @@ public class SeaEncounterManager : MonoBehaviour
     public float spawnChancePerSecond = 0.05f;
     public float cooldownDuration = 60f;
     public float spawnDistanceFromShip = 20f;
+    private float timer = 0f;
 
     private float lastSpawnTime = -Mathf.Infinity;
 
     void Update()
     {
-        // เช็กว่ากำลังควบคุมเรืออยู่ไหม
         if (!ShipEnterExit.Instance || !ShipEnterExit.Instance.isControlling)
             return;
 
         if (Time.time < lastSpawnTime + cooldownDuration)
             return;
 
-        float chancePerFrame = spawnChancePerSecond * Time.deltaTime;
+        timer += Time.deltaTime;
 
-        if (Random.value < chancePerFrame)
+        if (timer >= 1f) // ทุก ๆ 1 วินาที
         {
-            SpawnSeaMonster();
-            lastSpawnTime = Time.time;
+            timer = 0f;
+
+            if (Random.value < spawnChancePerSecond)
+            {
+                SpawnSeaMonster();
+                lastSpawnTime = Time.time;
+            }
         }
     }
 

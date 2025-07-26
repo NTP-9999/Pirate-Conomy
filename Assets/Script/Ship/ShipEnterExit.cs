@@ -14,6 +14,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     public float camTransitionDuration = 1f;
 
     private Transform player;
+    public GameObject shipHUD;
     private CharacterController characterController;
     private Camera playerCamera;
     private Camera shipCamObj;
@@ -146,6 +147,8 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     void OnShipCamActive()
     {
+        if (shipHUD != null)
+    shipHUD.SetActive(true);
         // parent Player → ปิด CharacterController
         player.SetParent(transform, worldPositionStays: true);
         characterController.enabled = false;
@@ -213,6 +216,9 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     void OnPlayerCamActive()
     {
+        if (shipHUD != null)
+    shipHUD.SetActive(false);
+
         // คืน parent + transform ให้ Player
         player.SetParent(originalParent, worldPositionStays: false);
         player.localPosition = originalLocalPos;

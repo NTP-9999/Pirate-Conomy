@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class ShipStats : MonoBehaviour
 {
     public float maxHealth = 500f;
     private float currentHealth;
+
+    [Header("UI")]
+    [SerializeField] private Image HP_Fill;
 
     [Header("Game Over")]
     public GameObject diePanel;
@@ -17,21 +21,36 @@ public class ShipStats : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        UpdateUI(); // อัปเดตค่าเริ่มต้น
     }
 
     void Update()
     {
-        // ป้องกันเรียกซ้ำ
         if (!isSinking && currentHealth <= 0)
         {
             SinkShip();
         }
     }
 
+    public float GetHealthPercent()
+    {
+        return Mathf.Clamp01(currentHealth / maxHealth);
+    }
+
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
         Debug.Log($"🛳️ เรือได้รับความเสียหาย {amount} หน่วย! เหลือ: {currentHealth}");
+
+        UpdateUI(); // อัปเดต UI ทุกครั้งที่โดนดาเมจ
+    }
+
+    void UpdateUI()
+    {
+        if (HP_Fill != null)
+        {
+            HP_Fill.fillAmount = GetHealthPercent();
+        }
     }
 
     void SinkShip()
@@ -39,22 +58,16 @@ public class ShipStats : MonoBehaviour
         isSinking = true;
         Debug.Log("💥 เรือจมแล้ว!");
 
-        // 1. เล่น Timeline
         if (deathTimeline != null)
-        {
             deathTimeline.Play();
-        }
 
-        // 2. กล้องตาย
         var deathCam = Camera.main.GetComponent<DeathCameraTransition>();
         if (deathCam != null)
             deathCam.StartTransition();
 
-        // 3. แสดง Game Over UI
         if (diePanel != null)
             diePanel.SetActive(true);
 
-        // 4. ปิดระบบควบคุมเรือ
         var controller = GetComponent<ShipController>();
         if (controller != null)
             controller.enabled = false;
