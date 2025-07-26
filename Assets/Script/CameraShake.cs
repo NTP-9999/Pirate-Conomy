@@ -12,13 +12,7 @@ public class CameraShake : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
         Instance = this;
-        _startPos = transform.localPosition;
     }
 
     public void Shake(float duration = 0.3f, float magnitude = 0.1f, float frequency = 20f, float smooth = 5f)
