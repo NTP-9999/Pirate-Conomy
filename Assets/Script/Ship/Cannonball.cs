@@ -12,13 +12,16 @@ public class Cannonball : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // เช็คว่าโดนมอนสเตอร์หรือศัตรู
-        var stats = collision.gameObject.GetComponent<CharacterStats>();
-        if (stats != null)
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-            stats.TakeDamage(damage);
-        }
+            // เช็คว่ามีคอมโพเนนต์ CharacterStats หรือไม่
+            var stats = collision.gameObject.GetComponent<KravalonAI>();
+            if (stats != null)
+            {
+                stats.TakeDamage(damage);
+            }
 
-        Destroy(gameObject); // ทำลายกระสุนหลังชน
+            Destroy(gameObject); // ทำลายกระสุนหลังชนศัตรู
+        }
     }
 }
