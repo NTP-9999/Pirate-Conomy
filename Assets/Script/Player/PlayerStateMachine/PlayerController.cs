@@ -159,12 +159,10 @@ public class PlayerController : MonoBehaviour
 
         if (DialogueManager.IsInDialogue) return;
 
-        // 1) Ground check เพื่อรีเซ็ต verticalVelocity
         bool grounded = characterController.isGrounded;
         if (grounded && verticalVelocity < 0f)
             verticalVelocity = -2f;
 
-        // 2) อ่าน input
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
         Vector3 inputDir = new Vector3(moveX, 0f, moveZ).normalized;
@@ -172,7 +170,6 @@ public class PlayerController : MonoBehaviour
 
         float speed = walkSpeed;
 
-        // 3) Stamina & Run
         if (!isSkillLocked && wantRun && stats.currentStamina > 0f)
         {
             isRunning = true;
@@ -192,7 +189,6 @@ public class PlayerController : MonoBehaviour
             stats.StopStaminaDrain();
         }
 
-        // 4) ถ้าโดน lock movement
         if (!canMove)
         {
             verticalVelocity += gravity * Time.deltaTime;
@@ -206,7 +202,6 @@ public class PlayerController : MonoBehaviour
         {
             if (isFPS)
             {
-                // FPS Mode
                 Vector3 camForward = mainCamera.transform.forward;
                 Vector3 camRight = mainCamera.transform.right;
                 camForward.y = 0f;
@@ -216,32 +211,37 @@ public class PlayerController : MonoBehaviour
 
                 moveDir = camForward * inputDir.z + camRight * inputDir.x;
 
-                // หันตัวตามกล้อง
                 transform.rotation = Quaternion.Euler(0f, mainCamera.transform.eulerAngles.y, 0f);
             }
             else
             {
-                verticalVelocity += gravity * Time.deltaTime;
-                characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+                float cameraYaw = mainCamera.transform.eulerAngles.y;
+
+    // หาทิศทางการเดินตาม input และกล้อง
+                float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraYaw;
+                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                moveDir = moveDirection.normalized;
+
+                // หันตัวละคร เฉพาะตอนมี input
+                if (inputDir.magnitude > 0.1f)
+                {
+                    Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+                }
             }
-
-            Vector3 disp = moveDir.normalized * speed + Vector3.up * verticalVelocity;
-            characterController.Move(disp * Time.deltaTime);
-        }
-        else
-        {
-            // ไม่มี input → ปล่อย gravity
-            verticalVelocity += gravity * Time.deltaTime;
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
         }
 
-        // 5) อัปเดต animator และ vertical velocity
+        // ✅ Gravity และการเคลื่อนที่ต้องอยู่รวมกัน
         verticalVelocity += gravity * Time.deltaTime;
+        Vector3 displacement = moveDir * speed + Vector3.up * verticalVelocity;
+        characterController.Move(displacement * Time.deltaTime);
+
         animator.SetFloat("MoveX", moveX);
         animator.SetFloat("MoveZ", moveZ);
         animator.SetBool("IsRunning", isRunning);
         animator.SetBool("IsGrounded", grounded);
     }
+
     /// <summary>
     /// ล็อกการใช้ skill: ลดความเร็ว เดินอย่างเดียว ห้าม Jump/Run/Roll ฯลฯ
     /// </summary>
