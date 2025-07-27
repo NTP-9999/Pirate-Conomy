@@ -123,7 +123,6 @@ public class PlayerController : MonoBehaviour
     {
         if (skipGroundSnap) return;
 
-        // ตรวจสอบพื้น (จะอัปเดต isGroundedCached)
         bool grounded = IsGrounded();
 
         if (grounded)
@@ -131,7 +130,6 @@ public class PlayerController : MonoBehaviour
             float distanceToGround = transform.position.y - groundHitPoint.y;
             if (distanceToGround > 0.01f && distanceToGround < groundSnapThreshold)
             {
-                // Snap ลงพื้น
                 characterController.Move(Vector3.down * distanceToGround);
             }
         }
@@ -140,26 +138,28 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// คืนค่าสถานะว่าอยู่บนพื้นหรือไม่
     /// </summary>
-    public bool IsGrounded()
-    {
-        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
-        Ray ray = new Ray(origin, Vector3.down);
-
-        bool hit = Physics.SphereCast(ray, groundCheckRadius, out RaycastHit hitInfo, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
-
-        Debug.DrawRay(origin, Vector3.down * groundCheckDistance, hit ? Color.green : Color.red, 1f);
-        Debug.Log("IsGrounded() = " + hit); // เพิ่ม debug ตรงนี้
-
-        if (hit)
+    // ตรวจสอบว่าผู้เล่นแตะพื้นหรือไม่
+        public bool IsGrounded()
         {
-            isGroundedCached = true;
-            groundHitPoint = hitInfo.point;
-            return true;
+            Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+            Ray ray = new Ray(origin, Vector3.down);
+
+            bool hit = Physics.SphereCast(ray, groundCheckRadius, out RaycastHit hitInfo, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
+
+            Debug.DrawRay(origin, Vector3.down * groundCheckDistance, hit ? Color.green : Color.red);
+            Debug.Log("IsGrounded() = " + hit);
+
+            if (hit)
+            {
+                isGroundedCached = true;
+                groundHitPoint = hitInfo.point;
+                return true;
+            }
+
+            isGroundedCached = false;
+            return false;
         }
 
-        isGroundedCached = false;
-        return false;
-    }
 
     private IEnumerator HurtLockCoroutine(float duration)
     {
@@ -178,17 +178,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void HandleMovement()
     {
-        var stats = CharacterStats.Instance;
-
         if (DialogueManager.IsInDialogue) return;
-
-        bool grounded = IsGrounded();
+        var stats = CharacterStats.Instance;
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
         Vector3 inputDir = new Vector3(moveX, 0f, moveZ).normalized;
-        bool wantRun = Input.GetKey(KeyCode.LeftShift) && inputDir.magnitude >= 0.1f;
 
+        bool wantRun = Input.GetKey(KeyCode.LeftShift) && inputDir.magnitude > 0.1f;
         float speed = walkSpeed;
 
         if (!isSkillLocked && wantRun && stats.currentStamina > 0f)
@@ -210,39 +207,53 @@ public class PlayerController : MonoBehaviour
             stats.StopStaminaDrain();
         }
 
-        if (!canMove)
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-            characterController.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-            return;
-        }
+        // อัปเดตแรงโน้มถ่วงเสมอ
+        verticalVelocity += gravity * Time.deltaTime;
 
         Vector3 moveDir = Vector3.zero;
 
         if (inputDir.magnitude >= 0.1f)
         {
-            
-                Vector3 camForward = mainCamera.transform.forward;
-        Vector3 camRight = mainCamera.transform.right;
-        camForward.y = 0f;
-        camRight.y = 0f;
-        camForward.Normalize();
-        camRight.Normalize();
+            Vector3 camForward = mainCamera.transform.forward;
+            Vector3 camRight = mainCamera.transform.right;
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
 
-        moveDir = camForward * inputDir.z + camRight * inputDir.x;  
-            
+            moveDir = camForward * inputDir.z + camRight * inputDir.x;
         }
 
-        // ✅ Gravity และการเคลื่อนที่ต้องอยู่รวมกัน
-        verticalVelocity += gravity * Time.deltaTime;
         Vector3 displacement = moveDir * speed + Vector3.up * verticalVelocity;
         characterController.Move(displacement * Time.deltaTime);
+
+        // Reset vertical velocity เมื่อแตะพื้น
+        if (IsGrounded() && verticalVelocity < 0f)
+        {
+            verticalVelocity = -2f;
+        }
+        if (IsGrounded())
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f, groundLayer))
+            {
+                if (hit.collider.CompareTag("Ship"))
+                    transform.parent = hit.collider.transform;
+                else
+                    transform.parent = null;
+            }
+            }
+            else
+            {
+                transform.parent = null;
+            }
 
         animator.SetFloat("MoveX", moveX);
         animator.SetFloat("MoveZ", moveZ);
         animator.SetBool("IsRunning", isRunning);
-        animator.SetBool("IsGrounded", grounded);
+        animator.SetBool("IsGrounded", IsGrounded());
     }
+
 
     /// <summary>
     /// ล็อกการใช้ skill: ลดความเร็ว เดินอย่างเดียว ห้าม Jump/Run/Roll ฯลฯ
