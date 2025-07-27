@@ -39,15 +39,20 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isSkillLocked = false;
     [HideInInspector] public bool skipGroundSnap = false;
     [HideInInspector] public bool isParryActive = false;
-    [SerializeField] private ThirdPersonCamera thirdPersonCam;
     [Header("Audio")]
     [HideInInspector] public PlayerAudioManager audioManager;
 
 
     private CharacterController characterController;
     public Animator animator;
-    private Camera mainCamera;
+    public Camera mainCamera;
     private float verticalVelocity;
+    [Header("Ground Check (Improved)")]
+    public float groundCheckOffset = 0.1f;  // ระยะเหนือพื้นสำหรับ Raycast
+    public float groundCheckRadius = 0.3f;  // รัศมี SphereCast (ตรวจสอบพื้นแบบแม่นยำ)
+    public float groundSnapThreshold = 0.5f; // ถ้าอยู่ใกล้พื้นขนาดนี้ ให้ snap ลงไป
+    private bool isGroundedCached = false;
+    private Vector3 groundHitPoint;
 
     private void Awake()
     {
@@ -82,8 +87,10 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         if (DialogueManager.IsInDialogue) return;
+
         if (IsGrounded())
         {
+            Debug.Log("Jump Triggered"); // เช็คว่าถูกเรียกจริงไหม
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
@@ -114,23 +121,20 @@ public class PlayerController : MonoBehaviour
     }
     void SnapToGround()
     {
-        if (skipGroundSnap)
-            return;
-        // 1) เริ่ม raycast จากบนหัวลงมา
-        Vector3 origin = transform.position + Vector3.up * groundCheckHeight;
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundLayer))
+        if (skipGroundSnap) return;
+
+        // ตรวจสอบพื้น (จะอัปเดต isGroundedCached)
+        bool grounded = IsGrounded();
+
+        if (grounded)
         {
-            // 2) หาระยะต่างระดับ y ระหว่างตัวละครกับพื้น
-            float yOffset = hit.point.y - transform.position.y;
-            if (Mathf.Abs(yOffset) > 0.01f)
+            float distanceToGround = transform.position.y - groundHitPoint.y;
+            if (distanceToGround > 0.01f && distanceToGround < groundSnapThreshold)
             {
-                // 3) เลื่อนผ่าน CharacterController.Move ให้ไปในทิศทางขึ้น/ลง
-                //    โดยใช้ Lerp เพื่อความนุ่มนวล
-                float moveY = Mathf.Lerp(0, yOffset, snapSpeed * Time.deltaTime);
-                characterController.Move(Vector3.up * moveY);
+                // Snap ลงพื้น
+                characterController.Move(Vector3.down * distanceToGround);
             }
         }
-        // ถ้า Raycast ไม่ชน (ตกลงน้ำ หรือตกเหว) ก็ปล่อยให้ gravity เดิมทำงานต่อได้
     }
 
     /// <summary>
@@ -138,7 +142,23 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public bool IsGrounded()
     {
-        return characterController.isGrounded;
+        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+        Ray ray = new Ray(origin, Vector3.down);
+
+        bool hit = Physics.SphereCast(ray, groundCheckRadius, out RaycastHit hitInfo, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(origin, Vector3.down * groundCheckDistance, hit ? Color.green : Color.red, 1f);
+        Debug.Log("IsGrounded() = " + hit); // เพิ่ม debug ตรงนี้
+
+        if (hit)
+        {
+            isGroundedCached = true;
+            groundHitPoint = hitInfo.point;
+            return true;
+        }
+
+        isGroundedCached = false;
+        return false;
     }
 
     private IEnumerator HurtLockCoroutine(float duration)
@@ -162,9 +182,7 @@ public class PlayerController : MonoBehaviour
 
         if (DialogueManager.IsInDialogue) return;
 
-        bool grounded = characterController.isGrounded;
-        if (grounded && verticalVelocity < 0f)
-            verticalVelocity = -2f;
+        bool grounded = IsGrounded();
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
@@ -203,35 +221,16 @@ public class PlayerController : MonoBehaviour
 
         if (inputDir.magnitude >= 0.1f)
         {
-            if (isFPS)
-            {
+            
                 Vector3 camForward = mainCamera.transform.forward;
-                Vector3 camRight = mainCamera.transform.right;
-                camForward.y = 0f;
-                camRight.y = 0f;
-                camForward.Normalize();
-                camRight.Normalize();
+        Vector3 camRight = mainCamera.transform.right;
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
 
-                moveDir = camForward * inputDir.z + camRight * inputDir.x;
-
-                transform.rotation = Quaternion.Euler(0f, mainCamera.transform.eulerAngles.y, 0f);
-            }
-            else
-            {
-                float cameraYaw = mainCamera.transform.eulerAngles.y;
-
-    // หาทิศทางการเดินตาม input และกล้อง
-                float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraYaw;
-                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                moveDir = moveDirection.normalized;
-
-                // หันตัวละคร เฉพาะตอนมี input
-                if (inputDir.magnitude > 0.1f)
-                {
-                    Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
-                }
-            }
+        moveDir = camForward * inputDir.z + camRight * inputDir.x;  
+            
         }
 
         // ✅ Gravity และการเคลื่อนที่ต้องอยู่รวมกัน
@@ -266,9 +265,5 @@ public class PlayerController : MonoBehaviour
         runSpeed = prevRun;
 
         isSkillLocked = false;
-    }
-    public void RefreshCamera()
-    {
-        mainCamera = Camera.main;
     }
 }

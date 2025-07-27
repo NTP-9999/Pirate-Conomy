@@ -12,6 +12,7 @@ public class PlayerJumpState : IState
 
     public void Enter()
     {
+        Debug.Log("JumpState Entered");
         var pcCheck = sm.playerController;
         if (pcCheck.isParryActive)
         {
@@ -36,7 +37,6 @@ public class PlayerJumpState : IState
         // 2) สั่งรีเซ็ตและป้องกันไม่ให้ Exit ทันที
         timer = 0f;
 
-        pc.animator.SetBool("IsMoving", true);
         pc.animator.SetTrigger("Jump");
     }
 
