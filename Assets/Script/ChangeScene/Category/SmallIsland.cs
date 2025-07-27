@@ -1,21 +1,46 @@
 using UnityEngine;
+using System.Collections;
 
 public class SmallIsland : SceneChanger
 {
     [Header("Small Island Settings")]
     [SerializeField] private string islandName = "Small Island";
-    
+    public AudioSource fadeout;
+
     protected override void Start()
     {
-        // Set the target scene name based on the island name
         targetSceneName = islandName;
         base.Start();
     }
-    
-    // Optional: Override to add custom logic for small islands
+
     protected override void ChangeScene()
     {
+        if (fadeout != null && fogEffect != null)
+        {
+            StartCoroutine(PlayFadeAndWaitForAudio());
+        }
+        else
+        {
+            base.ChangeScene(); // fallback
+        }
+    }
+
+    private IEnumerator PlayFadeAndWaitForAudio()
+    {
+        // Start fade-in effect
+        fadeout.Play();
+        yield return StartCoroutine(fogEffect.FadeIn(fogFadeTime));
+
+        // Play audio
+        
+
+        // Wait for audio to finish
+        while (fadeout.isPlaying)
+        {
+            yield return null;
+        }
+
         Debug.Log($"Traveling to Small Island: {islandName}...");
         base.ChangeScene();
     }
-} 
+}

@@ -8,7 +8,7 @@ public abstract class SceneChanger : MonoBehaviour
     [SerializeField] protected string targetSceneName;
     [SerializeField] protected bool useStaticNextScene = false;
     [SerializeField] protected FogFadeEffect fogEffect; // ใส่ใน Inspector
-    [SerializeField] protected float fogFadeTime = 1.0f;
+    [SerializeField] protected float fogFadeTime = 2.5f;
     
     protected virtual void Start()
     {
@@ -37,14 +37,7 @@ public abstract class SceneChanger : MonoBehaviour
     protected virtual void ChangeScene()
     {
         GameManager.Instance.SavePlayerData();
-        if (fogEffect != null)
-        {
-            StartCoroutine(FadeAndChangeScene());
-        }
-        else
-        {
-            LoadTargetScene();
-        }
+        LoadTargetScene();
     }
 
     private IEnumerator FadeAndChangeScene()

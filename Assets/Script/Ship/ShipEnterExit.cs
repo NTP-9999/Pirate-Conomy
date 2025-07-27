@@ -13,7 +13,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     [Tooltip("ระยะเวลาในการสลับกล้อง (วินาที)")]
     public float camTransitionDuration = 1f;
 
-    private Transform player;
+    public Transform player;
     public GameObject shipHUD;
     private CharacterController characterController;
     private Camera playerCamera;
