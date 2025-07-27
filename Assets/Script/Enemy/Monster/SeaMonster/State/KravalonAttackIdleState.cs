@@ -24,12 +24,14 @@ public class KravalonAttackIdleState : IKravalonState
             return;
         }
 
-        // ถ้ารอครบ → โจมตี
-        if (Time.time >= enterTime + ctx.idleBeforeAttack)
+        // ถ้ารอครบ idle และคูลดาวน์พร้อม → โจมตี
+        if (Time.time >= enterTime + ctx.idleBeforeAttack 
+            && ctx.IsAttackCooldownReady())
         {
             ctx.StateMachine.ChangeState(ctx.attackState);
         }
     }
+
 
     public void Exit() { }
 }

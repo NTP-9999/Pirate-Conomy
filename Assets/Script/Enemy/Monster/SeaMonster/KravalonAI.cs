@@ -19,6 +19,8 @@ public class KravalonAI : MonoBehaviour
     public float attackCooldown = 3f;
     public float idleBeforeAttack = 0.8f;
     public float damage = 40f;
+    public float stoppingDistance = 3f;
+    public float rotationSpeed = 5f;
 
     private float lastAttackTime = -Mathf.Infinity;
 
@@ -42,6 +44,7 @@ public class KravalonAI : MonoBehaviour
 
     void Update()
     {
+        RotateToTarget();       // ← เพิ่มบรรทัดนี้
         StateMachine.Update();
     }
 
@@ -53,6 +56,30 @@ public class KravalonAI : MonoBehaviour
     public bool IsAttackCooldownReady()
     {
         return Time.time >= lastAttackTime + attackCooldown;
+    }
+    public bool IsShipInStoppingDistance()
+{
+        return Vector3.Distance(transform.position, shipTarget.position) <= stoppingDistance;
+    }
+    /// <summary>
+    /// หมุน Kravalon ให้หันหน้าไปหาเรือ โดยล็อคแกน Y
+    /// ทำงานทุกเฟรมก่อน State Logic
+    /// </summary>
+    private void RotateToTarget()
+    {
+        if (shipTarget == null) return;
+
+        Vector3 lookDir = shipTarget.position - transform.position;
+        lookDir.y = 0f;                                    // ล็อคแกน Y
+
+        if (lookDir.sqrMagnitude < 0.001f) return;         // ถ้าเกือบตรงกันแล้วก็ไม่ต้องหมุน
+        
+        Quaternion targetRot = Quaternion.LookRotation(lookDir);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRot,
+            Time.deltaTime * rotationSpeed
+        );
     }
 
     public void SetAttackCooldown()
@@ -85,7 +112,8 @@ public class KravalonAI : MonoBehaviour
 
     void Die()
     {
+        animator.SetTrigger("Die");
         Debug.Log("💀 Kravalon ตายแล้ว!");
-        Destroy(gameObject, 3f);
+        Destroy(gameObject, 2f);
     }
 }
