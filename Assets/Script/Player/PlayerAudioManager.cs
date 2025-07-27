@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerAudioManager : MonoBehaviour
+public class PlayerAudioManager : Singleton<PlayerAudioManager>
 {
     [Header("SFX Clips")]
     public AudioClip footstepClip;
@@ -8,17 +8,18 @@ public class PlayerAudioManager : MonoBehaviour
     public AudioClip rollClip;
     public AudioClip jumpClip;
     public AudioClip landClip;
-    public AudioClip attackClip;
+    public AudioClip attack1Clip;
+    public AudioClip attack2Clip;
+    public AudioClip attack3Clip;
     public AudioClip blockClip;
     public AudioClip parryClip;
     public AudioClip skillCastClip;
 
     [Header("Settings")]
     public float footstepInterval = 0.5f;
+    public float footstepTimer = 0f;
 
     private AudioSource audioSource;
-    private float footstepTimer;
-
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -47,15 +48,20 @@ public class PlayerAudioManager : MonoBehaviour
         audioSource.Stop();
         audioSource.clip = null;
     }
-
     public void PlayFootstep(bool isRunning)
     {
         footstepTimer -= Time.deltaTime;
         if (footstepTimer <= 0)
         {
             AudioClip clip = isRunning ? runClip : footstepClip;
-            PlayOneShot(clip);
-            footstepTimer = isRunning ? 0.3f : footstepInterval;
+
+            if (clip != null)
+            {
+                audioSource.pitch = Random.Range(0.95f, 1.05f); // เพิ่มความหลากหลาย
+                PlayOneShot(clip);
+            }
+
+            footstepTimer = isRunning ? 0.25f : footstepInterval;
         }
     }
 }

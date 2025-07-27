@@ -4,6 +4,8 @@ public class PlayerJumpState : IState
     PlayerStateMachine sm;
     private float timer;
     private readonly float minJumpTime = 0.1f; // ให้เล่นอนิเมชันอย่างน้อยนิดหน่อยก่อนเช็คตกพื้น
+    private bool wasGroundedLastFrame = true;
+    
 
     public PlayerJumpState(PlayerStateMachine sm)
     {
@@ -12,6 +14,7 @@ public class PlayerJumpState : IState
 
     public void Enter()
     {
+        
         Debug.Log("JumpState Entered");
         var pcCheck = sm.playerController;
         if (pcCheck.isParryActive)
@@ -33,10 +36,11 @@ public class PlayerJumpState : IState
 
         // 1) สั่งกระโดด
         pc.Jump();
+        PlayerAudioManager.Instance?.PlayOneShot(PlayerAudioManager.Instance.jumpClip);
 
         // 2) สั่งรีเซ็ตและป้องกันไม่ให้ Exit ทันที
         timer = 0f;
-
+        wasGroundedLastFrame = true;
         pc.animator.SetTrigger("Jump");
     }
 
@@ -49,11 +53,24 @@ public class PlayerJumpState : IState
 
         // 2) นับเวลาอย่างน้อยก่อนจะอนุญาตให้กลับ Idle
         timer += Time.deltaTime;
+        bool isGrounded = pc.IsGrounded();
+
+        // Detect land: false → true
+        if (!wasGroundedLastFrame && isGrounded)
+        {
+            Debug.Log("Landed!");
+            PlayerAudioManager.Instance?.PlayOneShot(PlayerAudioManager.Instance.landClip);
+        }
+
+        // Update last grounded state
+        wasGroundedLastFrame = isGrounded;
+
         if (timer < minJumpTime) return;
 
-        // 3) พอแตะพื้น → กลับ Idle  
-        if (pc.IsGrounded())
+        if (isGrounded)
+        {
             sm.fsm.ChangeState(sm.idleState);
+        }
     }
 
     public void Exit()

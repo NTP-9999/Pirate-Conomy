@@ -12,6 +12,7 @@ public class PlayerAttack2State : IState
     {
         timer = 0f;
         sm.comboInputBuffered = false;
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.attack2Clip);
         sm.playerController.animator.SetTrigger("Attack2");
     }
 

@@ -19,6 +19,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     private Camera playerCamera;
     private Camera shipCamObj;
     private ShipAnchorSystem shipAnchorSystem;
+    private PlayerStateMachine playerStateMachine;
 
     // เก็บข้อมูล parent/transform เดิมของ player
     private Transform originalParent;
@@ -94,7 +95,8 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     }
 
     void StartControlShip()
-    {
+    {   playerStateMachine = player.GetComponent<PlayerStateMachine>();
+        playerStateMachine.enabled = false; // ปิด StateMachine ชั่วคราว
         // 1) เซฟมุมกล้องผู้เล่น ณ ตอนนี้
         originalCamLocalPos = playerCamera.transform.localPosition;
         originalCamLocalRot = playerCamera.transform.localRotation;
@@ -166,6 +168,8 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     public void ExitControlShip()
     {
+        if (playerStateMachine != null)
+            playerStateMachine.enabled = true; // เปิด StateMachine กลับ
         // เปลี่ยน waypoint UI กลับไป playerCam
         WaypointUI.Instance.SetReferenceTransform(player.transform);
         WaypointUI.Instance.SetCamera(playerCamera);

@@ -26,6 +26,7 @@ public class PlayerRollState : IState
 
         // ตัด Stamina
         stats.UseStamina(pc.rollStaminaCost);
+        PlayerAudioManager.Instance?.PlayOneShot(PlayerAudioManager.Instance.rollClip);
 
 
         // อ่าน Input

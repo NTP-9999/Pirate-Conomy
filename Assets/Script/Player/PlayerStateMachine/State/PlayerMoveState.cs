@@ -12,6 +12,7 @@ public class PlayerMoveState : IState
 
     public void Execute()
     {
+        
           // Attack
         if (Input.GetMouseButtonDown(0))
         {
@@ -36,6 +37,10 @@ public class PlayerMoveState : IState
         bool moving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;
 
         // If skill is locked, only allow walking
+        if (PlayerAudioManager.Instance != null && moving && sm.playerController.IsGrounded())
+        {
+            PlayerAudioManager.Instance.PlayFootstep(sm.playerController.isRunning);
+        }
         if (sm.playerController.isSkillLocked)
         {
             sm.playerController.HandleMovement();
