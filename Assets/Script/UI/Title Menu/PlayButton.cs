@@ -23,7 +23,7 @@ public class PlayButton : MonoBehaviour
     }
     IEnumerator WaitForCutScene()
     {
-        yield return new WaitForSeconds(42f);
+        yield return new WaitForSeconds(44f);
         SceneManager.LoadScene("Loading_screen");
     }
     IEnumerator FadeOutBGM()

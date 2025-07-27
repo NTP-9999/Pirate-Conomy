@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool skipGroundSnap = false;
     [HideInInspector] public bool isParryActive = false;
     [SerializeField] private ThirdPersonCamera thirdPersonCam;
+    [Header("Audio")]
+    [HideInInspector] public PlayerAudioManager audioManager;
 
 
     private CharacterController characterController;
@@ -49,6 +51,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        audioManager = GetComponent<PlayerAudioManager>();
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         mainCamera = Camera.main;
