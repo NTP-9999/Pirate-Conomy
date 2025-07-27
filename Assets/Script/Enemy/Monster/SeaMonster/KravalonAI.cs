@@ -6,7 +6,6 @@ public class KravalonAI : MonoBehaviour
     [HideInInspector] public KravalonChaseState chaseState;
     [HideInInspector] public KravalonAttackIdleState attackIdleState;
     [HideInInspector] public KravalonAttackState attackState;
-    [HideInInspector] public KravalonHurtState hurtState;
 
     [Header("Health")]
     public float maxHealth = 200f;
@@ -26,25 +25,29 @@ public class KravalonAI : MonoBehaviour
 
     void Awake()
     {
-        StateMachine = new KravalonStateMachine();
-        chaseState = new KravalonChaseState(this);
-        attackIdleState = new KravalonAttackIdleState(this);
-        attackState = new KravalonAttackState(this);
-        hurtState = new KravalonHurtState(this);
-        currentHealth = maxHealth;
+         StateMachine       = new KravalonStateMachine();
+        chaseState         = new KravalonChaseState(this);
+        attackState        = new KravalonAttackState(this);
+        currentHealth      = maxHealth;
     }
 
     void Start()
     {
         if (shipTarget == null && ShipEnterExit.Instance != null)
-            shipTarget = ShipEnterExit.Instance.transform;
+        shipTarget = ShipEnterExit.Instance.transform;
 
+    // เริ่มจากไล่ก่อน
         StateMachine.Initialize(chaseState);
     }
 
     void Update()
     {
-        RotateToTarget();       // ← เพิ่มบรรทัดนี้
+        if (currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
+        RotateTowardsShip(Time.deltaTime);      // ← เพิ่มบรรทัดนี้
         StateMachine.Update();
     }
 
@@ -65,23 +68,23 @@ public class KravalonAI : MonoBehaviour
     /// หมุน Kravalon ให้หันหน้าไปหาเรือ โดยล็อคแกน Y
     /// ทำงานทุกเฟรมก่อน State Logic
     /// </summary>
-    private void RotateToTarget()
+    public void RotateTowardsShip(float deltaTime)
     {
         if (shipTarget == null) return;
-
-        Vector3 lookDir = shipTarget.position - transform.position;
-        lookDir.y = 0f;                                    // ล็อคแกน Y
-
-        if (lookDir.sqrMagnitude < 0.001f) return;         // ถ้าเกือบตรงกันแล้วก็ไม่ต้องหมุน
-        
-        Quaternion targetRot = Quaternion.LookRotation(lookDir);
+        // 1) หาทิศทาง
+        Vector3 dir = shipTarget.position - transform.position;
+        // 2) ล็อค Y
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return;
+        // 3) คำนวณ rotation เป้าหมาย
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        // 4) ค่อย ๆ หมุน
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
             targetRot,
-            Time.deltaTime * rotationSpeed
+            deltaTime * rotationSpeed     // rotationSpeed กำหนดใน KravalonAI
         );
     }
-
     public void SetAttackCooldown()
     {
         lastAttackTime = Time.time;
@@ -99,15 +102,6 @@ public class KravalonAI : MonoBehaviour
     {
         currentHealth -= amount;
         Debug.Log($"Kravalon โดนยิง! HP: {currentHealth}");
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-        else
-        {
-            StateMachine.ChangeState(hurtState);
-        }
     }
 
     void Die()

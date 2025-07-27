@@ -61,10 +61,6 @@ public class ShipStats : MonoBehaviour
         if (deathTimeline != null)
             deathTimeline.Play();
 
-        var deathCam = Camera.main.GetComponent<DeathCameraTransition>();
-        if (deathCam != null)
-            deathCam.StartTransition();
-
         if (diePanel != null)
             diePanel.SetActive(true);
 
