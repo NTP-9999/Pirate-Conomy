@@ -19,6 +19,7 @@ public class ShopKeeper : MonoBehaviour
     [Tooltip("How close before the UI goes 'press to open'")]
     private float interactableRange => maxDistance * 0.75f;
     public float maxDistance;
+   
 
     private PlayerController playerController;
     private PlayerSkillController playerSkillController;
@@ -62,8 +63,9 @@ public class ShopKeeper : MonoBehaviour
         playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
         if (shopUIPanel != null) shopUIPanel.SetActive(true);
         shopManager?.OpenShop();
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseShopSound);
 
-        if (playerController      != null) { playerController.enabled = false; playerController.canMove = false; }
+        if (playerController != null) { playerController.enabled = false; playerController.canMove = false; }
         if (playerSkillController != null) playerSkillController.enabled = false;
         if (playerStateMachine    != null) playerStateMachine.enabled = false;
 
@@ -76,6 +78,7 @@ public class ShopKeeper : MonoBehaviour
     {
         Time.timeScale = 1f;
         if (shopUIPanel != null) shopUIPanel.SetActive(false);
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseShopSound);
         
         playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
 

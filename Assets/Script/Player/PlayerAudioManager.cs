@@ -16,6 +16,7 @@ public class PlayerAudioManager : Singleton<PlayerAudioManager>
     public AudioClip punchClip;
     public AudioClip firewall;
     public AudioClip firewalldot;
+    public AudioClip opencloseShopSound;
     
 
     [Header("Settings")]
