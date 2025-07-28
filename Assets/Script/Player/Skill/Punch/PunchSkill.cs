@@ -114,6 +114,7 @@ public class PunchSkill : ISkill
         );
         var ps = go.GetComponent<ParticleSystem>();
         if (ps != null) ps.Play();
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.punchClip);
     }
 
     private void DestroyProjectilesByTag()

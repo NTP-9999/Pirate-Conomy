@@ -21,6 +21,7 @@ public class DialogueManager : MonoBehaviour
     private Action onAccept;
     private Action onDecline;
     private PlayerController playerController;
+    public GameObject playerHUD;
 
     private void Awake()
     {
@@ -144,6 +145,7 @@ public class DialogueManager : MonoBehaviour
         onAccept        = acceptCallback;
         onDecline       = declineCallback;
 
+        playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
         dialoguePanel.SetActive(true);
         acceptButton.gameObject.SetActive(false);
         declineButton.gameObject.SetActive(false);
@@ -192,6 +194,7 @@ public class DialogueManager : MonoBehaviour
     {
         IsInDialogue = false;
         dialoguePanel.SetActive(false);
+        playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
 
         // คืนสิทธิ์ผู้เล่น
         if (playerController != null)
