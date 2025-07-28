@@ -18,22 +18,16 @@ public class ShopUI : MonoBehaviour
     public TMP_InputField amountInputField;
     public Button confirmButton;
     public TextMeshProUGUI totalPriceText;
-    public GameObject playerHUD;
 
     private ShopManager shopManager;
     private bool isBuyMode = true;
     private ShopItemData selectedItem;
     private int selectedAmount = 1;
-    void Awake()
-    {
-        playerHUD = GameObject.Find("PlayerHUD");
-    }
     public void ShowShop(ShopManager manager)
     {
         Debug.Log("ShowShop called by: " + manager.name + " | customSellPrices: " +
             string.Join(",", manager.customSellPrices.Select(c => c.item.itemName + "=" + c.sellPrice)));
         shopManager = manager;
-        playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
         shopPanel.SetActive(true);
         ShowBuyTab();
     }
@@ -41,7 +35,6 @@ public class ShopUI : MonoBehaviour
     public void HideShop()
     {
         shopPanel.SetActive(false);
-        playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
         itemDetailPanel.SetActive(false);
     }
 

@@ -23,9 +23,11 @@ public class ShopKeeper : MonoBehaviour
     private PlayerController playerController;
     private PlayerSkillController playerSkillController;
     private PlayerStateMachine playerStateMachine;
+    public GameObject playerHUD; // ← new
 
     void Awake()
     {
+        playerHUD = GameObject.Find("PlayerHUD");
         // cache player scripts
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -57,6 +59,7 @@ public class ShopKeeper : MonoBehaviour
 
     public void OpenShop()
     {
+        playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
         if (shopUIPanel != null) shopUIPanel.SetActive(true);
         shopManager?.OpenShop();
 
@@ -73,8 +76,10 @@ public class ShopKeeper : MonoBehaviour
     {
         Time.timeScale = 1f;
         if (shopUIPanel != null) shopUIPanel.SetActive(false);
+        
+        playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
 
-        if (playerController      != null) { playerController.enabled = true;  playerController.canMove = true; }
+        if (playerController != null) { playerController.enabled = true; playerController.canMove = true; }
         if (playerSkillController != null) playerSkillController.enabled = true;
         if (playerStateMachine    != null) playerStateMachine.enabled = true;
 
