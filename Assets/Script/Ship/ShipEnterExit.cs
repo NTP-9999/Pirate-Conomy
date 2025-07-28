@@ -228,6 +228,7 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
             shipHUD.SetActive(false);
         if (shipEngineAudio != null)
             StartCoroutine(FadeEngineVolume(shipEngineAudio.volume, 0f, engineFadeDuration, playOnStart: false));
+        player.localScale = Vector3.one;
 
 
         characterController.enabled = true;
