@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f0de6d5f1d1070d4c8854b72f4927661
+VisualEffectImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Common VFX Graph/VFX Subgraphs/Utilities/Materialize
+    Helper.vfxoperator
+  uploadId: 671095

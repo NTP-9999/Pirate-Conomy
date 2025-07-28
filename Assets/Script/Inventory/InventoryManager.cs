@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
     private InventoryNotificationUI notificationUI;
     [Header("Slot References")]
     public InventorySlotUI[] slots; 
+    [SerializeField] private PlayerStateMachine ps; // อ้างอิงถึง PlayerStateMachine
 
     public List<InventoryItem> items = new List<InventoryItem>();
     [System.Serializable]
@@ -69,6 +70,8 @@ public class InventoryManager : MonoBehaviour
     {
         isInventoryOpen = !isInventoryOpen; // สลับค่า true/false
         inventoryUI.SetActive(isInventoryOpen); // เปิดหรือปิด GameObject ของ UI
+        ps.enabled = false;
+
 
         // ควบคุมการหยุดเวลาหรือเคอร์เซอร์ของเมาส์
         if (isInventoryOpen)
@@ -136,6 +139,7 @@ public class InventoryManager : MonoBehaviour
             Cursor.visible = false;
             Debug.Log("Inventory forcefully closed.");
         }
+        ps.enabled = true; // คืนสิทธิ์ PlayerStateMachine
     }
 
     /// <summary>

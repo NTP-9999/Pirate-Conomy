@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class PlayerStateMachine : MonoBehaviour
 {
@@ -15,26 +17,26 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public CollectFragmentState collectFragmentState;
 
     // Tree
-    [HideInInspector] public TreeChopper  treeChopper;
-    [HideInInspector] public TreeTarget   currentTree;
+    [HideInInspector] public TreeChopper treeChopper;
+    [HideInInspector] public TreeTarget currentTree;
     [HideInInspector] public CollectTreeState collectTreeState;
 
     // Oil
     [HideInInspector] public OilCollector oilCollector;
-    [HideInInspector] public OilResource  currentOil;
+    [HideInInspector] public OilResource currentOil;
     [HideInInspector] public CollectOilState collectOilState;
 
     // Ore
     [HideInInspector] public OreCollector oreCollector;
-    [HideInInspector] public OreResource  currentOre;
+    [HideInInspector] public OreResource currentOre;
     [HideInInspector] public CollectOreState collectOreState;
 
     // --- Attack ---
     public float maxComboDelay = 0.5f;
     [HideInInspector] public bool comboInputBuffered;
-    [HideInInspector] public PlayerAttack1State    attack1State;
-    [HideInInspector] public PlayerAttack2State    attack2State;
-    [HideInInspector] public PlayerAttack3State    attack3State; 
+    [HideInInspector] public PlayerAttack1State attack1State;
+    [HideInInspector] public PlayerAttack2State attack2State;
+    [HideInInspector] public PlayerAttack3State attack3State;
 
     [HideInInspector] public PlayerIdleState idleState;
     [HideInInspector] public PlayerMoveState moveState;
@@ -45,14 +47,14 @@ public class PlayerStateMachine : MonoBehaviour
 
     void Awake()
     {
-        fsm                = new StateMachine();
+        fsm = new StateMachine();
         collectFragmentState = new CollectFragmentState(this);
 
         playerController = GetComponent<PlayerController>();
         oilCollector = GetComponent<OilCollector>();
         oreCollector = GetComponent<OreCollector>();
         treeChopper = GetComponent<TreeChopper>();
-        
+
         idleState = new PlayerIdleState(this);
         moveState = new PlayerMoveState(this);
         attack1State = new PlayerAttack1State(this);
@@ -62,7 +64,7 @@ public class PlayerStateMachine : MonoBehaviour
         hurtState = new PlayerHurtState(this);
         swimState = new PlayerSwimState(this);
         rollState = new PlayerRollState(this);
-        
+
         collectOilState = new CollectOilState(this);
         collectOreState = new CollectOreState(this);
         collectTreeState = new CollectTreeState(this);
@@ -71,12 +73,28 @@ public class PlayerStateMachine : MonoBehaviour
     void Update() => fsm.Update();
 
     // Fragment count & unlock
-    Dictionary<string,int> fragmentCounts = new Dictionary<string,int>();
-    public void AddFragment(string id, int amt) {
+    Dictionary<string, int> fragmentCounts = new Dictionary<string, int>();
+    public void AddFragment(string id, int amt)
+    {
         if (!fragmentCounts.ContainsKey(id))
             fragmentCounts[id] = 0;
         fragmentCounts[id] += amt;
         Debug.Log($"Fragment {id}: now {fragmentCounts[id]}");
         SkillManager.Instance.TryUnlockSkill(id, fragmentCounts[id]);
     }
+    private void OnEnable()
+        {
+            UnityEngine.Debug.Log(
+                $"[PSM] OnEnable บน {name}\n" +
+                new System.Diagnostics.StackTrace().ToString()
+            );
+        }
+
+        private void OnDisable()
+        {
+            UnityEngine.Debug.Log(
+                $"[PSM] OnDisable บน {name}\n" +
+                new System.Diagnostics.StackTrace().ToString()
+            );
+        }
 }

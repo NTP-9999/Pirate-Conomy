@@ -21,6 +21,7 @@ public class DialogueManager : MonoBehaviour
     private Action onAccept;
     private Action onDecline;
     private PlayerController playerController;
+    private PlayerStateMachine ps;
     public GameObject playerHUD;
 
     private void Awake()
@@ -42,7 +43,6 @@ public class DialogueManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     private void OnDestroy()
     {
         if (Instance == this)
@@ -91,6 +91,11 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning($"[DialogueManager] ไม่พบ DialoguePanel ในฉาก \"{activeScene.name}\"");
             return;
         }
+        ps = FindObjectOfType<PlayerStateMachine>();
+        if (ps == null)
+            Debug.LogWarning("[DialogueManager] ไม่พบ PlayerStateMachine ในฉาก");
+        else
+        Debug.Log($"[DialogueManager] เจอ PlayerStateMachine บน {ps.gameObject.name}");
 
         // 2) หา DialogueText, AcceptButton, DeclineButton จากใต้ Panel
         var panelTransform = dialoguePanel.transform;
@@ -146,6 +151,9 @@ public class DialogueManager : MonoBehaviour
         onDecline       = declineCallback;
 
         playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
+        Debug.Log($"[Before] ps.enabled = {ps.enabled}");
+        ps.enabled = false;
+        Debug.Log($"[After]  ps.enabled = {ps.enabled}");
         dialoguePanel.SetActive(true);
         acceptButton.gameObject.SetActive(false);
         declineButton.gameObject.SetActive(false);
@@ -168,6 +176,7 @@ public class DialogueManager : MonoBehaviour
 
     public void NextLine()
     {
+        Debug.Log($"[Nextline]  ps.enabled = {ps.enabled}");
         currentLine++;
         if (currentLine < dialogueLines.Length)
             ShowLine();
@@ -195,6 +204,7 @@ public class DialogueManager : MonoBehaviour
         IsInDialogue = false;
         dialoguePanel.SetActive(false);
         playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
+        ps.enabled = true; // คืนสิทธิ์ PlayerStateMachine
 
         // คืนสิทธิ์ผู้เล่น
         if (playerController != null)

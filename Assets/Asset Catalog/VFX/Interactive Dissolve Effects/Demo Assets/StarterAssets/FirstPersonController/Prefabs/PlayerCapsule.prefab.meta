@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c5efc39a8aaf6e64ea40e9ad573e9b47
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Demo Assets/StarterAssets/FirstPersonController/Prefabs/PlayerCapsule.prefab
+  uploadId: 671095
