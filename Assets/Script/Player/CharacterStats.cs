@@ -111,6 +111,10 @@ public class CharacterStats : Singleton<CharacterStats>
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            SetInvincibility(true);
+        }
         if (isDead) return;
         if (currentHealth <= 0)
         {
