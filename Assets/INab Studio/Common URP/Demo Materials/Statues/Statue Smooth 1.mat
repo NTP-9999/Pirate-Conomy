@@ -233,13 +233,13 @@ Material:
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _Position: {r: 6.1628, g: 1.1908, b: -5.5607996, a: 0}
     - _PositionOffset: {r: 0, g: 1, b: 0, a: 0}
-    - _PositionVector: {r: 0.43207332, g: 0.16581523, b: -0.06753887, a: 0}
+    - _PositionVector: {r: 0.6913529, g: 2.1355639, b: 0.189, a: 0}
     - _RandomPositionOffset: {r: 0, g: 1, b: 0, a: 0}
     - _Right: {r: -0.07569395, g: -0.622789, b: 0.7787198, a: 0}
     - _RightVector: {r: -0.8981432, g: 0, b: 0.43970302, a: 0}
     - _RotationAxis: {r: 0, g: 1, b: 0, a: 0}
     - _Scale: {r: 1.2275039, g: 1.4889629, b: 1.0395756, a: 0}
-    - _ScaleVector: {r: 1.9347959, g: 1.9347961, b: 1.9347959, a: 0}
+    - _ScaleVector: {r: 0.26428682, g: 0.26428685, b: 0.26428682, a: 0}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
     - _Up: {r: -0.9971312, g: 0.04727705, b: -0.05911368, a: 0}
     - _UpVector: {r: -0, g: 1, b: 0, a: 0}

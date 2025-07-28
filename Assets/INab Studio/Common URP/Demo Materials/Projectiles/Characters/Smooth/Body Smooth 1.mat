@@ -171,7 +171,7 @@ Material:
     - _ExcludeFromTUAndAA: 0
     - _GlareGuideStrength: 1
     - _GlareOffset: 0
-    - _GlareSmoothness: 0.1
+    - _GlareSmoothness: 0.25
     - _GlareWidth: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -236,18 +236,18 @@ Material:
     - _BurnColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EdgeColor: {r: 0.49160507, g: 1.1137176, b: 5.216476, a: 1}
     - _EmberColor: {r: 0.20942387, g: 1.8712523, b: 9.999999, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ForwardVector: {r: 0.36071566, g: 0.15106815, b: -0.92036015, a: 0}
-    - _GlareColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ForwardVector: {r: 0.40311286, g: 0, b: -0.9151504, a: 0}
+    - _GlareColor: {r: 0.427967, g: 0.96954733, b: 4.5412054, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
-    - _PositionVector: {r: -0.403629, g: 0.42986465, b: -0.06434646, a: 0}
-    - _RightVector: {r: -0.92839634, g: -0.036265515, b: -0.36981788, a: 0}
-    - _ScaleVector: {r: 1.3328989, g: 1.3328989, b: 1.3328993, a: 0}
+    - _PositionVector: {r: -0.7, g: 0.877282, b: 0, a: 0}
+    - _RightVector: {r: -0.9151504, g: 0, b: -0.40311286, a: 0}
+    - _ScaleVector: {r: -0.18413875, g: -0.1841387, b: -0.18413875, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
-    - _UpVector: {r: -0.08924503, g: 0.9878579, b: 0.12716955, a: 0}
+    - _UpVector: {r: 0, g: 1, b: -0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1998542214487490374

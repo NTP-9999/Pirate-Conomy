@@ -87,7 +87,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GuideTexture:
-        m_Texture: {fileID: 2800000, guid: d346299f162b4ff4089a40a54931a88b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0f483ed4ae04dad44ab55b9d28034051, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -146,8 +146,8 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 0
     - _BumpScale: 1
-    - _BurnHardness: 0
-    - _BurnOffset: 0
+    - _BurnHardness: 0.506
+    - _BurnOffset: 0.38
     - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -164,7 +164,7 @@ Material:
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 0
     - _EmberOffset: 0
-    - _EmberSmoothness: 0
+    - _EmberSmoothness: 0.084
     - _EmberWidth: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
@@ -173,8 +173,8 @@ Material:
     - _GlossMapScale: 0.757
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GuideStrength: 0.435
-    - _GuideTiling: 0.56
+    - _GuideStrength: 0.221
+    - _GuideTiling: 2
     - _Invert: 0
     - _Metallic: 0
     - _Mode: 0
@@ -229,10 +229,10 @@ Material:
     m_Colors:
     - _BackColor: {r: 0, g: 0, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BurnColor: {r: 0.048499998, g: 0.030939655, b: 0.011706896, a: 1}
+    - _BurnColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmberColor: {r: 0.20942387, g: 1.8712523, b: 9.999999, a: 1}
+    - _EmberColor: {r: 6.883181, g: 0.77361417, b: 0, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ForwardVector: {r: 0.40311286, g: 0, b: -0.9151504, a: 0}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}

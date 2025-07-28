@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e9060c7d346630b43b4f935c96bf16de
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 206665
+  packageName: All In 1 Vfx Toolkit
+  packageVersion: 1.6
+  assetPath: Assets/AllIn1VfxToolkit/ParticlePresets/Resources/ConeBurstHelperPreset.asset
+  uploadId: 659577

@@ -66,7 +66,7 @@ public class FirewallProjectile : MonoBehaviour
                 yield return null;
             }
         }
-
+       
         Destroy(gameObject);
     }
 

@@ -26,7 +26,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
-  - _TYPE_PLANE
+  - _TYPE_ELLIPSE
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _MASKSNUMBER__1
@@ -129,8 +129,8 @@ Material:
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 0
     - _BumpScale: 1
-    - _BurnHardness: 0
-    - _BurnOffset: 0
+    - _BurnHardness: 0.535
+    - _BurnOffset: 0.37
     - _CastShadows: 1
     - _ConservativeDepthOffsetEnable: 0
     - _Cull: 0
@@ -148,9 +148,9 @@ Material:
     - _DstBlend: 0
     - _EdgeSmoothness: 0.174
     - _EdgeWidth: 0
-    - _EmberOffset: 0
-    - _EmberSmoothness: 0
-    - _EmberWidth: 0
+    - _EmberOffset: 0.092
+    - _EmberSmoothness: 0.066
+    - _EmberWidth: 0.026
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
@@ -161,7 +161,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _GuideStrength: 0.102
+    - _GuideStrength: 0.261
     - _GuideTiling: 1
     - _Invert: 0
     - _Metallic: 0
@@ -223,7 +223,7 @@ Material:
     - _BackColor: {r: 0, g: 0, b: 0, a: 1}
     - _Back_Color: {r: 4, g: 1.239216, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BurnColor: {r: 0.048499998, g: 0.030939655, b: 0.011706896, a: 1}
+    - _BurnColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EdgeColor: {r: 0, g: 6.4222345, b: 0.60523677, a: 1}
@@ -236,16 +236,16 @@ Material:
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _Position: {r: 6.1628, g: 1.1908, b: -5.5607996, a: 0}
     - _PositionOffset: {r: 0, g: 1, b: 0, a: 0}
-    - _PositionVector: {r: 1.4607623, g: 0.995564, b: -0.18767892, a: 0}
+    - _PositionVector: {r: 0.6913529, g: -0.6927695, b: 0.189, a: 0}
     - _RandomPositionOffset: {r: 0, g: 1, b: 0, a: 0}
     - _Right: {r: -0.07569395, g: -0.622789, b: 0.7787198, a: 0}
     - _RightVector: {r: -0.8981432, g: 0, b: 0.43970302, a: 0}
     - _RotationAxis: {r: 0, g: 1, b: 0, a: 0}
     - _Scale: {r: 1.2275039, g: 1.4889629, b: 1.0395756, a: 0}
-    - _ScaleVector: {r: 0.18882267, g: 0.18882267, b: 0.18882266, a: 0}
+    - _ScaleVector: {r: 0.18882266, g: 0.18882266, b: 0.18882266, a: 0}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
     - _Up: {r: -0.9971312, g: 0.04727705, b: -0.05911368, a: 0}
-    - _UpVector: {r: 0.89814323, g: -0.000000037252903, b: -0.43970305, a: 0}
+    - _UpVector: {r: -0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &2405483875736825009
