@@ -13,7 +13,9 @@ public class PlayerAudioManager : Singleton<PlayerAudioManager>
     public AudioClip attack3Clip;
     public AudioClip blockClip;
     public AudioClip parryClip;
-    public AudioClip skillCastClip;
+    public AudioClip punchClip;
+    public AudioClip firewall;
+    public AudioClip firewalldot;
 
     [Header("Settings")]
     public float footstepInterval = 0.5f;

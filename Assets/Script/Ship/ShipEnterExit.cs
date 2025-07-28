@@ -95,21 +95,22 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     }
 
     void StartControlShip()
-    {   playerStateMachine = player.GetComponent<PlayerStateMachine>();
+    {
+        playerStateMachine = player.GetComponent<PlayerStateMachine>();
         playerStateMachine.enabled = false; // ปิด StateMachine ชั่วคราว
-        // 1) เซฟมุมกล้องผู้เล่น ณ ตอนนี้
+
+        // เซฟมุมกล้องผู้เล่น ณ ตอนนี้
         originalCamLocalPos = playerCamera.transform.localPosition;
         originalCamLocalRot = playerCamera.transform.localRotation;
 
-        // 2) เปลี่ยน waypoint UI ไปใช้กล้องเรือ
+        // เปลี่ยน waypoint UI ไปใช้กล้องเรือ
         WaypointUI.Instance.SetReferenceTransform(shipCamObj.transform);
         WaypointUI.Instance.SetCamera(shipCamObj);
 
-        // 3) เริ่ม transition ไปกล้องเรือ
         StartCoroutine(SmoothSwitchToShipCam());
-
-        
     }
+
+    
 
     IEnumerator SmoothSwitchToShipCam()
     {
@@ -150,17 +151,11 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     void OnShipCamActive()
     {
         if (shipHUD != null)
-    shipHUD.SetActive(true);
-        // parent Player → ปิด CharacterController
-        player.SetParent(transform, worldPositionStays: true);
+            shipHUD.SetActive(true);
+
+        // ไม่ย้ายตำแหน่งหรือ parent ใดๆ
         characterController.enabled = false;
-        player.localScale = originalLocalScale;
 
-        // วาง Player ที่ helmPoint
-        player.position = helmPoint.position;
-        player.rotation = helmPoint.rotation;
-
-        // เริ่มควบคุมเรือ
         isControlling = true;
         GetComponent<ShipController>().enabled = !shipAnchorSystem.anchorDeployed;
         playerHUD.SetActive(false);
@@ -168,15 +163,12 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     public void ExitControlShip()
     {
-        if (playerStateMachine != null)
-            playerStateMachine.enabled = true; // เปิด StateMachine กลับ
-        // เปลี่ยน waypoint UI กลับไป playerCam
+        
+
         WaypointUI.Instance.SetReferenceTransform(player.transform);
         WaypointUI.Instance.SetCamera(playerCamera);
 
         StartCoroutine(SmoothSwitchToPlayerCam());
-
-        
     }
 
     IEnumerator SmoothSwitchToPlayerCam()
@@ -220,31 +212,22 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     void OnPlayerCamActive()
     {
+        if (playerStateMachine != null)
+            playerStateMachine.enabled = true; // เปิด StateMachine กลับ
         if (shipHUD != null)
-    shipHUD.SetActive(false);
+            shipHUD.SetActive(false);
 
-        // คืน parent + transform ให้ Player
-        player.SetParent(originalParent, worldPositionStays: false);
-        player.localPosition = originalLocalPos;
-        player.localRotation = originalLocalRot;
         characterController.enabled = true;
-        player.localScale = originalLocalScale;
 
-        // คืน parent + restore มุมกล้องผู้เล่น
+        // คืนกล้อง
         playerCamera.transform.SetParent(player, worldPositionStays: false);
         playerCamera.transform.localPosition = originalCamLocalPos;
         playerCamera.transform.localRotation = originalCamLocalRot;
 
-        // วาง Player ที่ exitPoint
-        player.position = exitPoint.position;
-        player.rotation = exitPoint.rotation;
-
-        // คืน parent + restore มุมกล้องเรือ
         shipCamObj.transform.SetParent(originalShipCamParent, worldPositionStays: false);
         shipCamObj.transform.localPosition = originalShipCamLocalPos;
         shipCamObj.transform.localRotation = originalShipCamLocalRot;
 
-        // ปิดระบบขับเรือ
         isControlling = false;
         GetComponent<ShipController>().enabled = false;
 
