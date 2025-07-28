@@ -17,6 +17,17 @@ public class ShipStats : MonoBehaviour
     public PlayableDirector deathTimeline;
 
     private bool isSinking = false;
+   [Header("Audio & VFX")]
+    [Tooltip("ตัวเล่นเสียงบนเรือ (AudioSource)")]
+    public AudioSource audioSource;
+    [Tooltip("เสียงตอนโดนตี")]
+    public AudioClip hitSound;
+    [Tooltip("เสียงตอนเรือจม")]
+    public AudioClip deathSound;
+    [Tooltip("Prefab ของ ParticleSystem ตอนโดนตี")]
+    public GameObject hitVfxPrefab;
+    [Tooltip("Prefab ของ ParticleSystem ตอนเรือจม")]
+    public GameObject deathVfxPrefab;
 
     void Start()
     {
@@ -39,6 +50,13 @@ public class ShipStats : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (hitSound != null)
+        {
+            if (audioSource != null)
+                audioSource.PlayOneShot(hitSound);
+            else
+                AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        }
         currentHealth -= amount;
         Debug.Log($"🛳️ เรือได้รับความเสียหาย {amount} หน่วย! เหลือ: {currentHealth}");
 

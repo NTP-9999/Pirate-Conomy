@@ -18,6 +18,13 @@ public class CannonShooter : MonoBehaviour
     public float fireCooldown = 1f;
     private float lastFireTime = -Mathf.Infinity;
     private float lastLeftFireTime = 2.5f;
+    [Header("Effects")]
+    [Tooltip("ParticleSystem Prefab ของประกายปากลำกล้อง")]
+    public GameObject muzzleFlashPrefab;
+    [Tooltip("เสียงยิงปืน")]
+    public AudioClip fireSfx;
+    [Tooltip("AudioSource ถ้าอยากยิงผ่าน AudioSource แทน PlayClipAtPoint")]
+    public AudioSource audioSource;
 
     void Update()
     {
@@ -64,9 +71,20 @@ public class CannonShooter : MonoBehaviour
     {
         if (cannonballPrefab == null || cannonPoints == null || cannonPoints.Length == 0) return;
 
+        if (fireSfx != null)
+        {
+            if (audioSource != null)
+                audioSource.PlayOneShot(fireSfx);
+            else
+                AudioSource.PlayClipAtPoint(fireSfx, transform.position);
+        }
+
         foreach (Transform firePoint in cannonPoints)
         {
             if (firePoint == null) continue;
+
+            if (muzzleFlashPrefab != null)
+                Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
 
             GameObject cannonball = Instantiate(cannonballPrefab, firePoint.position, firePoint.rotation);
             Rigidbody rb = cannonball.GetComponent<Rigidbody>();
