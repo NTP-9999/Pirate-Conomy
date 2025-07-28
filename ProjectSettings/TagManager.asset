@@ -17,6 +17,7 @@ TagManager:
   - Bullet
   - ShipSpawnPoint
   - SeaMonster
+  - ShipCanvas
   layers:
   - Default
   - TransparentFX

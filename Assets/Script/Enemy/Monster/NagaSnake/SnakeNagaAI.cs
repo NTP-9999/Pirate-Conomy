@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class SnakeNagaAI : LivingThing
 {
@@ -44,12 +45,18 @@ public class SnakeNagaAI : LivingThing
     public float meteorCooldown = 8f;
     public float meteorRangeMin = 10f;
     public float meteorRangeMax = 25f;
+    [Header("Health Bar UI")]
+    [Tooltip("Panel ที่เก็บ Image ของ Health Bar")]
+    public GameObject healthBarUI;
+    [Tooltip("Image ที่ตั้งเป็น Filled (Horizontal)")]
+    public Image     healthBarFill;
+    
     [HideInInspector] public float lastMeteorTime = -Mathf.Infinity;
 
     public Vector3 Position => transform.position;
     public Vector3 PlayerPosition => Player.position;
 
-    void Awake()
+    protected override void Awake()
     {
         base.Awake();
         StateMachine = new NagaStateMachine();
@@ -63,6 +70,9 @@ public class SnakeNagaAI : LivingThing
 
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        
+        if (healthBarUI != null)
+            healthBarUI.SetActive(false);
 
         patrolCenter = transform.position;
     }
@@ -77,6 +87,24 @@ public class SnakeNagaAI : LivingThing
         StateMachine.Update();
         TryCastMeteor();
         Animator.SetFloat("Speed", Agent.velocity.magnitude);
+        UpdateHealthBar();
+    }
+    private void UpdateHealthBar()
+    {
+        if (healthBarUI == null || healthBarFill == null)
+            return;
+
+        // เช็กระยะ chase
+        bool inChase = IsPlayerInChaseRange();
+
+        // โชว์/ซ่อน panel
+        healthBarUI.SetActive(inChase);
+
+        if (inChase)
+        {
+            // อัพเดต fillAmount (0–1)
+            healthBarFill.fillAmount = HealthNormalized;
+        }
     }
 
     public bool IsPlayerInChaseRange()

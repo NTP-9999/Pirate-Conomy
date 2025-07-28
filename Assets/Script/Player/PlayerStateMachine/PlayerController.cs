@@ -65,6 +65,10 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            attackDamage = 99999999999999f; // ทดสอบการโจมตีแรง
+        }
         bool runPressed = Input.GetKey(KeyCode.LeftShift)
                    && Input.GetAxis("Vertical") > 0.1f;
         isRunning = runPressed;
