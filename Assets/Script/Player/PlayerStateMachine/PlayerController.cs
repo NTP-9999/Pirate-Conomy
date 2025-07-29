@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
     [Header("Stamina Costs")]
     public float jumpStaminaCost = 20f;
     public float rollStaminaCost = 15f;
+    [Header("Roll Cooldown")]
+    public float rollCooldown = 1f;      // เวลาระหว่าง roll แต่ละครั้ง
+    private float rollCooldownTimer = 0f;
 
     [HideInInspector] public bool canMove = true;
     [HideInInspector] public bool isRunning;
@@ -65,7 +68,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             attackDamage = 99999999999999f; // ทดสอบการโจมตีแรง
         }
@@ -74,6 +77,23 @@ public class PlayerController : MonoBehaviour
         isRunning = runPressed;
         animator.SetBool("IsRunning", runPressed);
         SnapToGround();
+        if (rollCooldownTimer > 0f)
+            rollCooldownTimer -= Time.deltaTime;
+    }
+    /// <summary>
+    /// คืนค่าได้ว่า Roll ได้ไหม (Cooldown หมดแล้ว)
+    /// </summary>
+    public bool CanRoll()
+    {
+        return rollCooldownTimer <= 0f;
+    }
+
+    /// <summary>
+    /// เริ่มนับ cooldown เมื่อกด Roll
+    /// </summary>
+    public void TriggerRollCooldown()
+    {
+        rollCooldownTimer = rollCooldown;
     }
 
     /// <summary>

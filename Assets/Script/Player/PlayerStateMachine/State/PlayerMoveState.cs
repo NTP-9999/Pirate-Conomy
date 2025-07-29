@@ -20,7 +20,7 @@ public class PlayerMoveState : IState
             return;
         }
         // Allow dodge/roll even while moving
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && sm.playerController.CanRoll())
         {
             sm.fsm.ChangeState(sm.rollState);
             return;

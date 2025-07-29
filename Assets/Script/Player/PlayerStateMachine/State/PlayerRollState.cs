@@ -18,11 +18,12 @@ public class PlayerRollState : IState
         Debug.Log("→ Enter RollState, trigger sent");
         sm.playerController.canMove = false;
         var stats = CharacterStats.Instance;
-        if (stats.currentStamina < pc.rollStaminaCost)
+        if (stats.currentStamina < pc.rollStaminaCost || !pc.CanRoll())
         {
             sm.fsm.ChangeState(sm.idleState);
             return;
         }
+        pc.TriggerRollCooldown();
 
         // ตัด Stamina
         stats.UseStamina(pc.rollStaminaCost);
