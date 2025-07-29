@@ -20,7 +20,7 @@ public class NagaChaseState : NagaIState {
         else if (!ctx.IsPlayerInChaseRange())
         {
             ctx.StateMachine.ChangeState(ctx.patrolState);
-            NagaAudioManager.Instance.StopLoop();
+            NagaAudioManager.Instance.StopBGM();
         }
             
     }

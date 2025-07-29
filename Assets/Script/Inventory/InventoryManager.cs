@@ -76,6 +76,7 @@ public class InventoryManager : MonoBehaviour
         // ควบคุมการหยุดเวลาหรือเคอร์เซอร์ของเมาส์
         if (isInventoryOpen)
         {
+            PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseInventorySound);
             ps.enabled = false;
             // Inventory เปิด: หยุดเวลา, แสดงเคอร์เซอร์เมาส์
             Time.timeScale = 0f; // หยุดเวลาในเกม (Freeze game)
@@ -85,6 +86,7 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
+            PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseInventorySound);
             // Inventory ปิด: กลับมาเล่นเกม, ซ่อนเคอร์เซอร์เมาส์
             Time.timeScale = 1f; // กลับมาเล่นเกมตามปกติ
             Cursor.lockState = CursorLockMode.Locked; // ล็อกเมาส์ไว้ที่กึ่งกลางจอ

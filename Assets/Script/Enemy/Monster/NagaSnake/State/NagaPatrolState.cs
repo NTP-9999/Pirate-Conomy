@@ -31,7 +31,7 @@ public class NagaPatrolState : NagaIState {
         if (ctx.IsPlayerInChaseRange())
         {
             ctx.StateMachine.ChangeState(ctx.chaseState);
-            NagaAudioManager.Instance.PlayLoop(NagaAudioManager.Instance.bgmClip);
+            NagaAudioManager.Instance.PlayBGM(NagaAudioManager.Instance.bgmClip, 1f);
         }
             
     }
