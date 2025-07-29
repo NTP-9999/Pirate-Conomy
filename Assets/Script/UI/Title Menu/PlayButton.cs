@@ -8,6 +8,7 @@ public class PlayButton : MonoBehaviour
     public static string nextScene = "pirate"; // ชื่อซีนที่ต้องการไปหลัง loading
     public GameObject cutScene;
     public VideoPlayer videoPlayer;
+    public GameObject skipButton;
 
     public void Playgame()
     {
@@ -15,11 +16,17 @@ public class PlayButton : MonoBehaviour
         StartCoroutine(KuyKuy());
         StartCoroutine(WaitForCutScene());
     }
+    public void Skip()
+    {
+        videoPlayer.Stop(); // หยุดวิดีโอ
+        SceneManager.LoadScene("Loading_screen"); // โหลดซีนถัดไป
+    }
     IEnumerator KuyKuy()
     {
         yield return new WaitForSeconds(4f); // รอ 1 วินาที
         cutScene.SetActive(true); // เปิด Cutscene
         videoPlayer.Play(); // เล่นวิดีโอ
+        skipButton.SetActive(true); // แสดงปุ่ม Skip
     }
     IEnumerator WaitForCutScene()
     {

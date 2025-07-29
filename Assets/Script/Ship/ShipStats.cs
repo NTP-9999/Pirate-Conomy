@@ -35,9 +35,12 @@ public class ShipStats : MonoBehaviour
     public float sinkDepth = 5f;
     [Tooltip("มุมที่จะพลิกเรือ (Pitch)")]
     public float sinkPitchAngle = 20f;
+    private GameObject player;
+    
 
     void Start()
     {
+        player = GameObject.FindWithTag("Player");
         currentHealth = maxHealth;
         UpdateUI(); // อัปเดตค่าเริ่มต้น
     }
@@ -84,6 +87,7 @@ public class ShipStats : MonoBehaviour
 
     void SinkShip()
     {
+        StartCoroutine(SinkAndKillPlayer());
         isSinking = true;
         Debug.Log("💥 เรือจมแล้ว!");
 
@@ -112,14 +116,26 @@ public class ShipStats : MonoBehaviour
         // เริ่มอนิเมชั่นจม
         StartCoroutine(SinkAnimation());
     }
+    private IEnumerator SinkAndKillPlayer()
+    {
+        // 1) รอให้เรือจมจนจบ
+        yield return StartCoroutine(SinkAnimation());
+
+        // 2) ทำลายผู้เล่น
+        if (player != null)
+            Destroy(player);
+
+        // 3) สุดท้ายทำลายเรือ (ถ้ายังไม่ถูกทำลาย)
+        Destroy(gameObject);
+    }
 
     private IEnumerator SinkAnimation()
     {
         Vector3 startPos = transform.position;
-        Vector3 endPos   = startPos + Vector3.down * sinkDepth;
+        Vector3 endPos = startPos + Vector3.down * sinkDepth;
 
         Quaternion startRot = transform.rotation;
-        Quaternion endRot   = startRot * Quaternion.Euler(sinkPitchAngle, 0f, 0f);
+        Quaternion endRot = startRot * Quaternion.Euler(sinkPitchAngle, 0f, 0f);
 
         float elapsed = 0f;
         while (elapsed < sinkDuration)

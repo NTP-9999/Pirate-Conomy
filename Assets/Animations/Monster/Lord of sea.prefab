@@ -379,10 +379,10 @@ MonoBehaviour:
   animator: {fileID: 2836431912290570436}
   shipTarget: {fileID: 0}
   moveSpeed: 23.7
-  attackRange: 22.3
+  attackRange: 28.1
   attackCooldown: 3
   damage: 20
-  stoppingDistance: 17.8
+  stoppingDistance: 23.3
   rotationSpeed: 49.9
   exitRange: 100
   healthBarUI: {fileID: 5871515111665640544}

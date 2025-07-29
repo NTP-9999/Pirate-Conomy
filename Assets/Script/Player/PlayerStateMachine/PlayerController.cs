@@ -242,15 +242,37 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f, groundLayer))
             {
                 if (hit.collider.CompareTag("Ship"))
-                    transform.parent = hit.collider.transform;
+                {
+                    // ถ้ายังไม่ใช่ลูกของเรือ ให้ตั้ง Parent
+                    if (transform.parent != hit.collider.transform)
+                        transform.SetParent(hit.collider.transform, true);
+                }
                 else
-                    transform.parent = null;
-            }
+                {
+                    // ไม่ใช่พื้นเรือ ให้ถอด Parent และรีเซ็ต scale
+                    if (transform.parent != null)
+                        transform.SetParent(null, true);
+                    
+                    transform.localScale = Vector3.one;
+                }
             }
             else
             {
-                transform.parent = null;
+                // ไม่ชนพื้นเลย ให้ถอด Parent และรีเซ็ต scale
+                if (transform.parent != null)
+                    transform.SetParent(null, true);
+
+                transform.localScale = Vector3.one;
             }
+        }
+        else
+        {
+            // กรณีที่ไม่ได้ Grounded (กำลังลอยหรือกระโดด)
+            if (transform.parent != null)
+                transform.SetParent(null, true);
+
+            transform.localScale = Vector3.one;
+        }
 
         animator.SetFloat("MoveX", moveX);
         animator.SetFloat("MoveZ", moveZ);

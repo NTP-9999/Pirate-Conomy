@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SkillManager : MonoBehaviour
 {
@@ -9,30 +10,32 @@ public class SkillManager : MonoBehaviour
     [Serializable]
     public struct Condition
     {
-        public string   fragmentID;
-        public int      requiredCount;
-        public string   skillName;
+        public string fragmentID;
+        public int requiredCount;
+        public string skillName;
         public GameObject manualUI;
     }
     public FirstPersonCamera fps;
     public FirstPersonCamera uicam;
     public PlayerStateMachine ps;
-    public PlayerSkillController psc;
 
     public Condition[] unlockConditions;
     public event Action<string> OnSkillUnlocked;
 
     private HashSet<string> unlockedSkills = new HashSet<string>();
 
-    void Awake() {
+    void Awake()
+    {
         if (Instance != null) Destroy(gameObject);
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     // เรียกเมื่อจำนวน Fragment เปลี่ยน
-    public void TryUnlockSkill(string fragmentID, int currentCount) {
-        foreach (var c in unlockConditions) {
+    public void TryUnlockSkill(string fragmentID, int currentCount)
+    {
+        foreach (var c in unlockConditions)
+        {
             if (c.fragmentID == fragmentID
              && currentCount >= c.requiredCount
              && !unlockedSkills.Contains(c.skillName))
@@ -43,7 +46,8 @@ public class SkillManager : MonoBehaviour
     }
 
     // เปลี่ยน signature ให้รับ Condition แทน string
-    private void Unlock(Condition c) {
+    private void Unlock(Condition c)
+    {
         unlockedSkills.Add(c.skillName);
         Debug.Log($"<color=yellow>Skill Unlocked:</color> {c.skillName}");
 
@@ -55,11 +59,10 @@ public class SkillManager : MonoBehaviour
             fps.enabled = false; // ปิดกล้องชั่วคราว
             uicam.enabled = false; // เปิดกล้อง UI
             ps.enabled = false; // ปิด State Machine ชั่วคราว
-            psc.enabled = false; // ปิด Skill Controller ชั่วคราว
         }
 
         Cursor.visible = true;
-    Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.None;
 
 
         // ส่ง event ให้คนอื่นรู้ว่าสกิลนี้ปลดล็อคแล้ว
@@ -72,9 +75,30 @@ public class SkillManager : MonoBehaviour
         fps.enabled = true; // เปิดกล้องกลับ
         uicam.enabled = true; // ปิดกล้อง UI
         ps.enabled = true; // เปิด State Machine กลับ
-        psc.enabled = true; // เปิด Skill Controller กลับ
     }
 
     public bool IsUnlocked(string skillName)
         => unlockedSkills.Contains(skillName);
+        
+        
+    /// <summary>
+    /// ปลดล็อคสกิลจากชื่อ (ใช้สำหรับ debug / ปุ่มลัด)
+    /// </summary>
+    public void UnlockSkillByName(string skillName)
+    {
+        // เช็กว่าปลดล็อคไปแล้วหรือยัง
+        if (unlockedSkills.Contains(skillName))
+            return;
+
+        // หาเงื่อนไขของสกิลนั้น
+        var condition = unlockConditions.FirstOrDefault(c => c.skillName == skillName);
+        if (condition.skillName == skillName)
+        {
+            Unlock(condition);
+        }
+        else
+        {
+            Debug.LogWarning($"SkillManager: ไม่พบเงื่อนไขสกิล '{skillName}'");
+        }
+    }
 }
