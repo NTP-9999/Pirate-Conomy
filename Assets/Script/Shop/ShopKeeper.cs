@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(Collider))]
 public class ShopKeeper : MonoBehaviour
@@ -28,7 +29,9 @@ public class ShopKeeper : MonoBehaviour
 
     void Awake()
     {
-        playerHUD = GameObject.Find("PlayerHUD");
+        playerHUD = Object.FindObjectsOfType<Transform>(true)
+                          .FirstOrDefault(t => t.name == "PlayerHUD")
+                          ?.gameObject;
         // cache player scripts
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)

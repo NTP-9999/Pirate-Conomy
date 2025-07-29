@@ -11,7 +11,7 @@ public class KravalonAI : MonoBehaviour
     private float currentHealth;
     public Animator animator;
 
-    public Transform shipTarget;
+    public Transform shipTarget => ShipEnterExit.Instance?.transform;
     public float moveSpeed = 5f;
     public float attackRange = 5f;
     public float attackCooldown = 3f;
@@ -39,14 +39,13 @@ public class KravalonAI : MonoBehaviour
 
     void Start()
     {
-        CameraShake.Instance.Shake(2f, 0.5f);
-        if (shipTarget == null && ShipEnterExit.Instance != null)
-            shipTarget = ShipEnterExit.Instance.transform;
-
-        // เริ่มจากไล่ก่อน
         StateMachine.Initialize(chaseState);
+        CameraShake.Instance.Shake(2f, 0.5f);
+        // เริ่มจากไล่ก่อน
+        
         KravalonAudioManager.Instance.PlayOneShot(KravalonAudioManager.Instance.spawnSFX);
     }
+    
 
     void Update()
     {
@@ -75,6 +74,8 @@ public class KravalonAI : MonoBehaviour
         RotateTowardsShip(Time.deltaTime);      // ← เพิ่มบรรทัดนี้
         StateMachine.Update();
     }
+
+    
     private void UpdateHealthBar()
     {
         if (healthBarUI == null || healthBarFill == null || shipTarget == null)

@@ -12,6 +12,7 @@ public class KravalonAttackState : IKravalonState
     {
         // ยิงครั้งแรกตอนเข้ารัฐนี้
         ctx.animator.SetTrigger("Attack");
+        CameraShake.Instance.Shake(1f, 0.8f);
         ctx.SetAttackCooldown();    // บันทึกเวลายิง
     }
 
