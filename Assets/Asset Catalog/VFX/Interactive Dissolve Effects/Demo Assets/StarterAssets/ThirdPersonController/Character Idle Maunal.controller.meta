@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0defa2bc942e30b4b81f730b223901d1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Demo Assets/StarterAssets/ThirdPersonController/Character
+    Idle Maunal.controller
+  uploadId: 671095

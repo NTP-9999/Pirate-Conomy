@@ -122,5 +122,21 @@ public class PlayerSkillController : MonoBehaviour
             StartCoroutine(_skills["Parry"].Activate());
             CooldownUIManager.Instance.ShowCooldown(parryIcon, parryCooldown);
         }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            SkillManager.Instance.UnlockSkillByName("Firewall");
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            SkillManager.Instance.UnlockSkillByName("Punch");
+        }
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            SkillManager.Instance.UnlockSkillByName("Block");
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SkillManager.Instance.UnlockSkillByName("Parry");
+        }
     }
 }

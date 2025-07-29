@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f6d148d888ffbf54b9afe9936dfaec1f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Demo Assets/StarterAssets/ThirdPersonController/Prefabs/MainCamera.prefab
+  uploadId: 671095

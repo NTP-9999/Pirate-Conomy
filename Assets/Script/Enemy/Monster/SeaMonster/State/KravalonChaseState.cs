@@ -9,20 +9,32 @@ public class KravalonChaseState : IKravalonState
         ctx = context;
     }
 
-    public void Enter() { }
+    public void Enter()
+    {
+        ctx.animator.SetBool("IsChasing", true);
+    }
 
     public void Execute()
     {
         if (ctx.shipTarget == null) return;
 
-        Vector3 dir = (ctx.shipTarget.position - ctx.transform.position).normalized;
-        ctx.transform.position += dir * ctx.moveSpeed * Time.deltaTime;
-
-        if (ctx.IsShipInAttackRange() && ctx.IsAttackCooldownReady())
+        float distance = Vector3.Distance(ctx.transform.position, ctx.shipTarget.position);
+        if (distance > ctx.stoppingDistance)
         {
-            ctx.StateMachine.ChangeState(ctx.attackIdleState);
+            // เดินเข้าเป้าหมาย
+            Vector3 moveDir = (ctx.shipTarget.position - ctx.transform.position).normalized;
+            ctx.transform.position += moveDir * ctx.moveSpeed * Time.deltaTime;
         }
+
+        // **ใช้เมธอดเดียวกันทุก state**
+        
+
+        if (distance <= ctx.attackRange && ctx.IsAttackCooldownReady())
+            ctx.StateMachine.ChangeState(ctx.attackState);
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+        ctx.animator.SetBool("IsChasing", false);
+    }
 }

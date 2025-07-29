@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+using System.Collections;
 
 public class SnakeNagaAI : LivingThing
 {
@@ -44,12 +46,18 @@ public class SnakeNagaAI : LivingThing
     public float meteorCooldown = 8f;
     public float meteorRangeMin = 10f;
     public float meteorRangeMax = 25f;
+    [Header("Health Bar UI")]
+    [Tooltip("Panel ที่เก็บ Image ของ Health Bar")]
+    public GameObject healthBarUI;
+    [Tooltip("Image ที่ตั้งเป็น Filled (Horizontal)")]
+    public Image healthBarFill;
+    private Coroutine tornadoSoundCoroutine;
     [HideInInspector] public float lastMeteorTime = -Mathf.Infinity;
 
     public Vector3 Position => transform.position;
     public Vector3 PlayerPosition => Player.position;
 
-    void Awake()
+    protected override void Awake()
     {
         base.Awake();
         StateMachine = new NagaStateMachine();
@@ -64,6 +72,9 @@ public class SnakeNagaAI : LivingThing
         if (Player == null)
             Player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
+        if (healthBarUI != null)
+            healthBarUI.SetActive(false);
+
         patrolCenter = transform.position;
     }
 
@@ -77,6 +88,24 @@ public class SnakeNagaAI : LivingThing
         StateMachine.Update();
         TryCastMeteor();
         Animator.SetFloat("Speed", Agent.velocity.magnitude);
+        UpdateHealthBar();
+    }
+    private void UpdateHealthBar()
+    {
+        if (healthBarUI == null || healthBarFill == null)
+            return;
+
+        // เช็กระยะ chase
+        bool inChase = IsPlayerInChaseRange();
+
+        // โชว์/ซ่อน panel
+        healthBarUI.SetActive(inChase);
+
+        if (inChase)
+        {
+            // อัพเดต fillAmount (0–1)
+            healthBarFill.fillAmount = HealthNormalized;
+        }
     }
 
     public bool IsPlayerInChaseRange()
@@ -104,6 +133,7 @@ public class SnakeNagaAI : LivingThing
             poisonSpawnPoint.position,
             poisonSpawnPoint.rotation
         );
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.poisonClip);
     }
     public bool CanUseMeteor()
     {
@@ -120,7 +150,12 @@ public class SnakeNagaAI : LivingThing
         if (CanUseMeteor() && StateMachine.CurrentState != meteorState)
         {
             lastMeteorTime = Time.time;
+            NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.tornadoClip);
             StateMachine.ChangeState(meteorState);
+            if (tornadoSoundCoroutine != null)
+                StopCoroutine(tornadoSoundCoroutine);
+
+            tornadoSoundCoroutine = StartCoroutine(HandleTornadoSound());
         }
     }
 
@@ -166,11 +201,30 @@ public class SnakeNagaAI : LivingThing
         // ถ้ายังไม่ตาย ให้เข้า Hurt state
         if (!IsDead)
             StateMachine.ChangeState(hurtState);
+
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.hurtClip);
     }
     public override void OnDeath()
     {
         Agent.isStopped = true;
         Animator.SetTrigger("Die");
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.dieClip);
         Destroy(gameObject, 2f); // ทำลายหลังจาก 2 วินาทีเพื่อให้อนิเมชั่นตายเล่นจบ
+    }
+    private IEnumerator HandleTornadoSound()
+    {
+        // เริ่ม loop เสียงพายุ พร้อม fade‑in 0.3 วินาที
+        NagaAudioManager.Instance.PlaySfxLoop(
+            NagaAudioManager.Instance.tornadoClip,
+            fadeInDuration: 0.3f
+        );
+
+        // รอ 6 วินาที (ระยะพายุ)
+        yield return new WaitForSeconds(4f);
+
+        // fade‑out เสียงพายุ 1 วินาที แล้ว Stop
+        NagaAudioManager.Instance.StopSfxLoop(fadeOutDuration: 1f);
+
+        tornadoSoundCoroutine = null;
     }
 }

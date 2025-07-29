@@ -77,14 +77,6 @@ public class ParrySkill : ISkill
             );
         }
 
-        // 3) เล่น SFX (ถ้ามี)
-        if (_reflectSfx != null)
-        {
-            AudioSource.PlayClipAtPoint(
-                _reflectSfx,
-                proj.transform.position,
-                _sfxVolume
-            );
-        }
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.parryClip);
     }
 }

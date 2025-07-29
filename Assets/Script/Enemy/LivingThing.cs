@@ -3,11 +3,12 @@ using UnityEngine;
 public abstract class LivingThing : MonoBehaviour
 {
     // พื้นฐานของชีวิต
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] protected float maxHealth = 100f;
     public float currentHealth;
 
     // สถานะว่าตายหรือยัง
     public bool IsDead { get; private set; } = false;
+    public float HealthNormalized => currentHealth / maxHealth;
 
     protected virtual void Awake()
     {

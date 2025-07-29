@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
     private InventoryNotificationUI notificationUI;
     [Header("Slot References")]
     public InventorySlotUI[] slots; 
+    [SerializeField] private PlayerStateMachine ps; // อ้างอิงถึง PlayerStateMachine
 
     public List<InventoryItem> items = new List<InventoryItem>();
     [System.Serializable]
@@ -69,10 +70,14 @@ public class InventoryManager : MonoBehaviour
     {
         isInventoryOpen = !isInventoryOpen; // สลับค่า true/false
         inventoryUI.SetActive(isInventoryOpen); // เปิดหรือปิด GameObject ของ UI
+        
+
 
         // ควบคุมการหยุดเวลาหรือเคอร์เซอร์ของเมาส์
         if (isInventoryOpen)
         {
+            PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseInventorySound);
+            ps.enabled = false;
             // Inventory เปิด: หยุดเวลา, แสดงเคอร์เซอร์เมาส์
             Time.timeScale = 0f; // หยุดเวลาในเกม (Freeze game)
             Cursor.lockState = CursorLockMode.None; // ปลดล็อกเมาส์
@@ -81,11 +86,13 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
+            PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseInventorySound);
             // Inventory ปิด: กลับมาเล่นเกม, ซ่อนเคอร์เซอร์เมาส์
             Time.timeScale = 1f; // กลับมาเล่นเกมตามปกติ
             Cursor.lockState = CursorLockMode.Locked; // ล็อกเมาส์ไว้ที่กึ่งกลางจอ
             Cursor.visible = false; // ซ่อนเมาส์
             Debug.Log("Inventory Closed!");
+            ps.enabled = true; // คืนสิทธิ์ PlayerStateMachine
         }
     }
     public void AddItem(string itemName, Sprite icon, int amount)
@@ -135,7 +142,9 @@ public class InventoryManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Debug.Log("Inventory forcefully closed.");
+            
         }
+        
     }
 
     /// <summary>

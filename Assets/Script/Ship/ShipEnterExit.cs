@@ -13,27 +13,35 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     [Tooltip("ระยะเวลาในการสลับกล้อง (วินาที)")]
     public float camTransitionDuration = 1f;
 
-    private Transform player;
+    public Transform player;
     public GameObject shipHUD;
     private CharacterController characterController;
     private Camera playerCamera;
     private Camera shipCamObj;
     private ShipAnchorSystem shipAnchorSystem;
+    private PlayerStateMachine playerStateMachine;
 
     // เก็บข้อมูล parent/transform เดิมของ player
     private Transform originalParent;
-    private Vector3    originalLocalPos;
+    private Vector3 originalLocalPos;
     private Quaternion originalLocalRot;
-    private Vector3    originalLocalScale;
+    private Vector3 originalLocalScale;
 
     // เก็บมุมกล้องผู้เล่นก่อนขึ้นเรือ
-    private Vector3    originalCamLocalPos;
+    private Vector3 originalCamLocalPos;
     private Quaternion originalCamLocalRot;
     // เก็บมุมกล้องเรือก่อนออกเรือ
-    private Transform  originalShipCamParent;
+    private Transform originalShipCamParent;
     private Vector3 originalShipCamLocalPos;
     private Quaternion originalShipCamLocalRot;
     public GameObject playerHUD;
+    [Header("Engine Sound")]
+    [Tooltip("AudioSource ที่มีเสียงล่องเรือ (loop = true)")]
+    [SerializeField] private AudioSource shipEngineAudio;
+    [Tooltip("ความดังสูงสุดของเสียงเรือ")]
+    [Range(0f, 1f)] public float engineMaxVolume = 1f;
+    [Tooltip("ระยะเวลา Fade In/Out (วินาที)")]
+    public float engineFadeDuration = 2f;
 
     private bool nearHelm = false;
     public bool isControlling = false;
@@ -60,10 +68,10 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
         originalCamLocalPos = playerCamera.transform.localPosition;
         originalCamLocalRot = playerCamera.transform.localRotation;
-        
-        originalShipCamParent      = shipCamObj.transform.parent;
-        originalShipCamLocalPos    = shipCamObj.transform.localPosition;
-        originalShipCamLocalRot    = shipCamObj.transform.localRotation;
+
+        originalShipCamParent = shipCamObj.transform.parent;
+        originalShipCamLocalPos = shipCamObj.transform.localPosition;
+        originalShipCamLocalRot = shipCamObj.transform.localRotation;
     }
 
     void Update()
@@ -95,27 +103,29 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     void StartControlShip()
     {
-        // 1) เซฟมุมกล้องผู้เล่น ณ ตอนนี้
+        playerStateMachine = player.GetComponent<PlayerStateMachine>();
+        playerStateMachine.enabled = false; // ปิด StateMachine ชั่วคราว
+
+        // เซฟมุมกล้องผู้เล่น ณ ตอนนี้
         originalCamLocalPos = playerCamera.transform.localPosition;
         originalCamLocalRot = playerCamera.transform.localRotation;
 
-        // 2) เปลี่ยน waypoint UI ไปใช้กล้องเรือ
+        // เปลี่ยน waypoint UI ไปใช้กล้องเรือ
         WaypointUI.Instance.SetReferenceTransform(shipCamObj.transform);
         WaypointUI.Instance.SetCamera(shipCamObj);
 
-        // 3) เริ่ม transition ไปกล้องเรือ
         StartCoroutine(SmoothSwitchToShipCam());
-
-        
     }
+
+
 
     IEnumerator SmoothSwitchToShipCam()
     {
         // เก็บตำแหน่ง/การหมุนต้นทาง (player) และปลายทาง (shipCam)
-        Vector3   startPos = playerCamera.transform.position;
+        Vector3 startPos = playerCamera.transform.position;
         Quaternion startRot = playerCamera.transform.rotation;
-        Vector3   endPos   = shipCamObj.transform.position;
-        Quaternion endRot   = shipCamObj.transform.rotation;
+        Vector3 endPos = shipCamObj.transform.position;
+        Quaternion endRot = shipCamObj.transform.rotation;
 
         float elapsed = 0f;
 
@@ -148,40 +158,36 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
     void OnShipCamActive()
     {
         if (shipHUD != null)
-    shipHUD.SetActive(true);
-        // parent Player → ปิด CharacterController
-        player.SetParent(transform, worldPositionStays: true);
+            shipHUD.SetActive(true);
+
+        // ไม่ย้ายตำแหน่งหรือ parent ใดๆ
         characterController.enabled = false;
-        player.localScale = originalLocalScale;
 
-        // วาง Player ที่ helmPoint
-        player.position = helmPoint.position;
-        player.rotation = helmPoint.rotation;
-
-        // เริ่มควบคุมเรือ
         isControlling = true;
         GetComponent<ShipController>().enabled = !shipAnchorSystem.anchorDeployed;
         playerHUD.SetActive(false);
+
+        if (shipEngineAudio != null)
+            StartCoroutine(FadeEngineVolume(0f, engineMaxVolume, engineFadeDuration, playOnStart: true));
     }
 
     public void ExitControlShip()
     {
-        // เปลี่ยน waypoint UI กลับไป playerCam
+
+
         WaypointUI.Instance.SetReferenceTransform(player.transform);
         WaypointUI.Instance.SetCamera(playerCamera);
 
         StartCoroutine(SmoothSwitchToPlayerCam());
-
-        
     }
 
     IEnumerator SmoothSwitchToPlayerCam()
     {
         // เก็บตำแหน่ง/การหมุนต้นทาง (shipCam) และปลายทาง (exitPoint)
-        Vector3   startPos = shipCamObj.transform.position;
+        Vector3 startPos = shipCamObj.transform.position;
         Quaternion startRot = shipCamObj.transform.rotation;
-        Vector3   endPos   = exitPoint.position;
-        Quaternion endRot   = exitPoint.rotation;
+        Vector3 endPos = exitPoint.position;
+        Quaternion endRot = exitPoint.rotation;
 
         float elapsed = 0f;
 
@@ -216,34 +222,65 @@ public class ShipEnterExit : Singleton<ShipEnterExit>
 
     void OnPlayerCamActive()
     {
+        if (playerStateMachine != null)
+            playerStateMachine.enabled = true; // เปิด StateMachine กลับ
         if (shipHUD != null)
-    shipHUD.SetActive(false);
+            shipHUD.SetActive(false);
+        if (shipEngineAudio != null)
+            StartCoroutine(FadeEngineVolume(shipEngineAudio.volume, 0f, engineFadeDuration, playOnStart: false));
+        player.localScale = Vector3.one;
 
-        // คืน parent + transform ให้ Player
-        player.SetParent(originalParent, worldPositionStays: false);
-        player.localPosition = originalLocalPos;
-        player.localRotation = originalLocalRot;
+
         characterController.enabled = true;
-        player.localScale = originalLocalScale;
 
-        // คืน parent + restore มุมกล้องผู้เล่น
+        // คืนกล้อง
         playerCamera.transform.SetParent(player, worldPositionStays: false);
         playerCamera.transform.localPosition = originalCamLocalPos;
         playerCamera.transform.localRotation = originalCamLocalRot;
 
-        // วาง Player ที่ exitPoint
-        player.position = exitPoint.position;
-        player.rotation = exitPoint.rotation;
-
-        // คืน parent + restore มุมกล้องเรือ
         shipCamObj.transform.SetParent(originalShipCamParent, worldPositionStays: false);
         shipCamObj.transform.localPosition = originalShipCamLocalPos;
         shipCamObj.transform.localRotation = originalShipCamLocalRot;
 
-        // ปิดระบบขับเรือ
         isControlling = false;
         GetComponent<ShipController>().enabled = false;
 
         playerHUD.SetActive(true);
+    }
+    /// <summary>
+    /// Coroutine ปรับ volume ของ shipEngineAudio จาก from → to ในเวลา duration
+    /// ถ้า playOnStart = true จะ Play() ก่อนเริ่ม fade
+    /// ถ้า to == 0 และ playOnStart = false จะ Stop() หลัง fade เสร็จ
+    /// </summary>
+    private IEnumerator FadeEngineVolume(float from, float to, float duration, bool playOnStart)
+    {
+        if (shipEngineAudio == null)
+            yield break;
+
+        float elapsed = 0f;
+
+        if (playOnStart)
+        {
+            shipEngineAudio.volume = 0f;
+            shipEngineAudio.Play();
+        }
+        else
+        {
+            // ถ้า fade out เริ่มจากปัจจุบัน ให้ใช้ค่า volume ปัจจุบันแทน
+            from = shipEngineAudio.volume;
+        }
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            shipEngineAudio.volume = Mathf.Lerp(from, to, t);
+            yield return null;
+        }
+
+        shipEngineAudio.volume = to;
+
+        if (!playOnStart && Mathf.Approximately(to, 0f))
+            shipEngineAudio.Stop();
     }
 }

@@ -12,7 +12,7 @@ public class Cannonball : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("SeaMonster"))
         {
             // เช็คว่ามีคอมโพเนนต์ CharacterStats หรือไม่
             var stats = collision.gameObject.GetComponent<KravalonAI>();

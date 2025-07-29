@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0cc96225e05a5904fb20024b17b2ba9d
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Common/Subgraphs/License.txt
+  uploadId: 671095

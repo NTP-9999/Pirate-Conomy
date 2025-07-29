@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c512bb77212658c46aecb3ccafae1772
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Common/Scripts/Common/INabCommon.asmdef
+  uploadId: 671095

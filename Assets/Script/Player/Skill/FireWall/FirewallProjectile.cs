@@ -66,7 +66,7 @@ public class FirewallProjectile : MonoBehaviour
                 yield return null;
             }
         }
-
+       
         Destroy(gameObject);
     }
 
@@ -79,14 +79,34 @@ public class FirewallProjectile : MonoBehaviour
         }
         if (other.CompareTag("Enemy"))
         {
-            var lt = other.GetComponent<LivingThing>();
-            if (lt != null)
+            var Snake = other.GetComponent<SnakeNagaAI>();
+            if (Snake != null)
             {
-                lt.TakeDamage(initialDamage);
-                if (!burned.Contains(lt))
+                Snake.TakeDamage(initialDamage);
+                if (!burned.Contains(Snake))
                 {
-                    burned.Add(lt);
-                    StartCoroutine(ApplyBurn(lt));
+                    burned.Add(Snake);
+                    StartCoroutine(ApplyBurn(Snake));
+                }
+            }
+            var Crab = other.GetComponent<CrabAI>();
+            if (Crab != null)
+            {
+                Crab.TakeDamage(initialDamage);
+                if (!burned.Contains(Crab))
+                {
+                    burned.Add(Crab);
+                    StartCoroutine(ApplyBurn(Crab));
+                }
+            }
+            var Wolf = other.GetComponent<WolfAI>();
+            if (Wolf != null)
+            {
+                Wolf.TakeDamage(initialDamage);
+                if (!burned.Contains(Wolf))
+                {
+                    burned.Add(Wolf);
+                    StartCoroutine(ApplyBurn(Wolf));
                 }
             }
         }
@@ -99,6 +119,7 @@ public class FirewallProjectile : MonoBehaviour
         {
             yield return new WaitForSeconds(burnInterval);
             target.TakeDamage(burnDamage);
+            PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.firewalldot);
             elapsed += burnInterval;
         }
     }

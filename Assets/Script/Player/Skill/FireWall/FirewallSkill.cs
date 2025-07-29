@@ -62,6 +62,8 @@ public class FirewallSkill : ISkill
         yield return new WaitForSeconds(1.2f);
         if (_pc.playerWeapon != null)
             _pc.playerWeapon.SetActive(true);
+        
+        
 
         // 5) Wait cooldown
         yield return new WaitForSeconds(_cooldown);
@@ -80,5 +82,6 @@ public class FirewallSkill : ISkill
 
         var go = Object.Instantiate(_prefab, origin, Quaternion.identity);
         go.GetComponent<FirewallProjectile>().Initialize(dir);
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.firewall);
     }
 }

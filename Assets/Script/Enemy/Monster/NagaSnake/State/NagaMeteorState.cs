@@ -43,6 +43,7 @@ public class NagaMeteorState : NagaIState
             );
             CameraShake.Instance.Shake(5f, 0.8f);
         }
+        
     }
 
     public void Execute()

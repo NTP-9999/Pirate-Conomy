@@ -1,0 +1,20 @@
+{
+    "name": "INabCommonEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c512bb77212658c46aecb3ccafae1772",
+        "GUID:116a4d4dbf5c04973bbf517077a062a1",
+        "GUID:d04eb9c554ad44ceab303cecf0c0cf82"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

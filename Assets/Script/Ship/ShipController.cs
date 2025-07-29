@@ -11,6 +11,11 @@ public class ShipController : Singleton<ShipController>
     public float rockingAmplitude = 2f; // องศาการโยก
     public float rockingFrequency = 0.5f; // ความถี่
     private float rockingTimer = 0f;
+    private bool cheatMode = false;
+    private float defaultAcceleration;
+    private float defaultMaxSpeed;
+    private const float cheatAcceleration = 9999999999999f;
+    private const float cheatMaxSpeed     = 200f;
     public Vector3 shipPosition
     {
         get { return transform.position; }
@@ -40,6 +45,28 @@ public class ShipController : Singleton<ShipController>
     {
         enterExit = GetComponent<ShipEnterExit>();
         rb = GetComponent<Rigidbody>();
+        defaultAcceleration = acceleration;
+        defaultMaxSpeed     = maxSpeed;
+    }
+    void Update()
+    {
+        // ─── 2) Toggle ปุ่ม Y ─────────────────────────────────────
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            cheatMode = !cheatMode;
+            if (cheatMode)
+            {
+                acceleration = cheatAcceleration;
+                maxSpeed     = cheatMaxSpeed;
+                Debug.Log("<color=green>Cheat ON:</color> Accel=100, MaxSpeed=100");
+            }
+            else
+            {
+                acceleration = defaultAcceleration;
+                maxSpeed     = defaultMaxSpeed;
+                Debug.Log("<color=yellow>Cheat OFF:</color> Restored defaults");
+            }
+        }
     }
 
     void FixedUpdate()

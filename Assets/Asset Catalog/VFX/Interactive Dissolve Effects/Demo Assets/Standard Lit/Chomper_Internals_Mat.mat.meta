@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4b16268047716604e8906338172a7efa
+timeCreated: 1493134673
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275708
+  packageName: Interactive Dissolve Effects
+  packageVersion: 1.0
+  assetPath: Assets/INab Studio/Demo Assets/Standard Lit/Chomper_Internals_Mat.mat
+  uploadId: 671095

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class KravalonAttackState : IKravalonState
 {
     private KravalonAI ctx;
@@ -11,18 +10,34 @@ public class KravalonAttackState : IKravalonState
 
     public void Enter()
     {
-        ctx.DealDamageToShip();
-        ctx.SetAttackCooldown();
+        // ยิงครั้งแรกตอนเข้ารัฐนี้
+        ctx.animator.SetTrigger("Attack");
+        ctx.SetAttackCooldown();    // บันทึกเวลายิง
     }
 
     public void Execute()
     {
-        // ถ้ายังอยู่ในระยะโจมตี → กลับไป Idle ตีอีก
-        if (ctx.IsShipInAttackRange())
-            ctx.StateMachine.ChangeState(ctx.attackIdleState);
-        else
+        if (ctx.shipTarget == null) return;
+
+        float distance = Vector3.Distance(ctx.transform.position, ctx.shipTarget.position);
+        if (distance > ctx.attackRange)
+        {
+            // ถ้าไกลเกินระยะ ให้กลับไปวิ่งตาม
             ctx.StateMachine.ChangeState(ctx.chaseState);
+            return;
+        }
+
+        // หมุนหาทิศเรือ (ล็อค Y) เหมือนกัน
+        
+
+        // พอ cooldown ผ่าน → ยิงใหม่
+        if (ctx.IsAttackCooldownReady())
+        {
+            ctx.animator.SetTrigger("Attack");
+            ctx.SetAttackCooldown();
+        }
     }
 
     public void Exit() { }
 }
+

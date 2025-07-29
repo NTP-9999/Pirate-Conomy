@@ -19,13 +19,16 @@ public class ShopKeeper : MonoBehaviour
     [Tooltip("How close before the UI goes 'press to open'")]
     private float interactableRange => maxDistance * 0.75f;
     public float maxDistance;
+   
 
     private PlayerController playerController;
     private PlayerSkillController playerSkillController;
     private PlayerStateMachine playerStateMachine;
+    public GameObject playerHUD; // ← new
 
     void Awake()
     {
+        playerHUD = GameObject.Find("PlayerHUD");
         // cache player scripts
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -57,10 +60,12 @@ public class ShopKeeper : MonoBehaviour
 
     public void OpenShop()
     {
+        playerHUD.SetActive(false); // ซ่อน HUD ของผู้เล่น
         if (shopUIPanel != null) shopUIPanel.SetActive(true);
         shopManager?.OpenShop();
+        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseShopSound);
 
-        if (playerController      != null) { playerController.enabled = false; playerController.canMove = false; }
+        if (playerController != null) { playerController.enabled = false; playerController.canMove = false; }
         if (playerSkillController != null) playerSkillController.enabled = false;
         if (playerStateMachine    != null) playerStateMachine.enabled = false;
 
@@ -73,8 +78,10 @@ public class ShopKeeper : MonoBehaviour
     {
         Time.timeScale = 1f;
         if (shopUIPanel != null) shopUIPanel.SetActive(false);
+        
+        playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
 
-        if (playerController      != null) { playerController.enabled = true;  playerController.canMove = true; }
+        if (playerController != null) { playerController.enabled = true; playerController.canMove = true; }
         if (playerSkillController != null) playerSkillController.enabled = true;
         if (playerStateMachine    != null) playerStateMachine.enabled = true;
 

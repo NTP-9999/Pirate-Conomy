@@ -158,7 +158,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ATK 3
-  m_Speed: 1.2
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4126047990439814558}
@@ -1414,7 +1414,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ATK 2
-  m_Speed: 1.3
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 801475339317297873}

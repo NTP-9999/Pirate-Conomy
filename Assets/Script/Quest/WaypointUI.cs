@@ -40,7 +40,16 @@ public class WaypointUI : MonoBehaviour
         {
             if (cam == null)
             {
-                cam = FindObjectOfType<Camera>();
+                // หากล้องทุกตัวใน Scene
+                Camera[] cameras = FindObjectsOfType<Camera>();
+                foreach (Camera c in cameras)
+                {
+                    if (c.name != "UICam")
+                    {
+                        cam = c;
+                        break;
+                    }
+                }
             }
         }
         // Singleton pattern
