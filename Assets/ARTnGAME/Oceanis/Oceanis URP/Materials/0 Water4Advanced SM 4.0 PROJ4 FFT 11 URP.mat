@@ -261,6 +261,7 @@ Material:
     - _regulateShoreWavesHeightA: 1.41
     - _regulateShoreWavesHeightB: 0
     - _regulateShoreWavesHeightC: 0
+    - autoLOD: 0
     - cameraNearClip: 34
     - cameraOffset: 0
     - depthBelowZero: 22

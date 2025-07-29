@@ -132,6 +132,7 @@ public class SnakeNagaAI : LivingThing
             poisonSpawnPoint.position,
             poisonSpawnPoint.rotation
         );
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.poisonClip);
     }
     public bool CanUseMeteor()
     {
@@ -194,11 +195,14 @@ public class SnakeNagaAI : LivingThing
         // ถ้ายังไม่ตาย ให้เข้า Hurt state
         if (!IsDead)
             StateMachine.ChangeState(hurtState);
+
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.hurtClip);
     }
     public override void OnDeath()
     {
         Agent.isStopped = true;
         Animator.SetTrigger("Die");
+        NagaAudioManager.Instance.PlayOneShot(NagaAudioManager.Instance.dieClip);
         Destroy(gameObject, 2f); // ทำลายหลังจาก 2 วินาทีเพื่อให้อนิเมชั่นตายเล่นจบ
     }
 }
