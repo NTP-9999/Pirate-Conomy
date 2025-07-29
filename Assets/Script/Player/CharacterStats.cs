@@ -111,7 +111,7 @@ public class CharacterStats : Singleton<CharacterStats>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             SetInvincibility(true);
         }

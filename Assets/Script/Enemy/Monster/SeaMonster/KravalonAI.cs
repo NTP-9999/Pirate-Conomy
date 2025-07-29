@@ -44,6 +44,7 @@ public class KravalonAI : MonoBehaviour
 
         // เริ่มจากไล่ก่อน
         StateMachine.Initialize(chaseState);
+        KravalonAudioManager.Instance.PlayOneShot(KravalonAudioManager.Instance.spawnSFX);
     }
 
     void Update()
@@ -146,6 +147,7 @@ public class KravalonAI : MonoBehaviour
 
     void Die()
     {
+       
         animator.SetTrigger("Die");
         Debug.Log("💀 Kravalon ตายแล้ว!");
         Destroy(gameObject, 2f);

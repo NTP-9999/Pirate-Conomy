@@ -28,6 +28,11 @@ public class CannonShooter : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            cannonballDamage = 9999f;
+            Debug.Log("🔥 cannonballDmg! = " + cannonballDamage );
+        }
         if (Time.time < lastFireTime + fireCooldown)
             return;
 

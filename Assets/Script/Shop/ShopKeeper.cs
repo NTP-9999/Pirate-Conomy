@@ -78,7 +78,6 @@ public class ShopKeeper : MonoBehaviour
     {
         Time.timeScale = 1f;
         if (shopUIPanel != null) shopUIPanel.SetActive(false);
-        PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.opencloseShopSound);
         
         playerHUD.SetActive(true); // แสดง HUD ของผู้เล่น
 
