@@ -7,7 +7,7 @@ public interface IState
 
 public class StateMachine
 {
-    private IState _current;
+    public IState _current;
     public void Initialize(IState startingState)
     {
         _current = startingState;

@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
             Ray ray = new Ray(origin, Vector3.down);
-
+            if (PlayerStateMachine.Instance.fsm._current is PlayerSwimState) ray = new Ray(origin, Vector3.forward);
             bool hit = Physics.SphereCast(ray, groundCheckRadius, out RaycastHit hitInfo, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
 
             Debug.DrawRay(origin, Vector3.down * groundCheckDistance, hit ? Color.green : Color.red);

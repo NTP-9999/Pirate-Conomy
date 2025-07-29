@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
-public class PlayerStateMachine : MonoBehaviour
+public class PlayerStateMachine : Singleton<PlayerStateMachine>
 {
     public StateMachine fsm;
     public PlayerController playerController;

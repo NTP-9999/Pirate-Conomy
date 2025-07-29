@@ -313,6 +313,8 @@ public class CharacterStats : Singleton<CharacterStats>
            deathCam.StartTransition();
            diepanel.SetActive(true);
 
+        cursor.visible = true;
+
         isDead = true;
         Debug.Log("Player has died!");
 
