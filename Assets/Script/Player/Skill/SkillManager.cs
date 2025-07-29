@@ -14,6 +14,10 @@ public class SkillManager : MonoBehaviour
         public string   skillName;
         public GameObject manualUI;
     }
+    public FirstPersonCamera fps;
+    public FirstPersonCamera uicam;
+    public PlayerStateMachine ps;
+    public PlayerSkillController psc;
 
     public Condition[] unlockConditions;
     public event Action<string> OnSkillUnlocked;
@@ -48,6 +52,10 @@ public class SkillManager : MonoBehaviour
         {
             c.manualUI.SetActive(true);
             PlayerAudioManager.Instance.PlayOneShot(PlayerAudioManager.Instance.unlockSkillSound);
+            fps.enabled = false; // ปิดกล้องชั่วคราว
+            uicam.enabled = false; // เปิดกล้อง UI
+            ps.enabled = false; // ปิด State Machine ชั่วคราว
+            psc.enabled = false; // ปิด Skill Controller ชั่วคราว
         }
 
         Cursor.visible = true;
@@ -61,6 +69,10 @@ public class SkillManager : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        fps.enabled = true; // เปิดกล้องกลับ
+        uicam.enabled = true; // ปิดกล้อง UI
+        ps.enabled = true; // เปิด State Machine กลับ
+        psc.enabled = true; // เปิด Skill Controller กลับ
     }
 
     public bool IsUnlocked(string skillName)
