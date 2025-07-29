@@ -18,6 +18,7 @@ public class PlayerAudioManager : Singleton<PlayerAudioManager>
     public AudioClip firewalldot;
     public AudioClip opencloseShopSound;
     public AudioClip opencloseInventorySound;
+    public AudioClip unlockSkillSound;
 
     [Header("Settings")]
     public float footstepInterval = 0.5f;

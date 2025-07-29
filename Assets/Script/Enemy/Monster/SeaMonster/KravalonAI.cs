@@ -39,6 +39,7 @@ public class KravalonAI : MonoBehaviour
 
     void Start()
     {
+        CameraShake.Instance.Shake(2f, 0.5f);
         if (shipTarget == null && ShipEnterExit.Instance != null)
             shipTarget = ShipEnterExit.Instance.transform;
 
